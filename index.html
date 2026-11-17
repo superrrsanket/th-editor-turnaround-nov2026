@@ -1,0 +1,1013 @@
+<title>Editor Turnaround</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter+Tight:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Layout: same system as the postmortem and the editor review docs. Header with three tiles, a metric switch over per-editor bars that expand into videos, a lane timeline, a length-against-days scatter, one table of every video, a short list of other work, and a method card. Data only. */
+:root {
+  --bg: #F6F6F4; --surface: #FFFFFF; --surface-2: #F1F1EF;
+  --border: #E8E8E5; --border-strong: #D6D6D2;
+  --text: #14151A; --text-muted: #5D616B; --text-faint: #8A8F9B;
+  --accent: #3A49D6; --accent-soft: #ECEEFD;
+  --gold: #E8B53A; --gold-soft: #FBEFCF; --gold-ink: #946500; --hl: #F4D98C;
+  --bad: #E5484D; --ok: #23A35C; --warn: #D9A21B;
+  --c-anirba: #1F9D8F; --c-saiyam: #3A49D6; --c-lokesh: #8A4FD6; --c-mohit: #D9822B; --c-sharan: #2F9E5B; --c-manish: #C2477F; --pt-ink: #FFFFFF;
+  --shadow: 0 1px 2px rgba(20,22,40,.04), 0 10px 28px -14px rgba(20,22,40,.12);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1014; --surface: #171922; --surface-2: #1E212B;
+    --border: #2A2D3A; --border-strong: #3A3E4E;
+    --text: #F1F2F6; --text-muted: #A6ABB8; --text-faint: #8A90A0;
+    --accent: #8C98FF; --accent-soft: #1F2347;
+    --gold: #F0C75A; --gold-soft: #3A2F12; --gold-ink: #F0C75A; --hl: #6B5518;
+    --bad: #F26469; --ok: #3CCF7A; --warn: #F0C75A;
+    --c-anirba: #3CC4B4; --c-saiyam: #8C98FF; --c-lokesh: #B58CF2; --c-mohit: #F0A04B; --c-sharan: #3CCF7A; --c-manish: #E374A6; --pt-ink: #0F1014;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.5);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1014; --surface: #171922; --surface-2: #1E212B;
+  --border: #2A2D3A; --border-strong: #3A3E4E;
+  --text: #F1F2F6; --text-muted: #A6ABB8; --text-faint: #8A90A0;
+  --accent: #8C98FF; --accent-soft: #1F2347;
+  --gold: #F0C75A; --gold-soft: #3A2F12; --gold-ink: #F0C75A; --hl: #6B5518;
+  --bad: #F26469; --ok: #3CCF7A; --warn: #F0C75A;
+  --c-anirba: #3CC4B4; --c-saiyam: #8C98FF; --c-lokesh: #B58CF2; --c-mohit: #F0A04B; --c-sharan: #3CCF7A; --c-manish: #E374A6; --pt-ink: #0F1014;
+  --shadow: 0 1px 2px rgba(0,0,0,.3), 0 10px 28px -14px rgba(0,0,0,.5);
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+body {
+  background: var(--bg); color: var(--text);
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; font-size: 15px; line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  padding-left: max(16px, env(safe-area-inset-left, 0px));
+  padding-right: max(16px, env(safe-area-inset-right, 0px));
+  padding-block: 40px 56px;
+}
+h1, h2, h3 { font-family: 'Inter Tight', 'Inter', sans-serif; letter-spacing: -.02em; text-wrap: balance; margin: 0; }
+p { margin: 0; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--accent); outline-offset: 2px; }
+.page { max-width: 1060px; margin: 0 auto; display: flex; flex-direction: column; gap: 56px; }
+.eyebrow { font-family: 'Inter Tight', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
+h1 { font-size: clamp(36px, 6vw, 56px); font-weight: 800; letter-spacing: -.035em; line-height: 1.02; margin: 10px 0 24px; }
+h1 mark { color: inherit; background: linear-gradient(transparent 58%, var(--hl) 58% 92%, transparent 92%); padding: 0 .08em; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+.sec-title { font-family: 'Inter Tight', sans-serif; font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); padding-left: 2px; }
+section { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.sec-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; }
+.sub { font-size: 13px; color: var(--text-muted); padding-left: 2px; margin-top: -8px; }
+
+/* tiles */
+.tiles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 22px 22px 20px; box-shadow: var(--shadow); position: relative; overflow: hidden; }
+.tile::before { content: ""; position: absolute; left: 22px; top: 0; width: 34px; height: 4px; border-radius: 0 0 4px 4px; background: var(--border-strong); }
+.tile .n { font-family: 'Inter Tight', sans-serif; font-size: 40px; font-weight: 800; letter-spacing: -.04em; line-height: 1; color: var(--accent); margin-top: 6px; font-variant-numeric: tabular-nums; }
+.tile .t { font-family: 'Inter Tight', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: -.01em; line-height: 1.25; margin-top: 12px; }
+.tile .d { font-size: 13px; color: var(--text-muted); line-height: 1.45; margin-top: 6px; }
+
+/* switch */
+.seg { display: inline-flex; flex-wrap: wrap; background: var(--surface-2); border: 1px solid var(--border); border-radius: 999px; padding: 3px; gap: 2px; }
+.seg button { font: 700 13px 'Inter Tight', sans-serif; letter-spacing: -.005em; color: var(--text-muted); background: transparent; border: 0; border-radius: 999px; padding: 7px 16px; cursor: pointer; }
+.seg button[aria-pressed="true"] { background: var(--surface); color: var(--text); box-shadow: 0 1px 3px rgba(20,22,40,.14); }
+
+/* cards and rows */
+.strip { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; box-shadow: var(--shadow); padding: 6px 28px 8px; min-width: 0; }
+.row { display: grid; gap: 6px 22px; align-items: center; padding: 16px 0; border-top: 1px solid var(--border); }
+.row:first-child { border-top: 0; }
+.row.th { padding: 16px 0 8px; font-family: 'Inter Tight', sans-serif; font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); border-top: 0; }
+.pill { display: inline-block; border-radius: 999px; padding: 6px 13px; font-size: 12.5px; font-weight: 700; white-space: nowrap; line-height: 1.3; }
+.pill.ok { color: var(--ok); background: color-mix(in srgb, var(--ok) 15%, var(--surface)); }
+.pill.late { color: var(--bad); background: color-mix(in srgb, var(--bad) 16%, var(--surface)); }
+.pill.na { color: var(--text-muted); background: var(--surface-2); }
+.pill.gold { color: var(--gold-ink); background: var(--gold-soft); }
+.pill.accent { color: var(--accent); background: var(--accent-soft); }
+.pill.sm { padding: 4px 10px; font-size: 11.5px; }
+.nodata { color: var(--text-faint); font-weight: 500; }
+.num { font-variant-numeric: tabular-nums; }
+
+/* editor bars */
+.ed { border-top: 1px solid var(--border); }
+.ed:first-child { border-top: 0; }
+.ed summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 190px minmax(0, 1fr) 150px 96px; gap: 18px; align-items: center; padding: 16px 0; }
+.ed summary::-webkit-details-marker { display: none; }
+.who { display: flex; gap: 12px; align-items: center; min-width: 0; }
+.av { width: 32px; height: 32px; border-radius: 50%; color: #fff; display: grid; place-items: center; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 14px; flex: none; }
+.who b { display: block; font-family: 'Inter Tight', sans-serif; font-size: 16px; font-weight: 700; line-height: 1.2; }
+.who small { color: var(--text-faint); font-size: 12px; }
+.track { height: 10px; border-radius: 999px; background: var(--surface-2); overflow: hidden; }
+.fill { height: 100%; border-radius: 999px; background: var(--accent); min-width: 3px; }
+.val { font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 18px; text-align: right; font-variant-numeric: tabular-nums; }
+.val small { display: block; font-family: 'Inter', sans-serif; font-weight: 500; font-size: 12px; color: var(--text-faint); }
+.ed .pill { justify-self: end; }
+.ed .body { padding: 0 0 18px; display: grid; gap: 0; }
+.ed[open] summary { padding-bottom: 8px; }
+.er { display: grid; grid-template-columns: minmax(0, 2fr) 70px 90px 96px 56px 100px; gap: 4px 16px; align-items: start; padding: 11px 2px; border-top: 1px solid var(--border); font-size: 13.5px; }
+.er.th { font-family: 'Inter Tight', sans-serif; font-size: 11px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); border-top: 0; padding-block: 4px 8px; }
+.er b { font-weight: 600; line-height: 1.3; display: block; }
+.er small { display: block; color: var(--text-faint); font-size: 12px; margin-top: 2px; }
+.er .c { font-variant-numeric: tabular-nums; }
+.er .c i { display: none; font-style: normal; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-faint); font-weight: 600; }
+
+/* charts */
+.cal-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 22px; box-shadow: var(--shadow); padding: 26px; min-width: 0; }
+.chart-box { overflow-x: auto; }
+.chart { display: block; width: 100%; min-width: 960px; height: auto; font-family: 'Inter', sans-serif; }
+.chart.sc { min-width: 0; max-width: 760px; margin: 0 auto; }
+.chart .band { fill: var(--surface); }
+.chart .band.alt { fill: var(--surface-2); }
+.chart .lane { font-family: 'Inter Tight', sans-serif; font-weight: 700; font-size: 15px; fill: var(--text); letter-spacing: -.01em; }
+.chart .lanesub { font-size: 12px; fill: var(--text-faint); }
+.chart .grid { stroke: var(--border); stroke-width: 1; }
+.chart .mgrid { stroke: var(--border-strong); stroke-width: 1; }
+.chart .mlabel { font-family: 'Inter Tight', sans-serif; font-size: 11.5px; font-weight: 700; letter-spacing: .08em; fill: var(--text-faint); }
+.chart .dnum { font-family: 'Inter Tight', sans-serif; font-size: 11px; font-weight: 600; fill: var(--text-faint); }
+.chart .lbl { font-size: 11px; fill: var(--text); font-weight: 600; }
+.chart .b-work { fill: var(--accent-soft); stroke: var(--accent); stroke-width: 1.5; }
+.chart .b-rev { fill: var(--surface-2); stroke: var(--border-strong); stroke-width: 1.5; }
+.chart .b-live { fill: var(--gold-soft); stroke: var(--gold); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.chart .m-a { fill: var(--accent); }
+.chart .m-v1 { fill: var(--surface); stroke: var(--text); stroke-width: 2; }
+.chart .m-ok { fill: var(--ok); stroke: var(--surface); stroke-width: 1.5; }
+.chart .m-due { fill: var(--text); }
+.chart .today { stroke: var(--accent); stroke-width: 1.5; stroke-dasharray: 4 3; }
+.chart .todaylbl { font-size: 11px; font-weight: 700; fill: var(--accent); letter-spacing: .05em; }
+.chart .axis { stroke: var(--border-strong); stroke-width: 1.5; }
+.chart .tick { font-size: 11.5px; fill: var(--text-muted); font-variant-numeric: tabular-nums; }
+.chart .axl { font-family: 'Inter Tight', sans-serif; font-size: 11.5px; font-weight: 600; letter-spacing: .06em; fill: var(--text-faint); text-transform: uppercase; }
+.chart .ref { stroke: var(--text-faint); stroke-width: 1.5; stroke-dasharray: 5 4; fill: none; }
+.chart .reflbl { font-size: 11.5px; fill: var(--text-muted); font-weight: 500; }
+.chart .pt text { font-family: 'Inter Tight', sans-serif; font-size: 12px; font-weight: 800; fill: var(--pt-ink); text-anchor: middle; }
+.chart .refpt { fill: var(--surface); stroke: var(--text); stroke-width: 2; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 20px; margin-top: 18px; font-size: 12.5px; color: var(--text-muted); }
+.legend span { display: inline-flex; align-items: center; gap: 7px; }
+.legend i { width: 9px; height: 9px; border-radius: 50%; flex: none; }
+.legend i.ring { background: var(--surface); border: 2.5px solid var(--text); }
+.legend i.dia { border-radius: 2px; background: var(--text); transform: rotate(45deg); width: 8px; height: 8px; }
+.bx { width: 20px; height: 12px; border-radius: 4px; }
+.bx.work { background: var(--accent-soft); border: 1.5px solid var(--accent); }
+.bx.rev { background: var(--surface-2); border: 1.5px solid var(--border-strong); }
+.bx.live { background: var(--gold-soft); border: 1.5px dashed var(--gold); }
+.key { margin-top: 10px; font-size: 12px; color: var(--text-faint); }
+
+/* tables */
+.lt { grid-template-columns: 28px minmax(0, 2fr) 90px 80px 100px 100px 100px; }
+.vt { grid-template-columns: minmax(0, 2.3fr) 64px 76px 100px 104px 52px 108px; }
+.vt.grp { padding: 22px 0 8px; border-top: 1px solid var(--border); font-family: 'Inter Tight', sans-serif; }
+.vt.grp .who b { font-size: 17px; }
+.vt .nm b { display: block; font-family: 'Inter Tight', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -.01em; line-height: 1.3; }
+.vt .nm span, .lt .nm span { display: block; font-size: 12.5px; color: var(--text-faint); margin-top: 2px; }
+.vt .note { grid-column: 1 / -1; font-size: 12.5px; color: var(--text-muted); line-height: 1.45; margin-top: -2px; padding-bottom: 2px; }
+.vt + .vt:not(.grp):not(.th) { }
+.cell { font-size: 14px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.cell i { display: none; font-style: normal; font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--text-faint); font-weight: 600; margin-bottom: 3px; }
+.cell small { display: block; font-weight: 500; color: var(--text-faint); font-size: 12px; }
+.vrow { border-top: 1px solid var(--border); padding: 14px 0 12px; }
+.vrow:first-of-type { border-top: 0; }
+.vrow .row { border-top: 0; padding: 0; }
+.vrow .note { margin-top: 8px; font-size: 12.5px; color: var(--text-muted); line-height: 1.45; }
+.vrow a { text-decoration: none; }
+.vrow a:hover, .er a:hover, .ot a:hover { text-decoration: underline; }
+.ot { grid-template-columns: 110px minmax(0, 2fr) 90px 90px 100px; }
+.ot .nm b { display: block; font-family: 'Inter Tight', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -.01em; line-height: 1.3; }
+.ot .nm span { display: block; font-size: 12.5px; color: var(--text-muted); margin-top: 3px; line-height: 1.45; }
+.det summary { cursor: pointer; font-size: 13px; font-weight: 600; color: var(--text-muted); padding: 10px 0 2px; }
+.det p { font-size: 13px; color: var(--text-muted); line-height: 1.6; padding-top: 6px; }
+.how { display: grid; gap: 0; }
+.how .row { grid-template-columns: 190px minmax(0, 1fr); align-items: baseline; }
+.how b { font-family: 'Inter Tight', sans-serif; font-size: 15px; font-weight: 700; letter-spacing: -.01em; }
+.how span { color: var(--text-muted); font-size: 14px; }
+.lt .nm .mn { display: none; }
+.vt.grp > * { grid-column: 1 / -1; }
+.foot { color: var(--text-faint); font-size: 12px; text-align: center; line-height: 1.6; }
+
+
+.ctl { display: flex; flex-wrap: wrap; gap: 10px; }
+.seg button:focus-visible { outline-offset: 0; }
+#tip { position: fixed; z-index: 50; pointer-events: none; display: none; width: max-content; max-width: min(340px, calc(100vw - 24px)); background: var(--text); color: var(--bg); border-radius: 14px; padding: 14px 16px; font-size: 12.5px; line-height: 1.5; box-shadow: 0 12px 32px rgba(0,0,0,.3); }
+#tip .h { display: flex; align-items: center; gap: 8px; font-weight: 700; font-size: 12px; letter-spacing: .04em; text-transform: uppercase; opacity: .85; }
+#tip .h i { width: 10px; height: 10px; border-radius: 50%; border: 1.5px solid var(--bg); flex: none; }
+#tip .h span { font-weight: 500; opacity: .7; margin-left: auto; text-transform: none; letter-spacing: 0; }
+#tip > b { display: block; font-family: 'Inter Tight', sans-serif; font-size: 15px; font-weight: 700; line-height: 1.3; margin-top: 6px; letter-spacing: -.01em; }
+#tip .m { opacity: .8; margin-top: 3px; }
+#tip table { border-collapse: collapse; margin-top: 10px; width: 100%; font: inherit; color: inherit; font-variant-numeric: tabular-nums; }
+#tip th, #tip td { font: inherit; color: inherit; }
+#tip th { text-align: left; font-weight: 600 !important; font-size: 10.5px !important; letter-spacing: .07em; text-transform: uppercase; opacity: .6; padding: 0 10px 4px 0; }
+#tip td { padding: 3px 10px 3px 0; border-top: 1px solid color-mix(in srgb, var(--bg) 18%, transparent); }
+#tip td:first-child { font-weight: 600; }
+#tip td:last-child, #tip th:last-child { padding-right: 0; text-align: right; }
+#tip .f { margin-top: 10px; font-size: 11px; opacity: .6; line-height: 1.45; }
+.chart .we { fill: color-mix(in srgb, var(--text) 6%, transparent); }
+.chart.zoomed { min-width: 0; max-width: none; }
+.chart .m-v { fill: var(--text); }
+.chart [data-tip] { cursor: pointer; }
+.chart [data-tip]:hover .b-work { stroke-width: 2.6; }
+.chart [data-tip]:hover .b-rev, .chart [data-tip]:hover .b-live { stroke-width: 2.2; }
+.bx.we { background: color-mix(in srgb, var(--text) 8%, var(--surface)); border: 1.5px solid var(--border); }
+.chart.sc { min-width: 0; max-width: none; margin: 0; }
+.chart .pt { cursor: pointer; }
+.chart .pt:hover circle { stroke: var(--text); }
+.chart .refpt { cursor: pointer; }
+
+/* all videos */
+.vh { display: grid; grid-template-columns: minmax(0, 2.6fr) 84px 120px 130px 64px 112px 18px; gap: 18px; padding: 16px 0 10px; font-family: 'Inter Tight', sans-serif; font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
+.gh { display: flex; align-items: center; gap: 14px; padding: 40px 0 16px; border-top: 1px solid var(--border-strong); margin-top: 18px; }
+.vh + .gh { border-top: 0; margin-top: 0; padding-top: 22px; }
+.gh b { display: block; font-family: 'Inter Tight', sans-serif; font-size: 19px; font-weight: 700; letter-spacing: -.015em; }
+.gh small { display: block; font-size: 12.5px; color: var(--text-muted); margin-top: 2px; }
+.vd2 { border-top: 1px solid var(--border); }
+.vd2 summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: minmax(0, 2.6fr) 84px 120px 130px 64px 112px 18px; gap: 18px; align-items: center; padding: 24px 0; }
+.vd2 summary::-webkit-details-marker { display: none; }
+.vd2 summary:hover .nm b { text-decoration: underline; text-decoration-color: var(--border-strong); text-underline-offset: 3px; }
+.vd2 .nm b { display: block; font-family: 'Inter Tight', sans-serif; font-size: 16px; font-weight: 700; letter-spacing: -.01em; line-height: 1.3; }
+.vd2 .nm span { display: block; font-size: 13px; color: var(--text-faint); margin-top: 4px; }
+.vd2 .cell { font-size: 14.5px; }
+.vd2 .cell small { margin-top: 3px; font-size: 12.5px; }
+.chev { width: 8px; height: 8px; border-right: 2px solid var(--text-faint); border-bottom: 2px solid var(--text-faint); transform: rotate(-45deg); transition: transform .15s; justify-self: end; }
+.vd2[open] .chev { transform: rotate(45deg); }
+.vd2 .more { padding: 0 0 30px; display: grid; gap: 14px; max-width: 760px; }
+.vd2 .more p { font-size: 13.5px; color: var(--text-muted); line-height: 1.55; margin: 0; }
+.vd2 .more .dl { font-size: 13px; color: var(--text-faint); }
+.steps { display: flex; flex-wrap: wrap; gap: 8px; }
+.stp { display: inline-flex; align-items: baseline; gap: 7px; background: var(--surface-2); border-radius: 999px; padding: 6px 13px; font-size: 12.5px; font-variant-numeric: tabular-nums; }
+.stp b { font-weight: 700; }
+.stp em { font-style: normal; color: var(--text-faint); }
+.vd2 a { text-decoration: underline; text-underline-offset: 3px; }
+
+
+/* averages */
+.ae { grid-template-columns: minmax(0, 1.3fr) 80px minmax(0, 2fr) 110px 100px 70px; }
+.ae.total { border-top: 2px solid var(--border-strong); background: transparent; }
+.ae.total .who b { font-size: 16px; }
+.ae.th { grid-template-columns: minmax(0, 1.3fr) 80px minmax(0, 2fr) 110px 100px 70px; }
+.stack { display: flex; height: 14px; border-radius: 999px; overflow: hidden; background: var(--surface-2); }
+.stack i { display: block; height: 100%; }
+.s1 { background: var(--border-strong); } .s2 { background: var(--accent); } .s3 { background: var(--gold); }
+.sw { width: 12px; height: 8px; border-radius: 3px; display: inline-block; }
+.one { padding: 26px 0 28px; display: grid; gap: 26px; }
+.one-h .n { font-family: 'Inter Tight', sans-serif; font-size: 44px; font-weight: 800; letter-spacing: -.04em; line-height: 1; color: var(--accent); }
+.one-h .t { font-family: 'Inter Tight', sans-serif; font-size: 16px; font-weight: 700; margin-top: 10px; }
+.one-h .d { font-size: 13px; color: var(--text-muted); margin-top: 4px; }
+.phase { display: flex; gap: 4px; }
+.ph { min-width: 0; border-radius: 12px; padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
+.ph b { font-family: 'Inter Tight', sans-serif; font-size: 22px; font-weight: 800; letter-spacing: -.02em; font-variant-numeric: tabular-nums; }
+.ph span { font-size: 12.5px; line-height: 1.3; }
+.ph.p1 { background: var(--surface-2); border: 1.5px solid var(--border-strong); }
+.ph.p2 { background: var(--accent-soft); border: 1.5px solid var(--accent); }
+.ph.p3 { background: var(--gold-soft); border: 1.5px solid var(--gold); color: var(--gold-ink); }
+.vd { background: var(--surface); border: 1.5px solid var(--gold); border-radius: 22px; box-shadow: var(--shadow); padding: 10px 30px; }
+.vd-item { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.9fr); gap: 6px 28px; align-items: baseline; padding: 22px 0; border-top: 1px solid var(--border); }
+.vd-item:first-child { border-top: 0; }
+.vd-t { font-family: 'Inter Tight', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -.015em; line-height: 1.25; }
+.vd-d { color: var(--text-muted); font-size: 14.5px; line-height: 1.6; }
+.why { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.7fr); }
+.why b { font-family: 'Inter Tight', sans-serif; font-size: 15.5px; font-weight: 700; letter-spacing: -.01em; line-height: 1.3; }
+.why span.f { color: var(--text-muted); font-size: 14px; }
+
+
+.dn { width: 26px; height: 26px; border-radius: 50%; color: var(--pt-ink); display: inline-grid; place-items: center; font-family: 'Inter Tight', sans-serif; font-weight: 800; font-size: 13px; }
+.ep { display: inline-flex; align-items: center; gap: 8px; font-weight: 700; padding: 5px 12px 5px 10px; border-radius: 999px; background: color-mix(in srgb, var(--ec) 16%, var(--surface)); }
+.ep::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: var(--ec); }
+.mb { display: block; height: 6px; border-radius: 999px; background: var(--surface-2); margin-top: 7px; overflow: hidden; }
+.mb u { display: block; height: 100%; border-radius: 999px; }
+
+
+.track { position: relative; }
+.mk { position: absolute; top: -5px; bottom: -5px; width: 2px; margin-left: -1px; background: var(--text); opacity: .55; border-radius: 1px; }
+.edall { border-top: 2px solid var(--border-strong); }
+.edall .sum { display: grid; grid-template-columns: 190px minmax(0, 1fr) 150px 96px; gap: 18px; align-items: center; padding: 18px 0 14px; }
+.edall .pill { justify-self: end; }
+
+@media (max-width: 860px) {
+  .tiles { grid-template-columns: 1fr; }
+  .ae { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 14px; }
+  .ae.th { display: none; }
+  .ae > :first-child, .ae .cellbar { grid-column: 1 / -1; }
+  .vd { padding: 6px 20px; }
+  .vd-item { grid-template-columns: 1fr; }
+  .why { grid-template-columns: 1fr; }
+  .phase { flex-direction: column; }
+  .vh { display: none; }
+  .vd2 summary { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px 16px; padding: 22px 28px 22px 0; position: relative; }
+  .vd2 .nm { grid-column: 1 / -1; }
+  .vd2 .chev { position: absolute; right: 4px; top: 30px; }
+  .strip { padding: 4px 20px 6px; }
+  .ed summary { grid-template-columns: minmax(0, 1fr) 110px; }
+  .ed summary .track { grid-column: 1 / -1; grid-row: 2; }
+  .ed summary .pill { display: none; }
+  .edall .sum { grid-template-columns: minmax(0, 1fr) 110px; }
+  .edall .sum .track { grid-column: 1 / -1; grid-row: 2; }
+  .edall .sum .pill { display: none; }
+  .er { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 12px; padding: 14px 2px; }
+  .er.th { display: none; }
+  .er > :first-child { grid-column: 1 / -1; }
+  .er .c i { display: block; }
+  .lt { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 14px; }
+  .lt.th { display: none; }
+  .lt > :first-child { display: none; }
+  .lt .nm { grid-column: 1 / -1; }
+  .lt .nm .mn { display: inline; }
+  .vt { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 10px 14px; }
+  .vt.th { display: none; }
+  .vt .nm { grid-column: 1 / -1; }
+  .cell i { display: block; }
+  .ot { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .ot.th { display: none; }
+  .ot .nm { grid-column: 1 / -1; order: -1; }
+  .how .row { grid-template-columns: 1fr; }
+}
+@media (max-width: 680px) {
+  body { padding-block: 28px 40px; }
+  .page { gap: 44px; }
+  .cal-wrap { padding: 18px 16px; }
+}
+</style>
+
+<div class="page">
+
+  <header>
+    <p class="eyebrow">Editor workflow &middot; 17 Aug to 17 Nov 2026</p>
+    <h1><mark>How long editors take</mark></h1>
+    <div class="tiles" id="tiles"></div>
+    <p class="sub" style="margin-top:14px">A day here is a working day, Monday to Friday. The day a video is assigned is day 1. Weekends are skipped.</p>
+  </header>
+
+  <section>
+    <div class="sec-head">
+      <div class="sec-title">By editor</div>
+      <div class="seg" role="group" aria-label="Choose measure" id="seg-metric">
+        <button type="button" data-m="v1" aria-pressed="true">To first draft</button>
+        <button type="button" data-m="fin" aria-pressed="false">To final</button>
+        <button type="button" data-m="dr" aria-pressed="false">Drafts</button>
+        <button type="button" data-m="p10" aria-pressed="false">Per 10 min</button>
+      </div>
+    </div>
+    <p class="sub" id="metric-sub"></p>
+    <div class="strip" id="eds"></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div class="sec-title">Every video on a timeline</div>
+      <div class="ctl">
+        <div class="seg" role="group" aria-label="Zoom" id="seg-zoom">
+          <button type="button" data-z="0" aria-pressed="true">Fit</button>
+          <button type="button" data-z="1" aria-pressed="false">Zoom in</button>
+          <button type="button" data-z="2" aria-pressed="false">Zoom more</button>
+        </div>
+        <div class="seg" role="group" aria-label="Editor" id="seg-ed">
+          <button type="button" data-e="All" aria-pressed="true">All</button>
+          <button type="button" data-e="Anirba" aria-pressed="false">Anirba</button>
+          <button type="button" data-e="Saiyam" aria-pressed="false">Saiyam</button>
+          <button type="button" data-e="Lokesh" aria-pressed="false">Lokesh</button>
+          <button type="button" data-e="Mohit" aria-pressed="false">Mohit</button>
+          <button type="button" data-e="Sharan" aria-pressed="false">Sharan</button>
+          <button type="button" data-e="Manish" aria-pressed="false">Manish</button>
+        </div>
+      </div>
+    </div>
+    <p class="sub">Hover or tap a bar to see the editor, every draft and how many working days each step took. Weekends are shaded.</p>
+    <div class="cal-wrap">
+      <div class="chart-box" id="tlbox"></div>
+      <div class="legend">
+        <span><i class="bx work"></i>Assigned to first draft</span>
+        <span><i class="bx rev"></i>First draft to final</span>
+        <span><i class="bx live"></i>Still open</span>
+        <span><i style="background:var(--accent)"></i>A-cut</span>
+        <span><i class="ring"></i>First draft</span>
+        <span><i style="background:var(--ok)"></i>Final</span>
+        <span><i style="width:3px;height:11px;border-radius:1px;background:var(--text)"></i>Later drafts</span>
+        <span><i class="dia"></i>Stated due date</span>
+        <span><i class="bx we"></i>Weekend</span>
+      </div>
+      <div class="key">Zoom in and scroll sideways to read long titles.</div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-title">Length against working days to final</div>
+    <p class="sub">Each dot is one finished video, coloured by editor. Hover or tap a dot to see the video, the editor and every step.</p>
+    <div class="cal-wrap">
+      <div class="chart-box"><div id="scbox"></div></div>
+      <div class="legend">
+        <span><i style="background:var(--c-anirba)"></i>Anirba</span>
+        <span><i style="background:var(--c-saiyam)"></i>Saiyam</span>
+        <span><i style="background:var(--c-lokesh)"></i>Lokesh</span>
+        <span><i style="background:var(--c-mohit)"></i>Mohit</span>
+        <span><i style="background:var(--c-sharan)"></i>Sharan</span>
+        <span><i style="background:var(--c-manish)"></i>Manish</span>
+        <span><i class="dia"></i>Stated reference</span>
+      </div>
+    </div>
+    <div class="strip" id="lens"></div>
+    <details class="det" id="nolen"></details>
+  </section>
+
+  <section>
+    <div class="sec-title">Averages at a glance</div>
+    <p class="sub">The same numbers three ways: per editor, every finished video, and one video.</p>
+    <div class="strip" id="avg-ed"></div>
+    <div class="legend" id="avg-key" style="margin-top:-4px"></div>
+    <div class="cal-wrap">
+      <div class="sec-title" style="padding:0 0 10px">Every finished video, one dot each</div>
+      <div class="chart-box"><div id="stripbox"></div></div>
+      <div class="key">Dots are coloured by editor. The tinted line in each lane is that editor’s average. Hover a dot for the video and every step.</div>
+    </div>
+    <div class="strip" id="avg-one"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">All videos</div>
+    <div class="strip" id="all"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">Other work, not in the averages</div>
+    <div class="strip" id="oth"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">My read, not data</div>
+    <p class="sub">This part is Claude’s read of the numbers above. The rest of the page stays data only.</p>
+    <div class="vd" id="read"></div>
+    <div class="strip" id="gaps"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">How this was counted</div>
+    <div class="strip how">
+      <div class="row"><b>Window</b><span>17 Aug to 17 Nov 2026, #internal channel threads. Work before 17 Aug is not in here. Mohit started 17 Aug, Sharan 14 Sep, Manish 26 Oct.</span></div>
+      <div class="row"><b>Assigned</b><span>The day of the assignment message. Where the thread says the video was queued behind another one, or the brief set an editing window, the day work could start is used instead. Each video says so in its note.</span></div>
+      <div class="row"><b>First draft</b><span>The first full edit posted for review. A-cuts, A-rolls and rough cuts do not count. For Saiyam it is the custom graphics version.</span></div>
+      <div class="row"><b>Final</b><span>The day Sanket or Najma approved the last draft ("GTG" or equal). Changes made after approval do not move it. Where the thread stops at the last draft and the video is confirmed uploaded, the last draft date is used.</span></div>
+      <div class="row"><b>Days</b><span>Working days, Monday to Friday, counting the day it was assigned as day 1. Monday to the next Monday is 6. Saturdays and Sundays are skipped, public holidays are not. Waiting on client assets, reshoots and review time are inside these numbers.</span></div>
+      <div class="row"><b>Drafts</b><span>Versions posted from the first draft up to the one approved. A-cuts are not counted.</span></div>
+      <div class="row"><b>Length</b><span>Only where someone wrote it in Slack: the editor, Najma, Gio or the brief. The source is in each note. Everything else says no data.</span></div>
+      <div class="row"><b>Due dates</b><span>Only dates stated in the thread. A red pill counts the working days after the due date up to delivery. Briefs do not always say whether a date is for the first draft or the final, so one pill reads "unclear".</span></div>
+      <div class="row"><b>Left out</b><span>Shorts, testimonials, social clips, promos, guides and videos picked up mid-edit are listed under other work. Anirba and Lokesh split one video, so it is shown but not averaged. Open videos count toward first-draft averages once a first draft exists.</span></div>
+      <div class="row"><b>Sources</b><span>#internal-* video threads, #daily-update, one #trial-editor-lokesh message, one #core-team-hq message, and the Jeffrey Allen masterclass thread for the Sanket reference.</span></div>
+    </div>
+  </section>
+
+  <div id="tip" role="tooltip"></div>
+  <p class="foot">Pulled from Slack on 17 Nov 2026. Dates in IST. Working days are Monday to Friday.</p>
+</div>
+
+<script>
+const LINKS = {"M1": "https://bettervideos.slack.com/archives/C0A6Y5R0A8L/p1786956408850789?thread_ts=1786956408.850789&cid=C0A6Y5R0A8L", "M2": "https://bettervideos.slack.com/archives/C0A6Y5R0A8L/p1790590742951239?thread_ts=1790590742.951239&cid=C0A6Y5R0A8L", "M3": "https://bettervideos.slack.com/archives/C0A6Y5R0A8L/p1792574457639969?thread_ts=1792574457.639969&cid=C0A6Y5R0A8L", "M4": "https://bettervideos.slack.com/archives/C0A6Y5R0A8L/p1794312781752889?thread_ts=1794312781.752889&cid=C0A6Y5R0A8L", "M5": "https://bettervideos.slack.com/archives/C0A6Y5R0A8L/p1794835645513279?thread_ts=1794835645.513279&cid=C0A6Y5R0A8L", "MP": "https://bettervideos.slack.com/archives/C0BT7H7PXDH/p1793201696330799?thread_ts=1793201696.330799&cid=C0BT7H7PXDH", "A1": "https://bettervideos.slack.com/archives/C0A6Y5R0A8L/p1786972378514539?thread_ts=1786972378.514539&cid=C0A6Y5R0A8L", "A2": "https://bettervideos.slack.com/archives/C0A6Y5R0A8L/p1787738271879369?thread_ts=1787738271.879369&cid=C0A6Y5R0A8L", "A3": "https://bettervideos.slack.com/archives/C0A6Y5R0A8L/p1788862972806059?thread_ts=1788862972.806059&cid=C0A6Y5R0A8L", "A4": "https://bettervideos.slack.com/archives/C0A6Y5R0A8L/p1790942782763659?thread_ts=1790942782.763659&cid=C0A6Y5R0A8L", "A5": "https://bettervideos.slack.com/archives/C0BT7H7PXDH/p1793038508651639?thread_ts=1793038508.651639&cid=C0BT7H7PXDH", "A6": "https://bettervideos.slack.com/archives/C0BT7H7PXDH/p1793991067965999?thread_ts=1793991067.965999&cid=C0BT7H7PXDH", "S1": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1786996125006159?thread_ts=1786996125.006159&cid=C0B2XAU1NMV", "S2": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1787681088897289?thread_ts=1787681088.897289&cid=C0B2XAU1NMV", "S3": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1788280939269999?thread_ts=1788280939.269999&cid=C0B2XAU1NMV", "S4": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1788740802327469?thread_ts=1788740802.327469&cid=C0B2XAU1NMV", "S5": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1790951134488989?thread_ts=1790951134.488989&cid=C0B2XAU1NMV", "S6": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1790951169038929?thread_ts=1790951169.038929&cid=C0B2XAU1NMV", "S7": "https://bettervideos.slack.com/archives/C0BT7H7PXDH/p1793037371646369?thread_ts=1793037371.646369&cid=C0BT7H7PXDH", "S8": "https://bettervideos.slack.com/archives/C0C0EKEDDND/p1794588781849879?thread_ts=1794588781.849879&cid=C0C0EKEDDND", "SG": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1790071353999189?thread_ts=1790071353.999189&cid=C0B2XAU1NMV", "L3": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1788740826277939?thread_ts=1788740826.277939&cid=C0B2XAU1NMV", "L4": "https://bettervideos.slack.com/archives/C0A6Y5R0A8L/p1790942561822579?thread_ts=1790942561.822579&cid=C0A6Y5R0A8L", "L5": "https://bettervideos.slack.com/archives/C0973LU0681/p1792406312851739?thread_ts=1792406312.851739&cid=C0973LU0681", "L6": "https://bettervideos.slack.com/archives/C0973LU0681/p1792662563595169?thread_ts=1792662563.595169&cid=C0973LU0681", "L7": "https://bettervideos.slack.com/archives/C0BT7H7PXDH/p1794391634785829?thread_ts=1794391634.785829&cid=C0BT7H7PXDH", "L1": "https://bettervideos.slack.com/archives/C07RYMWNKR6/p1787742681575819?thread_ts=1787742681.575819&cid=C07RYMWNKR6", "LT": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1788448025495289?thread_ts=1788448025.495289&cid=C0B2XAU1NMV", "LS": "https://bettervideos.slack.com/archives/C0ARPRE3ARZ/p1790607495760999?thread_ts=1790607495.760999&cid=C0ARPRE3ARZ", "LC": "https://bettervideos.slack.com/archives/C0BT7H7PXDH/p1794055144052259?thread_ts=1794055144.052259&cid=C0BT7H7PXDH", "H1": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1788740846080369?thread_ts=1788740846.080369&cid=C0B2XAU1NMV", "H2": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1788740865655499?thread_ts=1788740865.655499&cid=C0B2XAU1NMV", "H3": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1790951154698949?thread_ts=1790951154.698949&cid=C0B2XAU1NMV", "H4": "https://bettervideos.slack.com/archives/C0C0EKEDDND/p1792670600377809?thread_ts=1792670600.377809&cid=C0C0EKEDDND", "H5": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1793209705891309?thread_ts=1793209705.891309&cid=C0B2XAU1NMV", "H6": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1793829431475019?thread_ts=1793829431.475019&cid=C0B2XAU1NMV", "H7": "https://bettervideos.slack.com/archives/C0B2XAU1NMV/p1794488154382319?thread_ts=1794488154.382319&cid=C0B2XAU1NMV", "HP": "https://bettervideos.slack.com/archives/C0BT7H7PXDH/p1794325669580729?thread_ts=1794325669.580729&cid=C0BT7H7PXDH", "HS": "https://bettervideos.slack.com/archives/C0ARPRE3ARZ/p1790604758411859?thread_ts=1790604758.411859&cid=C0ARPRE3ARZ", "N1": "https://bettervideos.slack.com/archives/C0C0EKEDDND/p1793026204683229?thread_ts=1793026204.683229&cid=C0C0EKEDDND", "N2": "https://bettervideos.slack.com/archives/C0C0EKEDDND/p1793829138484389?thread_ts=1793829138.484389&cid=C0C0EKEDDND", "N3": "https://bettervideos.slack.com/archives/C0C0EKEDDND/p1794835026290089?thread_ts=1794835026.290089&cid=C0C0EKEDDND"};
+const TODAY = '2026-11-17';
+const EDITORS = [
+  {id:'Anirba', cls:'anirba', role:'Since before Aug'},
+  {id:'Saiyam', cls:'saiyam', role:'Since before Aug'},
+  {id:'Lokesh', cls:'lokesh', role:'Since before Aug'},
+  {id:'Mohit',  cls:'mohit',  role:'Started 17 Aug'},
+  {id:'Sharan', cls:'sharan', role:'Started 14 Sep'},
+  {id:'Manish', cls:'manish', role:'Started 26 Oct'}
+];
+/* e editor, t title, sh short label, c client, k link key, len minutes (null = no data), lenNote, s start, a A-cut, v1 first draft, fin final,
+   dr drafts, due, dk due kind (final|v1|unclear), dt due text, st status (done|review|prog), split excluded from averages, n note */
+const V = [
+ {e:'Mohit',t:'Jim Kwik masterclass',sh:'Jim Kwik masterclass',c:'Vishen',k:'M1',len:60,lenNote:'brief: 60-minute videos',s:'2026-08-17',a:'2026-08-21',v1:'2026-09-05',fin:'2026-09-11',dr:3,due:'2026-09-10',dk:'final',st:'done',
+  n:'Two closing versions. Asset list sent Aug 21, assets arrived Aug 28. First draft asked for Sep 2. V1 export ran overnight. Client signed off Sep 15, stripped-back cut followed Sep 17.'},
+ {e:'Mohit',t:'Gut Health Talk, Nora x Vishen',sh:'Gut Health Talk',c:'Vishen',k:'M2',len:null,s:'2026-09-28',a:'2026-09-30',v1:'2026-10-06',fin:'2026-10-12',dr:4,due:'2026-10-09',dk:'final',st:'done',
+  n:'Client request, different format. Six assets asked for Sep 30, arrived Oct 6. Najma set Oct 9 on Oct 6. Sanket on Oct 6: V1 reads as a polished A-cut.'},
+ {e:'Mohit',t:'Mastering Your State of Mind, Silva Method',sh:'Silva Method',c:'Vishen',k:'M3',len:null,s:'2026-10-21',a:'2026-10-22',v1:'2026-10-27',fin:'2026-10-30',dr:2,st:'done',
+  n:'Asset list sent Oct 22, images arrived Oct 30. Najma approved V2 on Oct 30. Sanket confirmed it is good to go.'},
+ {e:'Mohit',t:'10 Micro Habits to Be Unrecognizable in 2027',sh:'10 Micro Habits',c:'Vishen',k:'M4',len:null,s:'2026-11-10',a:'2026-11-11',v1:'2026-11-16',fin:null,dr:1,due:'2026-11-16',dk:'v1',st:'review',
+  n:'Sanket on Nov 17: edited to about the 6-minute mark, rest is placeholder. Assets asked for Nov 16.'},
+ {e:'Mohit',t:'The Forgiveness Protocol',sh:'Forgiveness Protocol',c:'Vishen',k:'M5',len:20,lenNote:'target, set by Najma',lenTarget:true,s:'2026-11-16',a:null,v1:null,fin:null,dr:0,st:'prog',
+  n:'Najma: keep it around 20 minutes. Assigned Nov 16.'},
+
+ {e:'Anirba',t:'The Product Step Ladder That Sold $500 Million',sh:'Product Step Ladder',c:'Vishen',k:'A1',len:null,s:'2026-08-17',a:'2026-08-18',v1:'2026-08-25',fin:'2026-08-28',dr:3,due:'2026-08-23',dk:'final',dt:'Publish Sun Aug 23',st:'done',
+  n:'Called a shorter one. Extra material asked for Aug 18, client could not supply it by Aug 28. V1 went up without it.'},
+ {e:'Anirba',t:'The $0 MBA: 7 Lessons That Built a $140M Company',sh:'The $0 MBA (split)',c:'Vishen',k:'A2',len:null,s:'2026-08-26',a:'2026-08-29',v1:'2026-09-03',fin:'2026-09-05',dr:2,due:'2026-09-02',dk:'final',st:'done',split:true,
+  n:'Anirba cut the first half, Lokesh the second. Half-drafts Sep 3, merged cut Sep 5. Not averaged.'},
+ {e:'Anirba',t:'Desire, Belief, Expectancy: 3 Keys to Manifesting',sh:'3 Keys to Manifesting',c:'Vishen',k:'A3',len:null,s:'2026-09-08',a:'2026-09-08',v1:'2026-09-16',fin:'2026-09-18',dr:3,due:'2026-09-16',dk:'unclear',dt:'Sep 16',st:'done',
+  n:'Script arrived Sep 11. The brief says "due 16th" without saying V1 or final.'},
+ {e:'Anirba',t:'5 Levels of Marketing',sh:'5 Levels of Marketing',c:'Vishen',k:'A4',len:null,s:'2026-10-02',a:'2026-10-05',v1:'2026-10-12',fin:'2026-10-14',dr:2,due:'2026-10-09',dk:'final',dt:'Fri Oct 9',st:'done',
+  n:'Anirba said the edit was done Oct 9 and held for client screenshots. V1 posted Oct 12. V3 with the client recording Oct 23, after approval.'},
+ {e:'Anirba',t:'If You Don’t Understand Marketing, You Don’t Understand Business',sh:'Understand Marketing',c:'Nigel',k:'A5',len:null,s:'2026-10-26',a:'2026-10-28',v1:'2026-11-05',fin:'2026-11-07',dr:3,st:'done',
+  n:'First Nigel video for Anirba. 230 GB downloaded by mistake on Oct 27. Final render ran 6 to 7 hours overnight.'},
+ {e:'Anirba',t:'Every Level of Business Growth Explained (£0 to 1M)',sh:'Every Level of Growth',c:'Nigel',k:'A6',len:null,s:'2026-11-07',a:'2026-11-10',v1:'2026-11-14',fin:'2026-11-15',dr:2,due:'2026-11-14',dk:'v1',dt:'Sat Nov 14',st:'done',
+  n:'Footage and Notion brief did not match on Nov 9. Najma allowed Saturday delivery on Nov 10. Render ran about 10 hours. Confirmed uploaded. Final date is the last draft (V2, Nov 15), the approval date is not in the thread.'},
+
+ {e:'Saiyam',t:'$3M vs $2M in Retirement: Here’s What Changes',sh:'$3M vs $2M',c:'James Conole',k:'S1',len:null,s:'2026-08-18',a:'2026-08-18',v1:'2026-08-24',fin:'2026-08-26',dr:2,st:'done',n:'A-cut posted the same day.'},
+ {e:'Saiyam',t:'10 Really Good Reasons to File for Social Security at Age 62',sh:'Social Security at 62',c:'James Conole',k:'S2',len:null,s:'2026-08-25',a:'2026-08-25',v1:'2026-08-31',fin:'2026-09-02',dr:3,due:'2026-09-01',dk:'final',st:'done',n:'Final due Sep 1. A-cut posted three minutes after the assignment.'},
+ {e:'Saiyam',t:'How I’d Retire in 5 Years Starting With $1M',sh:'Retire in 5 Years',c:'James Conole',k:'S3',len:null,s:'2026-09-01',a:'2026-09-02',v1:'2026-09-07',fin:'2026-09-09',dr:2,st:'done',n:''},
+ {e:'Saiyam',t:'What NOBODY Tells $2M+ Retirees About Their First 10 Years',sh:'What NOBODY Tells',c:'James Conole',k:'S4',len:null,s:'2026-09-07',a:'2026-09-07',v1:'2026-09-15',fin:'2026-09-18',dr:3,st:'done',n:'First draft held for background music: Suno dropped, Magnific used on Sep 16.'},
+ {e:'Saiyam',t:'15 Years of Advising $2M+ Retirees in 18 Minutes',sh:'15 Years in 18 Minutes',c:'James Conole',k:'S5',len:18,lenNote:'in the title',s:'2026-10-02',a:'2026-10-05',v1:'2026-10-08',fin:'2026-10-09',dr:2,st:'done',n:'Gio’s QR code comments on V1 fixed in V2.'},
+ {e:'Saiyam',t:'Retire NOW If You Answer "YES" to All 5 Questions',sh:'Retire NOW',c:'James Conole',k:'S6',len:null,s:'2026-10-09',a:'2026-10-09',v1:'2026-10-15',fin:'2026-10-16',dr:2,st:'done',n:'Posted in an Oct 2 batch. Saiyam started it Oct 9 and said he had room.'},
+ {e:'Saiyam',t:'I Grew 16 Small Businesses to £1M. Here’s What Works',sh:'16 Small Businesses',c:'Nigel',k:'S7',len:40,lenNote:'Saiyam, #daily-update Oct 29. A-cut was about 48 min',s:'2026-10-26',a:'2026-10-27',v1:'2026-11-05',fin:'2026-11-06',dr:3,due:'2026-11-06',dk:'final',st:'done',n:'First Nigel video, new CIK. V1 render took 8 hours. Saiyam worked the weekend of Oct 31. Intro stinger sound design on Nov 5 to 6.'},
+ {e:'Saiyam',t:'If You’re 55, This Is The Plan I’d Use To Retire By 60',sh:'If You’re 55',c:'Ari',k:'S8',len:null,s:'2026-11-13',a:'2026-11-16',v1:null,fin:null,dr:0,due:'2026-11-24',dk:'final',st:'prog',n:'Deadline Nov 20, moved to Nov 24 on Nov 16 because of planned leave Nov 19 to 20.'},
+
+ {e:'Lokesh',t:'10 Things You Need To Know Before Retiring Early',sh:'10 Things, Retiring Early',c:'James Conole',k:'L3',len:null,s:'2026-09-14',a:'2026-09-14',v1:'2026-09-19',fin:'2026-09-25',dr:3,due:'2026-09-24',dk:'final',dt:'Sign-off wanted Sep 24',st:'done',n:'First assigned to Saiyam Sep 7. Saiyam’s A-cut was handed over Sep 14. Video had 9 points, client confirmed 9 on Sep 24.'},
+ {e:'Lokesh',t:'5 Stages of Becoming the Go-to Expert In Your Niche',sh:'5 Stages',c:'Vishen',k:'L4',len:25,lenMin:true,lenNote:'Lokesh, Oct 6: "over 25 mins"',s:'2026-10-02',a:'2026-10-05',v1:'2026-10-11',fin:'2026-10-11',dr:2,due:'2026-10-09',dk:'final',dt:'Fri Oct 9',st:'done',n:'Asked for an extra day on Oct 6, none available. First draft posted Oct 11, 01:07 IST, final the same afternoon.'},
+ {e:'Lokesh',t:'If You Don’t Understand Money (Microeconomics), You Don’t Understand Business',sh:'Understand Money',c:'Daniel Priestley',k:'L5',len:30,lenMin:true,lenNote:'Lokesh, Oct 20: "over 30 minutes"',s:'2026-10-19',a:'2026-10-20',v1:'2026-10-27',fin:'2026-10-30',dr:4,st:'done',n:'Two-day extension asked Oct 20 and agreed Oct 22. New date is not in the thread. 4K export was slow. Power cut Oct 28.'},
+ {e:'Lokesh',t:'Unfortunately, Growing a $1M Business Is Really This Simple',sh:'Growing a $1M Business',c:'Daniel Priestley',k:'L6',len:28,lenNote:'Lokesh, Nov 2',s:'2026-10-28',a:'2026-11-02',v1:'2026-11-05',fin:'2026-11-07',dr:4,due:'2026-11-06',dk:'final',st:'done',n:'Extension asked Nov 2, declined (publish Nov 7). On approved leave Nov 6 to 7. Two spelling fixes after Najma’s review on Nov 7.'},
+ {e:'Lokesh',t:'If You Only Watch One Video About Sales Systems, Make It This One',sh:'Sales Systems',c:'Nigel',k:'L7',len:28,lenNote:'target 25 to 30 min, set by Saf',lenTarget:true,s:'2026-11-11',a:'2026-11-12',v1:null,fin:null,dr:0,due:'2026-11-18',dk:'v1',dt:'V1 Nov 18, final Nov 19',st:'prog',n:'Hook posted Nov 14. First Nigel video for Lokesh. Sanket asked for a firm V1 time on Nov 17.'},
+
+ {e:'Sharan',t:'When Waiting Until 65 To Retire Becomes a Huge Mistake',sh:'Waiting Until 65',c:'James Conole',k:'H1',len:null,s:'2026-09-14',a:'2026-09-14',v1:'2026-09-21',fin:'2026-09-25',dr:5,due:'2026-09-18',dk:'v1',dt:'Window Mon Sep 14 to Fri Sep 18',st:'done',n:'First video. Assigned Fri Sep 11, editing window started Mon Sep 14.'},
+ {e:'Sharan',t:'My Honest Advice To Anyone Retiring With $2M+',sh:'Honest Advice, $2M+',c:'James Conole',k:'H2',len:null,s:'2026-10-14',a:'2026-10-14',v1:'2026-10-20',fin:'2026-10-23',dr:3,st:'done',n:'Thread opened Sep 7. Footage was not filmed until Oct 14, which is the start used.'},
+ {e:'Sharan',t:'Once You Understand This, You’ll Stop Working Past 55',sh:'Stop Working Past 55',c:'James Conole',k:'H3',len:null,s:'2026-10-02',a:'2026-10-05',v1:'2026-10-08',fin:'2026-10-13',dr:4,st:'done',n:'Posted in an Oct 2 batch, acknowledged Oct 5. QR code instructions added Oct 6.'},
+ {e:'Sharan',t:'Once You Learn This, Retiring ASAP Becomes Embarrassingly Simple',sh:'Retiring ASAP',c:'Ari',k:'H4',len:null,s:'2026-10-22',a:'2026-10-23',v1:'2026-10-27',fin:'2026-11-05',dr:4,st:'done',n:'First Ari video. Hook comments from Gio and Saf ran Oct 28 to Nov 2. Sanket confirmed GTG to Gio on Nov 5.'},
+ {e:'Sharan',t:'You’ll Never Run Out Of Money in Retirement',sh:'Never Run Out of Money',c:'James Conole',k:'H5',len:null,s:'2026-10-28',a:'2026-10-29',v1:'2026-11-03',fin:'2026-11-06',dr:4,st:'done',n:'One AI B-roll swapped on Nov 6 after GTG.'},
+ {e:'Sharan',t:'5 Signs You Should Retire Earlier Than You Think',sh:'5 Signs',c:'James Conole',k:'H6',len:null,s:'2026-11-05',a:'2026-11-05',v1:'2026-11-10',fin:'2026-11-12',dr:2,st:'done',n:'V2 posted Nov 12 after Gio asked for a weekend publish. Confirmed uploaded. Final date is the last draft (V2, Nov 12), the approval date is not in the thread.'},
+ {e:'Sharan',t:'How the Top 1% Keep Their Wealth (Buy, Borrow, Die, Upgraded)',sh:'Top 1%',c:'James Conole',k:'H7',len:null,s:'2026-11-12',a:'2026-11-13',v1:null,fin:null,dr:0,due:'2026-11-18',dk:'v1',dt:'Review by Nov 18 night',st:'prog',n:'Daily update Nov 17: aiming for 70 percent done that day.'},
+
+ {e:'Manish',t:'I Am (Politely) Begging You To Retire Before It’s Too Late',sh:'Politely Begging You',c:'Ari',k:'N1',len:24,lenNote:'Manish, #daily-update Nov 2',s:'2026-10-26',a:'2026-10-27',v1:'2026-11-05',fin:'2026-11-11',dr:4,st:'done',n:'First video, first week. First cut came to 7 minutes, Ari refilmed, new footage Oct 29. Diwali week. QR code version V5 on Nov 12 after approval.'},
+ {e:'Manish',t:'How Many Retirees Actually Have $2 Million?',sh:'Retirees With $2M',c:'Ari',k:'N2',len:null,s:'2026-11-09',a:'2026-11-09',v1:'2026-11-14',fin:null,dr:2,st:'review',n:'Assigned Nov 5 behind the previous video, started Nov 9. Hook 2 version requested Nov 13. V2 posted Nov 17, Sanket: almost GTG.'},
+ {e:'Manish',t:'You’ve Been Lied To About Retirement Healthcare',sh:'Retirement Healthcare',c:'Ari',k:'N3',len:null,s:'2026-11-16',a:null,v1:null,fin:null,dr:0,st:'prog',n:'Assigned Nov 16.'}
+];
+/* other work: not averaged */
+const O = [
+ {e:'Mohit',t:'Nigel channel promo',k:'MP',len:2,lenNote:'Sanket, Nov 10: about 2 minutes',s:'2026-10-28',a:'2026-10-30',v1:'2026-11-03',end:'2026-11-10',fin:null,dr:7,due:'2026-10-30',g:1,st:'repl',sh:'Nigel promo (~2 min)',
+  n:'Due Fri Oct 30. Seven versions by Nov 10 (file name said V7). Re-edit given to a new editor on Nov 10.'},
+ {e:'Sharan',t:'Nigel channel promo, re-edit',k:'HP',len:2,lenNote:'same promo',s:'2026-11-10',a:null,v1:'2026-11-11',end:'2026-11-12',fin:'2026-11-12',dr:2,g:1,st:'done',sh:'Nigel promo re-edit',
+  n:'Assigned Nov 10, first draft Nov 11, V3 Nov 12. Confirmed uploaded. Final date is the last draft, the approval date is not in the thread.'},
+ {e:'Lokesh',t:'James Conole testimonial',k:'LT',s:'2026-09-03',v1:'2026-09-04',end:'2026-09-10',fin:'2026-09-10',dr:3,n:'Simple edit. First draft in a day. Captions redone to the new SOP Sep 8 to 9, Sanket approved Sep 10, typo fixes asked Sep 11.'},
+ {e:'Lokesh',t:'Ryan Deiss, You Don’t Want a High-Performance Team',k:'L1',s:'2026-08-26',v1:null,end:'2026-08-28',fin:null,dr:null,n:'Picked up mid-edit on Aug 26. V2 Aug 27, V3 Aug 28. No assignment or V1 date in the window.'},
+ {e:'Lokesh',t:'Nigel social clips, videos 1 and 2',k:'LC',s:'2026-11-07',v1:'2026-11-11',end:'2026-11-11',fin:'2026-11-11',dr:null,n:'Four clips with animations, sent to the client Nov 11 at about 02:00 IST.'},
+ {e:'Lokesh',t:'Shorts, By The Balcony',k:'LS',s:'2026-09-28',v1:'2026-09-29',end:'2026-10-14',fin:null,dr:null,n:'Four reels. First drafts Sep 29 to Oct 1, changes picked up Oct 13 to 14.'},
+ {e:'Sharan',t:'Shorts, By The Balcony',k:'HS',s:'2026-09-28',v1:'2026-09-29',end:'2026-10-14',fin:null,dr:null,n:'Four reels. First drafts Sep 29 to Sep 30, changes picked up Oct 13 to 14.'},
+ {e:'Saiyam',t:'Guide to realistic AI B-rolls',k:'SG',s:'2026-09-22',v1:'2026-09-24',end:'2026-09-25',fin:'2026-09-25',dr:null,n:'Loom guide plus prompt doc. Marked complete Sep 25.'},
+ {e:'Anirba',t:'Daniel Priestley, Growing a $1M Business',k:null,s:'2026-10-22',v1:null,end:'2026-10-22',fin:null,dr:null,n:'Assigned and put on hold the same day for Nigel. Reassigned to Lokesh Oct 28.'}
+];
+
+/* versions per video: [label, date]. Assigned and Final are added from the record. */
+const VS = {
+ M1:[['A-cut','2026-08-21'],['V1','2026-09-05'],['V2','2026-09-09'],['V3','2026-09-10']],
+ M2:[['A-cut','2026-09-30'],['V1','2026-10-06'],['V2','2026-10-09'],['V3','2026-10-10'],['V4','2026-10-11']],
+ M3:[['A-cut','2026-10-22'],['V1','2026-10-27'],['V2','2026-10-30']],
+ M4:[['A-cut','2026-11-11'],['V1','2026-11-16']],
+ M5:[],
+ A1:[['A-cut','2026-08-18'],['V1','2026-08-25'],['V2','2026-08-27'],['V3','2026-08-28']],
+ A2:[['A-cut','2026-08-29'],['V1 (first half)','2026-09-03'],['V2 (merged)','2026-09-05']],
+ A3:[['A-cut','2026-09-08'],['V1','2026-09-16'],['V2','2026-09-18'],['V3','2026-09-18']],
+ A4:[['A-cut','2026-10-05'],['V1','2026-10-12'],['V2','2026-10-14']],
+ A5:[['A-cut','2026-10-28'],['V1','2026-11-05'],['V2','2026-11-07'],['V3','2026-11-07']],
+ A6:[['A-cut','2026-11-10'],['V1','2026-11-14'],['V2','2026-11-15']],
+ S1:[['A-cut','2026-08-18'],['V1','2026-08-24'],['V2','2026-08-25']],
+ S2:[['A-cut','2026-08-25'],['V1','2026-08-31'],['V2','2026-09-01'],['V3','2026-09-02']],
+ S3:[['A-cut','2026-09-02'],['V1','2026-09-07'],['V2','2026-09-08']],
+ S4:[['A-cut','2026-09-07'],['V1','2026-09-15'],['V2','2026-09-16'],['V3','2026-09-17']],
+ S5:[['A-cut','2026-10-05'],['V1','2026-10-08'],['V2','2026-10-09']],
+ S6:[['A-cut','2026-10-09'],['V1','2026-10-15'],['V2','2026-10-16']],
+ S7:[['A-cut','2026-10-27'],['V1','2026-11-05'],['V2','2026-11-06'],['V3','2026-11-06']],
+ S8:[['A-cut','2026-11-16']],
+ L3:[['A-cut','2026-09-14'],['V1','2026-09-19'],['V2','2026-09-24'],['V3','2026-09-25']],
+ L4:[['A-cut','2026-10-05'],['V1','2026-10-11'],['V2','2026-10-11']],
+ L5:[['A-cut','2026-10-20'],['V1','2026-10-27'],['V2','2026-10-29'],['V3','2026-10-29'],['V4','2026-10-30']],
+ L6:[['A-cut','2026-11-02'],['V1','2026-11-05'],['V2','2026-11-06'],['V3','2026-11-07'],['V4','2026-11-07']],
+ L7:[['A-cut','2026-11-12']],
+ H1:[['A-cut','2026-09-14'],['V1','2026-09-21'],['V2','2026-09-22'],['V3','2026-09-23'],['V4','2026-09-23'],['V5','2026-09-24']],
+ H2:[['A-cut','2026-10-14'],['V1','2026-10-20'],['V2','2026-10-21'],['V3','2026-10-22']],
+ H3:[['A-cut','2026-10-05'],['V1','2026-10-08'],['V2','2026-10-10'],['V3','2026-10-12'],['V4','2026-10-12']],
+ H4:[['A-cut','2026-10-23'],['V1','2026-10-27'],['V2','2026-10-28'],['V3','2026-10-29'],['V4','2026-11-02']],
+ H5:[['A-cut','2026-10-29'],['V1','2026-11-03'],['V2','2026-11-04'],['V3','2026-11-05'],['V4','2026-11-06']],
+ H6:[['A-cut','2026-11-05'],['V1','2026-11-10'],['V2','2026-11-12']],
+ H7:[['A-cut','2026-11-13']],
+ N1:[['A-cut','2026-10-27'],['A-cut V2 (new footage)','2026-10-29'],['V1','2026-11-05'],['V2','2026-11-07'],['V3','2026-11-10'],['V4','2026-11-10']],
+ N2:[['A-cut','2026-11-09'],['V1','2026-11-14'],['V2','2026-11-17']],
+ N3:[],
+ MP:[['A-cut','2026-10-30'],['First full promo','2026-11-03'],['Latest version (V7)','2026-11-10']],
+ HP:[['First draft','2026-11-11'],['V3','2026-11-12']]
+};
+
+/* ---------- helpers ---------- */
+const MS = 864e5;
+const U = s => { const [y, m, d] = s.split('-').map(Number); return Date.UTC(y, m - 1, d); };
+const MON = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const fd = s => { if (!s) return '—'; const d = new Date(U(s)); return MON[d.getUTCMonth()] + ' ' + d.getUTCDate(); };
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const avg = a => a.length ? a.reduce((x, y) => x + y, 0) / a.length : null;
+const r1 = x => x == null ? null : Math.round(x * 10) / 10;
+const f1 = x => x == null ? 'No data' : String(Math.round(x));
+const fdr = x => x == null ? 'No data' : (Number.isInteger(r1(x)) ? String(r1(x)) : r1(x).toFixed(1));
+const wk = t => { const w = new Date(t).getUTCDay(); return w !== 0 && w !== 6; };
+/* working days, Monday to Friday, counting both the first and last day. Same Monday to next Monday = 6. */
+const bd = (a, b) => { let n = 0; for (let t = U(a); t <= U(b); t += MS) if (wk(t)) n++; return n; };
+/* working days after the due date up to and including the delivery day */
+const lateBd = (due, act) => { let n = 0; for (let t = U(due) + MS; t <= U(act); t += MS) if (wk(t)) n++; return n; };
+const link = (k, text) => k && LINKS[k] ? `<a href="${LINKS[k]}" target="_blank" rel="noopener">${esc(text)}</a>` : esc(text);
+const col = e => `var(--c-${EDITORS.find(x => x.id === e).cls})`;
+const lenTxt = v => v.len ? (v.lenMin ? v.len + '+' : (v.lenTarget ? '~' + v.len : v.len)) + ' min' : null;
+const dayW = n => n + (n === 1 ? ' day' : ' days');
+
+function stepsOf(v) {
+  const raw = [['Assigned', v.s]].concat(VS[v.k] || []);
+  if (v.fin) raw.push(['Final approved', v.fin]);
+  else if (v.st === 'repl') raw.push(['Replaced by a new editor', v.end]);
+  let prev = 0;
+  return raw.map((x, i) => { const day = bd(v.s, x[1]); const o = {l: x[0], d: x[1], day, gap: i ? Math.max(0, day - prev) : null}; prev = day; return o; });
+}
+V.forEach(v => { v.d1 = v.v1 ? bd(v.s, v.v1) : null; v.df = v.fin ? bd(v.s, v.fin) : null; v.steps = stepsOf(v); });
+O.forEach(v => { v.d1 = v.v1 ? bd(v.s, v.v1) : null; v.df = v.fin ? bd(v.s, v.fin) : null; v.steps = stepsOf(v); });
+const counted = v => !v.split;
+const withV1 = V.filter(v => counted(v) && v.d1 != null);
+const withFin = V.filter(v => counted(v) && v.df != null);
+
+/* ---------- hover tooltip ---------- */
+const TIPS = {};
+const tip = document.getElementById('tip');
+function tipOf(v, extra) {
+  const rows = v.steps.map(s => `<tr><td>${esc(s.l)}</td><td>${fd(s.d)}</td><td>day ${s.day}</td><td>${s.gap == null ? '' : '+' + s.gap}</td></tr>`).join('');
+  const len = lenTxt(v);
+  return `<div class="h"><i style="background:${col(v.e)}"></i>${esc(v.e)}<span>${esc(v.c || '')}</span></div>
+    <b>${esc(v.t)}</b>
+    <div class="m">${len ? 'Length ' + len : 'Length: no data'}</div>
+    ${extra ? `<div class="m">${extra}</div>` : ''}
+    <table><tr><th>Step</th><th>Date</th><th>Day</th><th>Took</th></tr>${rows}</table>
+    <div class="f">Working days, Mon to Fri. Day 1 is the day it was assigned. "Took" is the working days since the step before.</div>`;
+}
+function moveTip(e) {
+  const t = e.target.closest && e.target.closest('[data-tip]');
+  if (!t || !TIPS[t.dataset.tip]) { tip.style.display = 'none'; return; }
+  if (tip.dataset.k !== t.dataset.tip) { tip.innerHTML = TIPS[t.dataset.tip]; tip.dataset.k = t.dataset.tip; }
+  tip.style.display = 'block';
+  const r = tip.getBoundingClientRect();
+  let x = e.clientX + 18, y = e.clientY + 18;
+  if (x + r.width > window.innerWidth - 8) x = e.clientX - r.width - 18;
+  if (y + r.height > window.innerHeight - 8) y = window.innerHeight - r.height - 8;
+  tip.style.left = Math.max(8, x) + 'px'; tip.style.top = Math.max(8, y) + 'px';
+}
+document.addEventListener('mousemove', moveTip);
+document.addEventListener('click', moveTip);
+window.addEventListener('scroll', () => { tip.style.display = 'none'; }, {passive: true});
+
+/* ---------- tiles ---------- */
+(function () {
+  const open = V.filter(v => v.st !== 'done').length;
+  const fin = V.length - open;
+  document.getElementById('tiles').innerHTML = `
+    <div class="tile"><div class="n">${V.length}</div><div class="t">Videos looked at</div><div class="d">${fin} finished and ${open} still being edited, across the six editors.</div></div>
+    <div class="tile"><div class="n">${f1(avg(withV1.map(v => v.d1)))} days</div><div class="t">To send the first draft</div><div class="d">Average time from the video being given to an editor to that editor sending the first full edit. Based on ${withV1.length} videos.</div></div>
+    <div class="tile"><div class="n">${f1(avg(withFin.map(v => v.df)))} days</div><div class="t">To get final approval</div><div class="d">Average time from the video being given to an editor to Sanket or Najma approving the last version. Based on ${withFin.length} finished videos.</div></div>`;
+})();
+
+/* ---------- by editor ---------- */
+const METRICS = {
+  v1:  {sub: 'Working days from the video being assigned to the first full draft. Bars share one scale.', unit: 'd', pick: e => withV1.filter(v => v.e === e).map(v => v.d1)},
+  fin: {sub: 'Working days from the video being assigned to final approval. Videos still open are left out.', unit: 'd', pick: e => withFin.filter(v => v.e === e).map(v => v.df)},
+  dr:  {sub: 'Versions posted from the first draft to the approved one, finished videos only.', unit: '', pick: e => withFin.filter(v => v.e === e).map(v => v.dr)},
+  p10: {sub: 'Working days to final for every 10 minutes of video, only where a length is written in Slack.', unit: 'd', pick: e => withFin.filter(v => v.e === e && v.len).map(v => v.df / v.len * 10)}
+};
+let metric = 'v1';
+function vrows(e) {
+  const list = V.filter(v => v.e === e);
+  const head = `<div class="er th"><div>Video</div><div>Length</div><div>First draft</div><div>Final</div><div>Drafts</div><div>Status</div></div>`;
+  return head + list.map(v => {
+    const stat = v.split ? '<span class="pill na sm">Split</span>' : v.st === 'done' ? '<span class="pill ok sm">Final</span>' : v.st === 'review' ? '<span class="pill accent sm">In review</span>' : '<span class="pill gold sm">Open</span>';
+    const len = lenTxt(v) || '<span class="nodata">No data</span>';
+    return `<div class="er"><div><b>${link(v.k, v.sh)}</b><small>${esc(v.c)}</small></div>
+      <div class="c"><i>Length</i>${len}</div>
+      <div class="c"><i>First draft</i>${v.d1 != null ? v.d1 + ' days' : '—'}</div>
+      <div class="c"><i>Final</i>${v.df != null ? v.df + ' days' : '—'}</div>
+      <div class="c"><i>Drafts</i>${v.dr || '—'}</div>
+      <div class="c"><i>Status</i>${stat}</div></div>`;
+  }).join('');
+}
+function renderEds() {
+  const M = METRICS[metric], F = metric === 'dr' ? fdr : f1;
+  document.getElementById('metric-sub').textContent = M.sub + ' The tick on each bar is the average of all editors.';
+  const rows = EDITORS.map(ed => { const arr = M.pick(ed.id); return {ed, arr, a: avg(arr)}; });
+  const allArr = rows.flatMap(r => r.arr), allAvg = avg(allArr);
+  const mx = Math.max(...rows.map(r => r.a || 0), allAvg || 0);
+  const vals = (a, arr) => {
+    if (a == null) return '<span class="nodata" style="font-size:15px">No data</span>';
+    const lo = Math.min(...arr.map(x => Math.round(x))), hi = Math.max(...arr.map(x => Math.round(x)));
+    const range = arr.length > 1 && lo !== hi ? lo + ' to ' + hi + ' &middot; ' : '';
+    return F(a) + M.unit + `<small>${range}${arr.length === 1 ? '1 video' : arr.length + ' videos'}</small>`;
+  };
+  const mk = allAvg != null ? `<i class="mk" style="left:${allAvg / mx * 100}%"></i>` : '';
+  const html = rows.map(r => {
+    const n = V.filter(v => v.e === r.ed.id).length;
+    const w = r.a != null ? Math.max(3, r.a / mx * 100) : 0;
+    return `<details class="ed"><summary>
+      <div class="who"><span class="av" style="background:${col(r.ed.id)}">${r.ed.id[0]}</span><div><b>${r.ed.id}</b><small>${r.ed.role}</small></div></div>
+      <div class="track"><div class="fill" style="width:${w}%;background:${col(r.ed.id)}"></div>${mk}</div>
+      <div class="val">${vals(r.a, r.arr)}</div>
+      <span class="pill na">${n} videos</span></summary>
+      <div class="body">${vrows(r.ed.id)}</div></details>`;
+  }).join('');
+  const total = `<div class="ed edall"><div class="sum">
+      <div class="who"><span class="av" style="background:var(--text);color:var(--bg);font-size:11px">All</span><div><b>All editors</b><small>Average of every video</small></div></div>
+      <div class="track"><div class="fill" style="width:${allAvg != null ? Math.max(3, allAvg / mx * 100) : 0}%;background:var(--text)"></div>${mk}</div>
+      <div class="val">${vals(allAvg, allArr)}</div>
+      <span class="pill na">${V.length} videos</span></div></div>`;
+  document.getElementById('eds').innerHTML = html + total;
+}
+document.getElementById('seg-metric').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  metric = b.dataset.m;
+  document.querySelectorAll('#seg-metric button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  const open = [...document.querySelectorAll('#eds details')].map(d => d.open);
+  renderEds();
+  document.querySelectorAll('#eds details').forEach((d, i) => d.open = open[i]);
+});
+renderEds();
+
+/* ---------- timeline ---------- */
+const TL = {z: 0, ed: 'All'};
+const ZOOM = [null, 16, 30];
+function renderTL() {
+  const START = '2026-08-17', TODAY_ = '2026-11-17', DAYS = Math.round((U(TODAY_) - U(START)) / MS) + 1;
+  const X0 = 150, FIT_W = 1000, PAD = 16;
+  const px = ZOOM[TL.z] || (FIT_W - X0 - PAD) / DAYS;
+  const W = ZOOM[TL.z] ? X0 + DAYS * px + PAD : FIT_W;
+  const ROW = 40, HEAD = 44;
+  const dayIdx = d => (U(d) - U(START)) / MS;
+  const X = d => X0 + dayIdx(d) * px, XM = d => X(d) + px / 2;
+  const items = V.concat(O.filter(o => o.g));
+  Object.keys(TIPS).forEach(k => { if (k[0] === 't') delete TIPS[k]; });
+  let y = HEAD, defs = '', lanes = '', k = 0, ti = 0, we = '', grid = '', mlab = '';
+  for (let i = 0; i < DAYS; i++) {
+    const d = new Date(U(START) + i * MS), x = X0 + i * px;
+    if (d.getUTCDay() === 6) we += `<rect class="we" x="${x}" y="${HEAD - 6}" width="${Math.min(2, DAYS - i) * px}" height="__H__"/>`;
+    if (d.getUTCDay() === 1) grid += `<line class="grid" x1="${x}" x2="${x}" y1="${HEAD - 6}" y2="__H__"/><text class="dnum" x="${x + 2}" y="${HEAD - 12}">${d.getUTCDate()}</text>`;
+    if (d.getUTCDate() === 1 || i === 0) { mlab += `<text class="mlabel" x="${x}" y="16">${MON[d.getUTCMonth()].toUpperCase()}</text>`; if (i) grid += `<line class="mgrid" x1="${x}" x2="${x}" y1="22" y2="__H__"/>`; }
+  }
+  EDITORS.filter(ed => TL.ed === 'All' || TL.ed === ed.id).forEach(ed => {
+    const mine = items.filter(v => v.e === ed.id).sort((a, b) => U(a.s) - U(b.s));
+    const rowsEnd = [];
+    mine.forEach(v => {
+      const end = v.fin || v.end || TODAY_;
+      v._x0 = X(v.s); v._x1 = Math.max(XM(end), v._x0 + 8);
+      let r = rowsEnd.findIndex(e => e < v._x0 - 3);
+      if (r < 0) { r = rowsEnd.length; rowsEnd.push(0); }
+      rowsEnd[r] = v._x1; v._r = r;
+    });
+    const nrows = Math.max(1, rowsEnd.length), h = nrows * ROW + 12;
+    lanes += `<rect class="band ${k % 2 ? 'alt' : ''}" x="0" y="${y}" width="${W}" height="${h}"/>`;
+    let bars = '';
+    mine.forEach(v => {
+      const cy = y + 24 + v._r * ROW, bh = 14, x0 = v._x0, x1 = v._x1;
+      const open = !v.fin && !v.end, xv = v.v1 ? XM(v.v1) : null;
+      const id = 'c' + (cid_ = (typeof cid_ === 'undefined' ? 0 : cid_) + 1);
+      const key = 't' + (ti++);
+      TIPS[key] = tipOf(v, v.fin ? `${v.df} working days to final` : (v.v1 ? `${v.d1} working days to first draft` : 'No first draft yet'));
+      let g = `<g data-tip="${key}">`;
+      g += `<rect x="${x0 - 2}" y="${cy - 20}" width="${x1 - x0 + 4}" height="${bh + 24}" fill="transparent"/>`;
+      if (open) {
+        g += `<rect class="b-live" x="${x0}" y="${cy}" width="${x1 - x0}" height="${bh}" rx="5"/>`;
+        if (xv) g += `<rect class="b-work" x="${x0}" y="${cy}" width="${Math.max(xv - x0, 8)}" height="${bh}" rx="5"/>`;
+      } else if (xv && xv < x1) {
+        g += `<rect class="b-rev" x="${x0}" y="${cy}" width="${x1 - x0}" height="${bh}" rx="5"/><rect class="b-work" x="${x0}" y="${cy}" width="${xv - x0}" height="${bh}" rx="5"/>`;
+      } else g += `<rect class="b-work" x="${x0}" y="${cy}" width="${x1 - x0}" height="${bh}" rx="5"/>`;
+      defs += `<clipPath id="${id}"><rect x="${x0}" y="${cy - 17}" width="${Math.max(x1 - x0, 30)}" height="16"/></clipPath>`;
+      g += `<text class="lbl" clip-path="url(#${id})" x="${x0 + 1}" y="${cy - 5}">${esc(v.sh)}</text>`;
+      (VS[v.k] || []).forEach(s => {
+        if (/^A-cut/.test(s[0])) g += `<circle class="m-a" cx="${XM(s[1])}" cy="${cy + bh / 2}" r="2.6"/>`;
+        else if (s[0].startsWith('V1') || s[0] === 'First draft' || s[0] === 'First full promo') g += `<circle class="m-v1" cx="${XM(s[1])}" cy="${cy + bh / 2}" r="4.4"/>`;
+        else g += `<rect class="m-v" x="${XM(s[1]) - 1.5}" y="${cy + 2}" width="3" height="${bh - 4}" rx="1"/>`;
+      });
+      if (v.fin) g += `<circle class="m-ok" cx="${XM(v.fin)}" cy="${cy + bh / 2}" r="5"/>`;
+      if (v.due && v.dk !== 'unclear') { const cx = XM(v.due), cyy = cy + bh + 3; g += `<rect class="m-due" x="${cx - 3.5}" y="${cyy - 3.5}" width="7" height="7" transform="rotate(45 ${cx} ${cyy})"/>`; }
+      bars += g + '</g>';
+    });
+    lanes += `<text class="lane" x="16" y="${y + 24}">${ed.id}</text><text class="lanesub" x="16" y="${y + 40}">${mine.length} items</text>` + bars;
+    y += h; k++;
+  });
+  const H = y + 8, tx = XM(TODAY_);
+  const today = `<line class="today" x1="${tx}" x2="${tx}" y1="${HEAD - 6}" y2="${H - 4}"/><text class="todaylbl" x="${tx - 4}" y="${H + 8}" text-anchor="end">TODAY</text>`;
+  const box = document.getElementById('tlbox');
+  const sizing = ZOOM[TL.z] ? `style="width:${W}px"` : '';
+  box.innerHTML = `<svg class="chart${ZOOM[TL.z] ? ' zoomed' : ''}" ${sizing} viewBox="0 0 ${W} ${H + 14}" role="img" aria-label="Timeline of every video per editor">
+    <defs>${defs}</defs>${we.replace(/__H__/g, H - HEAD - 4)}${mlab}${lanes}${grid.replace(/__H__/g, H - 4)}${today}</svg>`;
+  box.scrollLeft = 0;
+}
+let cid_;
+document.getElementById('seg-zoom').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  TL.z = +b.dataset.z;
+  document.querySelectorAll('#seg-zoom button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  renderTL();
+});
+document.getElementById('seg-ed').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  TL.ed = b.dataset.e;
+  document.querySelectorAll('#seg-ed button').forEach(x => x.setAttribute('aria-pressed', String(x === b)));
+  renderTL();
+});
+renderTL();
+
+/* ---------- length scatter ---------- */
+(function () {
+  const pts = V.filter(v => counted(v) && v.len && v.df != null && !v.lenTarget).sort((a, b) => a.len - b.len || a.df - b.df);
+  pts.forEach((v, i) => v._n = i + 1);
+  const W = 1000, Hh = 580, L = 70, R = 40, T = 30, B = 70;
+  const xmax = 70, ymax = 25;
+  const sx = m => L + m / xmax * (W - L - R), sy = d => Hh - B - d / ymax * (Hh - T - B);
+  let s = '';
+  for (let d = 0; d <= ymax; d += 5) s += `<line class="grid" x1="${L}" x2="${W - R}" y1="${sy(d)}" y2="${sy(d)}"/><text class="tick" x="${L - 12}" y="${sy(d) + 4}" text-anchor="end">${d}</text>`;
+  for (let m = 0; m <= xmax; m += 10) s += `<text class="tick" x="${sx(m)}" y="${Hh - B + 24}" text-anchor="middle">${m}</text>`;
+  s += `<line class="axis" x1="${L}" x2="${W - R}" y1="${sy(0)}" y2="${sy(0)}"/><line class="axis" x1="${L}" x2="${L}" y1="${T}" y2="${sy(0)}"/>`;
+  s += `<text class="axl" x="${(L + W - R) / 2}" y="${Hh - 14}" text-anchor="middle">Video length, minutes</text>`;
+  s += `<text class="axl" transform="translate(18 ${(T + Hh - B) / 2}) rotate(-90)" text-anchor="middle">Working days to final</text>`;
+  const ref = (key, html) => { TIPS[key] = html; };
+  s += `<g data-tip="r1"><line class="ref" x1="${sx(0)}" y1="${sy(0)}" x2="${sx(70)}" y2="${sy(14)}"/><line x1="${sx(0)}" y1="${sy(0)}" x2="${sx(70)}" y2="${sy(14)}" stroke="transparent" stroke-width="16"/></g>
+    <text class="reflbl" x="${sx(70) - 4}" y="${sy(14) - 12}" text-anchor="end">Sanket’s rule: 2 working days per 10 min</text>`;
+  ref('r1', `<div class="h"><i style="background:var(--bg)"></i>Reference line</div><b>2 working days for every 10 minutes of video</b><div class="m">Sanket, 18 Aug: a 50-minute masterclass would take around 10 working days.</div>`);
+  const dia = (m, d, key) => `<g data-tip="${key}"><rect class="refpt" x="${sx(m) - 7}" y="${sy(d) - 7}" width="14" height="14" transform="rotate(45 ${sx(m)} ${sy(d)})"/></g>`;
+  s += dia(27.5, 5, 'r2') + `<text class="reflbl" x="${sx(27.5) + 16}" y="${sy(5) + 5}">Saf: 5 days for 25 to 30 min</text>`;
+  ref('r2', `<div class="h"><i style="background:var(--bg)"></i>Reference point</div><b>5 days on a 25 to 30 minute video</b><div class="m">Saf, 13 Nov, in #core-team-hq.</div>`);
+  const sanketDays = bd('2026-08-18', '2026-09-04');
+  s += dia(50, sanketDays, 'r3') + `<text class="reflbl" x="${sx(50) - 16}" y="${sy(sanketDays) + 5}" text-anchor="end">Sanket’s own masterclass</text>`;
+  ref('r3', `<div class="h"><i style="background:var(--bg)"></i>Reference point</div><b>Jeffrey Allen masterclass, edited by Sanket</b><div class="m">About 50 minutes. Thread opened Aug 18, final changes sent Sep 4 after the client approved. ${sanketDays} working days.</div>`);
+  pts.forEach(v => {
+    TIPS['s' + v._n] = tipOf(v, `<b style="font-weight:700">${v.df} working days to final</b> &middot; ${f1(v.df / v.len * 10)} days per 10 min`);
+    s += `<g class="pt" data-tip="s${v._n}"><circle cx="${sx(v.len)}" cy="${sy(v.df)}" r="14" style="fill:${col(v.e)};stroke:var(--surface);stroke-width:2.5"/><text x="${sx(v.len)}" y="${sy(v.df) + 4.6}">${v._n}</text></g>`;
+  });
+  document.getElementById('scbox').innerHTML = `<svg class="chart sc" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Video length against working days to final">${s}</svg>`;
+  const head = `<div class="row th lt"><div>#</div><div>Video</div><div>Length</div><div>First draft</div><div>Final</div><div>Days per 10 min</div><div>Editor</div></div>`;
+  const maxF = Math.max(...pts.map(v => v.df));
+  const bandOf = x => x <= 2.5 ? ['ok', 'Near the rule'] : x <= 4 ? ['gold', 'Above the rule'] : ['late', 'Well above'];
+  document.getElementById('lens').innerHTML = head + pts.map(v => {
+    const p10 = v.df / v.len * 10, b = bandOf(p10);
+    return `<div class="row lt"><div class="cell"><span class="dn" style="background:${col(v.e)}">${v._n}</span></div>
+    <div class="nm"><b><span class="mn">${v._n}. </span>${link(v.k, v.sh)}</b><span>${esc(v.lenNote)}</span></div>
+    <div class="cell"><i>Length</i>${v.lenMin ? v.len + '+' : v.len} min</div>
+    <div class="cell"><i>First draft</i>${v.d1} days</div>
+    <div class="cell"><i>Final</i>${v.df} days<span class="mb"><u style="width:${v.df / maxF * 100}%;background:${col(v.e)}"></u></span></div>
+    <div class="cell"><i>Per 10 min</i><span class="pill ${b[0]} sm">${f1(p10)} days</span></div>
+    <div class="cell"><i>Editor</i><span class="ep" style="--ec:${col(v.e)}">${v.e}</span></div></div>`;
+  }).join('') + `<div class="legend" style="margin:6px 0 14px"><span><i style="background:var(--ok)"></i>2.5 days or less per 10 min, near Sanket\u2019s rule of 2</span><span><i style="background:var(--warn)"></i>Over 2.5 up to 4</span><span><i style="background:var(--bad)"></i>Over 4</span></div>`;
+  const nolen = V.filter(v => counted(v) && !v.len);
+  const finn = nolen.filter(v => v.df != null).length;
+  document.getElementById('nolen').innerHTML = `<summary>${nolen.length} of ${V.filter(counted).length} videos have no length in Slack (${finn} of them finished)</summary><p>${nolen.map(v => esc(v.sh + ' (' + v.e + ')')).join(', ')}.</p>`;
+})();
+
+/* ---------- all videos ---------- */
+(function () {
+  let h = `<div class="vh"><div>Video</div><div>Length</div><div>First draft</div><div>Final</div><div>Drafts</div><div>Due date</div><div></div></div>`;
+  EDITORS.forEach((ed, gi) => {
+    const list = V.filter(v => v.e === ed.id);
+    const fin = list.filter(v => counted(v) && v.df != null), f1d = list.filter(v => counted(v) && v.d1 != null);
+    h += `<div class="gh"><span class="av" style="background:${col(ed.id)}">${ed.id[0]}</span><div><b>${ed.id}</b><small>${list.length} videos &middot; first draft in ${f1(avg(f1d.map(v => v.d1)))} days on average${fin.length ? ' &middot; final in ' + f1(avg(fin.map(v => v.df))) + ' days' : ''}</small></div></div>`;
+    list.forEach(v => {
+      const len = lenTxt(v) || '<span class="nodata">No data</span>';
+      let due = '<span class="nodata">—</span>', dueLine = '';
+      if (v.due) {
+        const dtxt = v.dt || ((v.dk === 'v1' ? 'First draft ' : 'Final ') + fd(v.due));
+        dueLine = `<p class="dl">Due date: ${esc(dtxt)}.</p>`;
+        const cmp = v.dk === 'final' ? v.fin : v.dk === 'v1' ? v.v1 : null;
+        if (v.dk === 'unclear') due = '<span class="pill na sm">Unclear</span>';
+        else if (cmp) { const lc = Math.round((U(cmp) - U(v.due)) / MS); const late = lateBd(v.due, cmp); due = lc > 0 ? `<span class="pill late sm">${late > 0 ? '+' + late + (late === 1 ? ' day' : ' days') : 'Late, weekend'}</span>` : '<span class="pill ok sm">On time</span>'; }
+        else due = '<span class="pill na sm">Open</span>';
+      }
+      const fcell = v.fin ? `${fd(v.fin)}<small>${v.df} days${v.split ? ', split' : ''}</small>` : (v.st === 'review' ? '<span class="pill accent sm">In review</span>' : '<span class="pill gold sm">Open</span>');
+      const chips = v.steps.map(s => `<span class="stp"><b>${esc(s.l)}</b>${fd(s.d)}<em>day ${s.day}</em></span>`).join('');
+      h += `<details class="vd2"><summary>
+        <div class="nm"><b>${esc(v.t)}</b><span>${esc(v.c)}</span></div>
+        <div class="cell"><i>Length</i>${len}</div>
+        <div class="cell"><i>First draft</i>${v.v1 ? fd(v.v1) + '<small>' + v.d1 + ' days</small>' : '—'}</div>
+        <div class="cell"><i>Final</i>${fcell}</div>
+        <div class="cell"><i>Drafts</i>${v.dr || '—'}</div>
+        <div class="cell"><i>Due date</i>${due}</div>
+        <span class="chev" aria-hidden="true"></span></summary>
+        <div class="more"><div class="steps">${chips}</div>
+          ${v.n ? `<p>${esc(v.n)}</p>` : ''}${v.len ? `<p class="dl">Length: ${esc(v.lenNote)}.</p>` : ''}${dueLine}
+          ${v.k && LINKS[v.k] ? `<p class="dl"><a href="${LINKS[v.k]}" target="_blank" rel="noopener">Open the Slack thread</a></p>` : ''}</div></details>`;
+    });
+  });
+  document.getElementById('all').innerHTML = h;
+})();
+
+/* ---------- other work ---------- */
+(function () {
+  const head = `<div class="row th ot"><div>Editor</div><div>Work</div><div>Assigned</div><div>First draft</div><div>Last date</div></div>`;
+  document.getElementById('oth').innerHTML = head + O.map(o => `<div class="row ot">
+    <div class="cell"><i>Editor</i>${o.e}</div>
+    <div class="nm"><b>${link(o.k, o.t)}</b><span>${esc(o.n)}</span></div>
+    <div class="cell"><i>Assigned</i>${fd(o.s)}</div>
+    <div class="cell"><i>First draft</i>${o.v1 ? fd(o.v1) + ' <small>' + o.d1 + (o.d1 === 1 ? ' day' : ' days') + '</small>' : '—'}</div>
+    <div class="cell"><i>Last date</i>${fd(o.fin || o.end)}</div></div>`).join('');
+})();
+
+/* ---------- averages at a glance ---------- */
+const STATS = (function () {
+  const fin = withFin;
+  const aDay = v => { const a = v.steps.find(s => /^A-cut/.test(s.l)); return a ? a.day : null; };
+  const seg = list => {
+    const l = list.filter(v => aDay(v) != null);
+    return {a: avg(l.map(aDay)), b: avg(l.map(v => v.d1 - aDay(v))), c: avg(l.map(v => v.df - v.d1)), tot: avg(l.map(v => v.df)), n: l.length};
+  };
+  const byClient = c => { const l = fin.filter(v => v.c === c); return {n: l.length, v1: avg(withV1.filter(v => v.c === c).map(v => v.d1)), fin: avg(l.map(v => v.df))}; };
+  const waitKeys = ['M1', 'M2', 'M3', 'A1', 'A4', 'A6', 'N1'];
+  const clean = fin.filter(v => !waitKeys.includes(v.k));
+  const lates = [];
+  V.forEach(v => { if (!v.due || v.dk === 'unclear') return; const cmp = v.dk === 'final' ? v.fin : v.dk === 'v1' ? v.v1 : null; if (!cmp) return; lates.push({v, cal: Math.round((U(cmp) - U(v.due)) / MS), bd: lateBd(v.due, cmp)}); });
+  return {fin, seg, all: seg(fin), byClient, waitKeys, clean, lates,
+    two: fin.filter(v => v.dr <= 2), more: fin.filter(v => v.dr >= 3)};
+})();
+
+(function () {
+  const S = STATS;
+  // per editor table with stacked bars
+  const rows = EDITORS.map(ed => {
+    const l = S.fin.filter(v => v.e === ed.id);
+    return {ed, n: l.length, s: S.seg(l), d1: avg(withV1.filter(v => v.e === ed.id).map(v => v.d1)), dr: avg(l.map(v => v.dr))};
+  }).sort((x, y) => (x.s.tot ?? 99) - (y.s.tot ?? 99));
+  const mx = Math.max(...rows.map(r => r.s.tot || 0), S.all.tot);
+  const bar = s => s.n ? `<div class="stack" title="A-cut by day ${f1(s.a)}, then ${f1(s.b)} days to first draft, then ${f1(s.c)} days to final"><i class="s1" style="width:${s.a / mx * 100}%"></i><i class="s2" style="width:${s.b / mx * 100}%"></i><i class="s3" style="width:${s.c / mx * 100}%"></i></div>` : '';
+  const head = `<div class="row th ae"><div>Editor</div><div>Finished</div><div>Where the days go</div><div>To first draft</div><div>To final</div><div>Drafts</div></div>`;
+  const line = (name, color, n, s, d1, dr, cls) => `<div class="row ae ${cls || ''}">
+    <div class="who">${color ? `<span class="av" style="background:${color}">${name[0]}</span>` : ''}<div><b>${name}</b></div></div>
+    <div class="cell"><i>Finished</i>${n}</div>
+    <div class="cellbar">${bar(s)}</div>
+    <div class="cell"><i>To first draft</i>${f1(d1)} days</div>
+    <div class="cell"><i>To final</i>${s.n ? f1(s.tot) + ' days' : '<span class="nodata">No data</span>'}</div>
+    <div class="cell"><i>Drafts</i>${dr == null ? '—' : fdr(dr)}</div></div>`;
+  document.getElementById('avg-ed').innerHTML = head +
+    rows.map(r => line(r.ed.id, col(r.ed.id), r.n, r.s, r.d1, r.dr)).join('') +
+    line('All editors', null, S.fin.length, S.all, avg(withV1.map(v => v.d1)), avg(S.fin.map(v => v.dr)), 'total');
+  document.getElementById('avg-key').innerHTML = `<span><i class="sw s1"></i>Assigned to A-cut</span><span><i class="sw s2"></i>A-cut to first draft</span><span><i class="sw s3"></i>First draft to final</span>`;
+
+  // one video
+  const a = S.all, tot = a.tot;
+  document.getElementById('avg-one').innerHTML = `<div class="one">
+    <div class="one-h"><div class="n">${f1(tot)} days</div><div class="t">for one video, assigned to final</div><div class="d">Average of ${S.fin.length} finished videos. Middle value ${f1(med(S.fin.map(v => v.df)))} days, shortest ${Math.min(...S.fin.map(v => v.df))}, longest ${Math.max(...S.fin.map(v => v.df))}.</div></div>
+    <div class="phase">
+      <div class="ph p1" style="flex:${a.a}"><b>${f1(a.a)}</b><span>to A-cut</span></div>
+      <div class="ph p2" style="flex:${a.b}"><b>${f1(a.b)}</b><span>A-cut to first draft</span></div>
+      <div class="ph p3" style="flex:${a.c}"><b>${f1(a.c)}</b><span>first draft to final</span></div>
+    </div><p class="d" style="font-size:12.5px;color:var(--text-faint);margin:0">Rounded to whole days, so the parts can differ from the total by a day.</p></div>`;
+
+  // every finished video, one dot each
+  const W = 1000, L = 140, R = 40, T = 44, LH = 72, xmax = 22;
+  const sx = d => L + d / xmax * (W - L - R);
+  const H = T + EDITORS.length * LH + 40;
+  let s = '', k = 0;
+  for (let d = 0; d <= xmax; d += 2) s += `<line class="grid" x1="${sx(d)}" x2="${sx(d)}" y1="${T - 8}" y2="${H - 36}"/><text class="tick" x="${sx(d)}" y="${H - 16}" text-anchor="middle">${d}</text>`;
+  EDITORS.forEach((ed, i) => {
+    const y0 = T + i * LH, cy = y0 + LH / 2 + 4;
+    s += `<rect class="band ${i % 2 ? 'alt' : ''}" x="0" y="${y0}" width="${W}" height="${LH}"/>`;
+    s += `<text class="lane" x="16" y="${cy - 2}">${ed.id}</text>`;
+    const l = S.fin.filter(v => v.e === ed.id);
+    s += `<text class="lanesub" x="16" y="${cy + 14}">${l.length} finished</text>`;
+  });
+  s += EDITORS.map((ed, i) => '').join('');
+  // grid lines are drawn first, redraw above bands
+  let g2 = '';
+  for (let d = 0; d <= xmax; d += 2) g2 += `<line class="grid" x1="${sx(d)}" x2="${sx(d)}" y1="${T}" y2="${T + EDITORS.length * LH}"/>`;
+  s += g2;
+  const ao = avg(S.fin.map(v => v.df));
+  EDITORS.forEach((ed, i) => {
+    const y0 = T + i * LH, cy = y0 + LH / 2;
+    const l = S.fin.filter(v => v.e === ed.id);
+    if (!l.length) return;
+    const m = avg(l.map(v => v.df));
+    s += `<line x1="${sx(m)}" x2="${sx(m)}" y1="${y0 + 8}" y2="${y0 + LH - 8}" style="stroke:${col(ed.id)};stroke-width:3;opacity:.45"/><text class="reflbl" x="${sx(m) + 6}" y="${y0 + 16}" style="font-weight:700">avg ${f1(m)}</text>`;
+    const groups = {};
+    l.forEach(v => { (groups[v.df] = groups[v.df] || []).push(v); });
+    Object.values(groups).forEach(gr => gr.forEach((v, j) => {
+      const key = 'e' + (k++);
+      TIPS[key] = tipOf(v, `<b style="font-weight:700">${v.df} working days to final</b>`);
+      const dy = (j - (gr.length - 1) / 2) * 17;
+      s += `<g class="pt" data-tip="${key}"><circle cx="${sx(v.df)}" cy="${cy + 4 + dy}" r="8" style="fill:${col(v.e)};stroke:var(--surface);stroke-width:2"/></g>`;
+    }));
+  });
+  s += `<line class="ref" x1="${sx(ao)}" x2="${sx(ao)}" y1="${T - 8}" y2="${T + EDITORS.length * LH}"/><text class="reflbl" x="${sx(ao)}" y="${T - 14}" text-anchor="middle" style="font-weight:700">All editors ${f1(ao)}</text>`;
+  s += `<text class="axl" x="${(L + W - R) / 2}" y="${H - 1}" text-anchor="middle">Working days from assignment to final</text>`;
+  document.getElementById('stripbox').innerHTML = `<svg class="chart sc" viewBox="0 0 ${W} ${H + 4}" role="img" aria-label="Every finished video by working days to final, per editor">${s}</svg>`;
+})();
+function med(a) { if (!a.length) return null; const s = [...a].sort((x, y) => x - y), m = s.length >> 1; return s.length % 2 ? s[m] : (s[m - 1] + s[m]) / 2; }
+
+/* ---------- my read ---------- */
+(function () {
+  const S = STATS, a = S.all;
+  const J = S.byClient('James Conole'), Vi = S.byClient('Vishen');
+  const cnt = (e, c) => `${S.fin.filter(v => v.e === e && v.c === c).length} of ${S.fin.filter(v => v.e === e).length}`;
+  const two = avg(S.two.map(v => v.df)), more = avg(S.more.map(v => v.df));
+  const per = id => { const l = S.fin.filter(v => v.e === id); return {dr: avg(l.map(v => v.dr)), rev: avg(l.map(v => v.df - v.d1)), v1: avg(withV1.filter(v => v.e === id).map(v => v.d1))}; };
+  const sh = per('Sharan'), sa = per('Saiyam'), ma = per('Manish');
+  const lenFin = S.fin.filter(v => v.len), per10 = lenFin.map(v => v.df / v.len * 10);
+  const lok = S.fin.filter(v => v.e === 'Lokesh' && v.len).sort((x, y) => x.len - y.len).map(v => v.df);
+  const clean = S.clean;
+  const promo = O.find(o => o.k === 'MP');
+  const lt = S.lates, late = lt.filter(x => x.cal > 0), ok = lt.length - late.length;
+  const small = late.filter(x => x.bd <= 1).length, mid = late.filter(x => x.bd >= 2 && x.bd <= 3).length, big = late.filter(x => x.bd >= 4).length;
+  const items = [
+    ['Compare like with like', `James Conole videos reach final in ${f1(J.fin)} working days on average (${J.n} videos). Vishen videos take ${f1(Vi.fin)} (${Vi.n}). Saiyam edits mostly James (${cnt('Saiyam', 'James Conole')}) and so does Sharan (${cnt('Sharan', 'James Conole')}). All of Mohit’s finished videos are Vishen. An editor average that mixes clients is hard to read, so look at editor and client together.`],
+    ['The first draft is where most of the time goes', `For finished videos, the A-cut lands around day ${f1(a.a)}, the first draft on day ${f1(a.a + a.b)}, and the final on day ${f1(a.tot)}. Getting from A-cut to first draft takes ${f1(a.b)} days, about half of the whole video. Revisions add ${f1(a.c)}. If one stage is worth watching, it is this one.`],
+    ['Revision rounds are the second lever', `Videos finished in 2 drafts took ${f1(two)} working days. Videos with 3 or more drafts took ${f1(more)}. Saiyam averages ${fdr(sa.dr)} drafts per video. Sharan averages ${fdr(sh.dr)} and sends the first draft fastest (${f1(sh.v1)} days), then needs ${f1(sh.rev)} more days to reach final. Manish averages ${fdr(ma.dr)}.`],
+    ['Length is the missing number', `Only ${V.filter(v => v.len && !v.lenTarget).length} of ${V.length} videos have a length written in Slack. For those, a video takes ${f1(Math.min(...per10))} to ${f1(Math.max(...per10))} working days per 10 minutes. Sanket’s rule of thumb is 2 working days. Saf’s 5 days for 25 to 30 minutes works out to about 2. Lokesh’s three videos of 25 to 30+ minutes took ${lok.join(', ')} working days. Writing the length into the assignment message would make this measurable for every video.`],
+    ['Waiting time is inside these numbers', `${S.waitKeys.length} of ${S.fin.length} finished videos had a client asset, footage or reshoot wait noted in Slack. Without them the averages are ${f1(avg(S.clean.map(v => v.d1)))} days to first draft and ${f1(avg(S.clean.map(v => v.df)))} to final. All three of Mohit’s finished videos are in that group, so his numbers cannot yet be split into editing time and waiting time. His 2-minute Nigel promo had no client wait noted: first version on day ${promo.d1}, against a due date on day ${bd(promo.s, promo.due)}.`],
+    ['Due dates are only partly written down', `${lt.length} videos have a clear due date in Slack and ${ok} met it. Of the ${late.length} that missed, ${small} were late by a weekend or one working day, ${mid} by 2 to 3 days and ${big} by 5. Briefs rarely say whether a date is for the first draft or the final. A date for each, written at assignment, would let this be measured for every video.`]
+  ];
+  document.getElementById('read').innerHTML = items.map(x => `<div class="vd-item"><span class="vd-t">${esc(x[0])}</span><span class="vd-d">${x[1]}</span></div>`).join('');
+  const gaps = [
+    ['Time from draft to first review comment', 'Not in this data. Part of every "to final" number is waiting for review.'],
+    ['Length at assignment', 'Write it in the assignment message so it can be compared across every video.'],
+    ['Client assets and footage arrival date', 'Log the day assets were asked for and the day they arrived, next to the assignment date.'],
+    ['First-draft and final due dates', 'Two dates per video, written when it is assigned.'],
+    ['Editor commitments from #daily-update', '"Ready for Sanket’s review by" is posted every morning. It can be compared with the real draft time.']
+  ];
+  document.getElementById('gaps').innerHTML = `<div class="row th" style="grid-template-columns:1fr">Worth capturing from here</div>` + gaps.map(g => `<div class="row why"><b>${esc(g[0])}</b><span class="f">${esc(g[1])}</span></div>`).join('');
+})();
+</script>
