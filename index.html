@@ -464,6 +464,29 @@ a.tipp { cursor: pointer; }
 
 .tiles.two { grid-template-columns: repeat(2, 1fr); }
 @media (max-width: 860px) { .tiles.two { grid-template-columns: 1fr; } }
+
+/* apple-calendar style month */
+.calx { min-width: 760px; display: grid; gap: 10px; }
+.cwh { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)) 96px; gap: 6px; font: 600 11.5px 'Inter Tight', sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); text-align: center; }
+.cwk { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)) 96px; column-gap: 6px; row-gap: 3px; position: relative; }
+.cwcol { border: 1px solid var(--border); border-radius: 12px; background: var(--surface); z-index: 0; }
+.cwcol.out { background: var(--surface-2); opacity: .5; }
+.cwd { font: 600 12px 'Inter', sans-serif; color: var(--text-faint); padding: 5px 9px 2px; z-index: 1; }
+.cwd.out { color: transparent; }
+.ev { z-index: 1; display: flex; align-items: center; justify-content: space-between; gap: 6px; margin: 0 3px; padding: 0 9px; border-radius: 4px; background: color-mix(in srgb, var(--ec) 24%, var(--surface)); border-left: 0 solid var(--ec); font: 700 11.5px 'Inter Tight', sans-serif; color: var(--text); overflow: hidden; white-space: nowrap; min-width: 0; }
+.ev.st { border-left: 4px solid var(--ec); border-top-left-radius: 8px; border-bottom-left-radius: 8px; }
+.ev.en { border-top-right-radius: 8px; border-bottom-right-radius: 8px; box-shadow: inset -3px 0 0 var(--ec); }
+.ev.open { background: repeating-linear-gradient(135deg, color-mix(in srgb, var(--ec) 16%, var(--surface)) 0 6px, color-mix(in srgb, var(--ec) 6%, var(--surface)) 6px 12px); }
+.ev span { overflow: hidden; text-overflow: ellipsis; }
+.ev b { font: 700 10.5px 'Inter', sans-serif; color: var(--ec); letter-spacing: .04em; text-transform: uppercase; flex: none; }
+.cwt { z-index: 1; display: grid; place-items: center; text-align: center; border-radius: 12px; font: 800 24px 'Inter Tight', sans-serif; font-variant-numeric: tabular-nums; }
+.cwt small { display: block; font: 600 11px 'Inter', sans-serif; letter-spacing: 0; color: var(--text-muted); }
+.cwt.ok { background: color-mix(in srgb, var(--ok) 16%, var(--surface)); color: var(--ok); }
+.cwt.short { background: color-mix(in srgb, var(--bad) 14%, var(--surface)); color: var(--bad); }
+
+:root { --c-aaron: #5C6F94; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { --c-aaron: #9BB0DA; } }
+:root[data-theme="dark"] { --c-aaron: #9BB0DA; }
 </style>
 
 <div class="page">
@@ -716,7 +739,7 @@ a.tipp { cursor: pointer; }
     <p class="sub">Sanket’s view: James and Ari are close to templates, Vishen, Daniel Priestley and Nigel are new each time.</p>
     <div class="strip" id="sl-phase"></div>
     <div class="strip" style="padding-top:14px"><div class="sec-title" style="padding:0 0 8px">Days to final, editor by client</div><div id="sl-mx"></div></div>
-    <div class="callout">Small samples: Ari has 2 videos, Daniel Priestley 2 (both Lokesh), Nigel 3. Videos with a stated length are 18 and 24 minutes for James and Ari, and 25 to 60 for the others, so length and content style are mixed together here.</div>
+    <div class="callout">Small samples: Ari 2 videos, Nigel 3, Daniel Priestley 2 from Lokesh plus 5 earlier ones from Aaron. Videos with a stated length are 18 and 24 minutes for James and Ari, and 25 to 60 for the others, so length and content style are mixed together.</div>
   </section>
 
   <section>
@@ -733,11 +756,12 @@ a.tipp { cursor: pointer; }
         <div class="seg" role="group" aria-label="Editors" id="cal-eds"><button type="button" data-e="6" aria-pressed="true">6 editors</button><button type="button" data-e="7" aria-pressed="false">6 + a shared editor</button></div>
       </div>
     </div>
-    <p class="sub">Each chip is a video finishing that day. Pick how many working days a video gets.</p>
+    <p class="sub">Each bar is one video from start to finish, like an all-day event. Pick how many working days a video gets.</p>
     <div class="tiles" id="cal-tiles"></div>
-    <div class="cal-wrap"><div class="calbox"><div class="calg" id="cal-grid"></div></div></div>
+    <div class="cal-wrap"><div class="calbox"><div id="cal-grid" class="calx"></div></div><div class="legend" id="cal-legend"></div></div>
+    <div class="strip" id="cal-cov"></div>
     <div class="strip" style="padding-top:12px"><div class="sec-title" style="padding:6px 0 6px">Videos in December, by days per video</div><div id="cal-cmp"></div></div>
-    <p class="key">Editors work one video at a time and start on staggered days so uploads spread out. December has 23 working days and no holidays are removed. Shorts, fixes and review work are not counted, so real numbers are lower.</p>
+    <p class="key">Editors work one video at a time and start on staggered days so uploads spread out. Five clients (James, Ari, Vishen, Daniel, Nigel) each need a video every week, which is 5 a week. December has 23 working days and no holidays are removed. Shorts, fixes and review work are not counted, so real numbers are lower.</p>
   </section>
 
   <section>
@@ -761,6 +785,7 @@ a.tipp { cursor: pointer; }
     <div class="strip how">
       <div class="row"><b>Plan days</b><span>Sanket’s workflow is Wednesday to Wednesday, 6 working days for a 25 minute video: A-cut on day 1, 5, 15 and 25 minutes by days 2 to 4, review on day 5, V2 on day 6. Each further 10 minutes adds a day. The split of days 5 and 6 is assumed from the 6 day total. This is arithmetic, not a measurement.</span></div>
       <div class="row"><b>Your rule</b><span>Above 25 minutes add 1 day, above 30 add 2, then 1 per further full 10 minutes. A length written “25+” is read as just over 25.</span></div>
+      <div class="row"><b>Earlier sample</b><span>Aaron’s five Daniel Priestley videos (Mar to Jul) are before the 17 Aug window. They appear only on the client chart, the editor table and the length chart, and not in any page 1 number.</span></div>
       <div class="row"><b>Client groups</b><span>James Conole and Ari as template style, Vishen, Daniel Priestley and Nigel as new content. That grouping is Sanket’s.</span></div>
       <div class="row"><b>From Sanket</b><span>That Mohit and Lokesh find the timelines short comes from their feedback calls, not Slack.</span></div>
     </div>
@@ -908,7 +933,7 @@ const bd = (a, b) => { let n = 0; for (let t = U(a); t <= U(b); t += MS) if (wk(
 /* working days after the due date up to and including the delivery day */
 const lateBd = (due, act) => { let n = 0; for (let t = U(due) + MS; t <= U(act); t += MS) if (wk(t)) n++; return n; };
 const link = (k, text) => k && LINKS[k] ? `<a href="${LINKS[k]}" target="_blank" rel="noopener">${esc(text)}</a>` : esc(text);
-const col = e => `var(--c-${EDITORS.find(x => x.id === e).cls})`;
+const col = e => { const f = EDITORS.find(x => x.id === e); return f ? `var(--c-${f.cls})` : 'var(--c-aaron)'; };
 const lenTxt = v => v.len ? (v.lenMin ? v.len + '+' : (v.lenTarget ? '~' + v.len : v.len)) + ' min' : null;
 const dayW = n => n + (n === 1 ? ' day' : ' days');
 
@@ -1411,6 +1436,32 @@ const LO = [
   {t:'Disclosure pass on four VSLs', k:'ED', d:'Jul 22 to 24', n:'On-screen disclosures and end screens on VSLs that were already approved, two of them edited by someone else.'}
 ].concat(O.filter(o => o.e === 'Lokesh').map(o => ({t: o.t, k: o.k, d: fd(o.s) + ' to ' + fd(o.end || o.fin), n: o.n})));
 
+/* Aaron's earlier Daniel Priestley videos (Mar to Jul 2026), an earlier sample shown only on the Solution page and the Lokesh client comparison */
+Object.assign(LINKS, {
+  D1: 'https://bettervideos.slack.com/archives/C0C6FBZMR8U/p1772464843324089?thread_ts=1772464843.324089&cid=C0C6FBZMR8U',
+  D2: 'https://bettervideos.slack.com/archives/C0973LU0681/p1776695769345089?thread_ts=1776695769.345089&cid=C0973LU0681',
+  D3: 'https://bettervideos.slack.com/archives/C0C6FBZMR8U/p1777275441264269?thread_ts=1777275441.264269&cid=C0C6FBZMR8U',
+  D4: 'https://bettervideos.slack.com/archives/C0973LU0681/p1781090682851789?thread_ts=1781090682.851789&cid=C0973LU0681',
+  D5: 'https://bettervideos.slack.com/archives/C0973LU0681/p1781700236807769?thread_ts=1781700236.807769&cid=C0973LU0681'
+});
+const AA = [
+ {e:'Aaron',t:'40 Harsh Truths',sh:'40 Harsh Truths',c:'Daniel Priestley',k:'D1',len:35,lenNote:'Aaron, Mar 7: "running time of the vid is 35 mins"',s:'2026-03-03',a:'2026-03-03',v1:'2026-03-08',fin:'2026-03-17',dr:5,st:'done',early:true,
+  n:'Aaron edited it alone from A-cut to final. Assigned Mar 2 in the evening, work started Mar 3. First draft was the V1 with placeholders. Daniel’s photos were asked for on Mar 4 and Mar 8 and the last arrived Mar 12, while the edit was still in progress. Saf approved the colour grade on V5, Mar 17.'},
+ {e:'Aaron',t:'Why You Must Build a YouTube Channel',sh:'Build a YouTube Channel',c:'Daniel Priestley',k:'D2',len:null,s:'2026-04-20',a:'2026-04-21',v1:'2026-04-25',fin:'2026-05-02',dr:7,due:'2026-04-27',dk:'final',dt:'ClickUp due Mon Apr 27',st:'done',early:true,
+  n:'Shared: Shreesh cut the A-cut and Izu reviewed it, then Aaron built the hook, V1 to V7 and the animation. Missed the Apr 27 due date by 5 days. Whiteboard photos were requested during the edit.'},
+ {e:'Aaron',t:'Why You Must Stop Selling Your Time for Money',sh:'Stop Selling Your Time',c:'Daniel Priestley',k:'D3',len:null,s:'2026-04-29',a:'2026-04-30',v1:'2026-05-06',fin:'2026-05-19',dr:5,due:'2026-05-06',dk:'unclear',dt:'ClickUp due May 6, stage not stated',st:'done',early:true,
+  n:'A-cut review took about 4 days. First draft posted on the due date, then 6 days between V1 and V2 (May 7 to 12) with no explanation in the thread, a power cut on May 13, and V3 waited for review from May 15 to May 19. Sanket approved V5 on May 19.'},
+ {e:'Aaron',t:'7 Unsexy Habits that Build a $1M Business',sh:'7 Unsexy Habits',c:'Daniel Priestley',k:'D4',len:30,lenNote:'Aaron at the A-cut: "Video is 30 mins long"',s:'2026-06-10',a:'2026-06-11',v1:'2026-06-17',fin:'2026-06-19',dr:3,due:'2026-06-17',dk:'final',dt:'Najma: Wed Jun 17 at the latest',st:'done',early:true,
+  n:'Aaron edited it alone. A V1 with placeholders was posted Jun 11, the first full edit (V1 Edit) Jun 17, the due date. Najma approved V3 on Jun 19. Renders took about an hour per segment.'},
+ {e:'Aaron',t:'Everything I Learned from Top 0.01%',sh:'Top 0.01%',c:'Daniel Priestley',k:'D5',len:null,s:'2026-06-17',a:'2026-06-19',v1:'2026-06-24',fin:'2026-07-03',dr:6,due:'2026-07-01',dk:'final',dt:'Wed Jul 1 (the brief’s date is garbled)',st:'done',early:true,
+  n:'Aaron edited it alone and paused it on Jun 29 to work on another video. The Jun 24 first draft was graphics only, the first complete edit was V2 on Jun 26. Sanket said it looked GTG with one music comment on Jul 1 and ready to upload on V6 on Jul 3. An error was found after upload and fixed in V7. Raw footage and whiteboard photos were requested with no reply in the thread.'}
+];
+Object.assign(VS, {
+  D1:[['A-cut','2026-03-03'],['V1','2026-03-08']], D2:[['A-cut','2026-04-21'],['V1','2026-04-25']], D3:[['A-cut','2026-04-30'],['V1','2026-05-06']],
+  D4:[['A-cut','2026-06-11'],['V1','2026-06-17']], D5:[['A-cut','2026-06-19'],['V1','2026-06-24']]
+});
+AA.forEach(v => { v.d1 = v.v1 ? bd(v.s, v.v1) : null; v.df = v.fin ? bd(v.s, v.fin) : null; v.steps = stepsOf(v); });
+
 /* ================= Lokesh: messages shown on hover ================= */
 const LKM = {"E1": {"asks": [{"when": "Jun 19, 13:15", "requested": "More time, the video is 23 min", "text": "Also, the video is 23-min long. I will be needed a bit more time than usual to complete this @Gio Vescovi @Surabhi.", "reply": {"who": "Surabhi", "when": "Jun 19, 13:20", "text": "Hi @Lokesh Singh (personal) the video is due on Monday, that should be doable correct?", "outcome": ""}}, {"when": "Jun 19, 13:21", "requested": "Tuesday Jun 23 instead of Monday", "text": "mm, I think no! I will try to complete this by tuesday.", "reply": {"who": "Surabhi", "when": "Jun 19, 17:43", "text": "Sounds good, I'll reflect that on Asana", "outcome": "Granted"}}, {"when": "Jun 24, 00:27", "requested": "Missed Tuesday, new ETA 3 PM", "text": "Hey everyone, apologies for the late update. I wasn't able to get the video done today despite pushing hard on it. I'll have it delivered tomorrow by 3:00 PM IST. Sorry for the delay!", "reply": {"who": "Saf", "when": "Jun 24, 16:47", "text": "Thanks for communicating this properly @Lokesh Singh (personal)", "outcome": ""}}], "res": {"ini": ["Fri Jul 26 (impossible), Mon Jun 22", "Gio Jun 17 00:25, Surabhi Jun 19 13:20"], "force": ["Tue Jun 23, then his own ETA Jun 24 3 PM", "Surabhi Jun 19 17:43"], "fd": ["Jun 24", "15:38"], "fin": ["Jul 7", "V7 Jul 6, Sanket GTG Jul 7 16:16"]}}, "E2": {"asks": [{"when": "Jul 8, 05:56", "requested": "", "text": "Hi @Gio Vescovi - I've completed this video and put it on export, but it's going to take a good amount of time, so I'll send it to you as soon as I wake up!"}], "res": {"ini": ["Wed Jul 8", "Gio Jun 30 02:09, the date the client asked for"], "force": ["Unchanged", ""], "fd": ["Jul 8", "22:12"], "fin": ["Jul 17", "Sanket GTG Jul 17 13:27, last upload V6 Jul 17 22:41"]}, "noAsk": "No message asking for more time was found. Gio had asked the client for a few extra days."}, "E3": {"asks": [{"when": "Jul 16, 21:56", "requested": "1 extra day, done by Sat Jul 18", "text": "Hi everyone, wanted to give a quick update - my hard drive where all my project data was stored (including the current one) got damaged. The repair shop has said it should be fixed by tomorrow afternoon.\n\nI'd really appreciate a one day extension to get everything sorted. I'll make sure to have it wrapped up by this Saturday even if it takes the full day. Sorry for the inconven…", "reply": {"who": "Lokesh", "when": "Jul 17, 17:51", "text": "hey guys, got my drive back. I will try to send the video asap. thank you all for the patience.", "outcome": ""}}, {"when": "Jul 20, 20:21", "requested": "Export running, delay", "text": "hey quick update - put the video on export. It is taking a bit of time - will share it as soon as psbl..", "reply": {"who": "Gio", "when": "Jul 20, 20:30", "text": "No rush, thanks for the update!", "outcome": ""}}, {"when": "Jul 21, 01:48", "requested": "Delivers and apologises", "text": "f.io/vPr_bp6s - sorry for the delay - completely forgot about the \"Kickoff\" -> \"Proposal\" thing"}], "res": {"ini": ["Wed Jul 15", "Gio Jul 10 00:52"], "force": ["Sat Jul 18, his own date", "no new date from Gio"], "fd": ["Jul 21", "01:48"], "fin": ["Jul 21", "Sanket GTG Jul 21 23:35, client approved Jul 22 08:21"]}}, "E4": {"asks": [{"when": "Jul 21, 23:12", "requested": "Will discuss the date after the first cut", "text": "Thank you for this new project @Najma\nFor the deadline - I will let you know after the firsr cut. Will that work?"}, {"when": "Jul 24, 02:48", "requested": "Doubts he can finish by Jul 30", "text": "f.io/… - Here is the first cut (Still uploading). Seeing the video length I doubt about finishing it till 30"}, {"when": "Jul 24, 16:22", "requested": "1 more day", "text": "for this …\n\nI think yes. But I am not very sure \nIf you guys don't mind I would love to take 1 day more for this. But I would try to complete it as soon as psbl.", "reply": {"who": "Najma", "when": "Jul 24, 16:24", "text": "Okay 31st July in the afternoon would be the latest as the video goes out 1st August:)", "outcome": ""}}], "res": {"ini": ["Thu Jul 30", "Najma Jul 21 22:28"], "force": ["Fri Jul 31 afternoon at the latest", "Najma Jul 24 16:24"], "fd": ["No full draft", "first cut Jul 24 13:15"], "fin": ["Handed to Aaron Jul 24", "Aaron approved Jul 30 18:24"]}}, "E5": {"asks": [{"when": "Aug 6, 16:14", "requested": "1 extra day, the video is 30+ min", "text": "Hey @Gio Vescovi - the video is 30 mins+. I request a day extension to complete this video. Is that possible?", "reply": {"who": "Gio", "when": "Aug 6, 16:50", "text": "Hey @Lokesh Singh (personal) absolutely - I’d like to schedule it on Friday, Aug 14. Do you think we can make that work?", "outcome": ""}}, {"when": "Aug 14, 16:41", "requested": "Client tool still missing", "text": "hey @Gio Vescovi - I still have no update on the tool thing in the video.", "reply": {"who": "Gio", "when": "Aug 14, 16:40", "text": "Hey guys! Just checking on the status of this video as I'm planning to schedule it today to go live tomorrow", "outcome": ""}}, {"when": "Aug 14, 19:35", "requested": "Work left, placeholder offered", "text": "yes, it is still remaining but If you want it without that then I will leave a placeholder there and export the V2. Overall 10-20 mins of work is remaining only in the video except the tool."}], "res": {"ini": ["Wed Aug 12", "Gio Aug 4 21:00"], "force": ["Fri Aug 14", "Gio Aug 6 16:50"], "fd": ["Aug 13", "16:32"], "fin": ["Aug 14", "last upload 23:03, no approval message"]}}, "L3": {"asks": [{"when": "Sep 24, 17:37", "requested": "", "text": "Yo! Sorry was in a nap :)\nEverything is done. Just one change in the video was so time taking so getting that done. \n\nBut additionally, do I have to generate AI voice for that 9 things?? Because James is saying 10 things in 1 or 2 part in the video? \n\nOther than or including this I would share the video today."}, {"when": "Sep 25, 18:48", "requested": "", "text": "hey guys, there will be a slight delay in the video. Going to start the exporting in about 10 mins and export will take a bit of a time. Sorry for that."}], "res": {"ini": ["Tue Sep 22", "Gio’s schedule for Saiyam, Sep 7"], "force": ["Thu Sep 24 EOD sign-off wanted", "Najma Sep 24 17:22"], "fd": ["Sep 19", "15:02"], "fin": ["Sep 25", "last upload 20:54, no approval message"]}, "noAsk": "No message asking for an extension was found. He wrote about the delay on the day, after the date had passed."}, "L4": {"asks": [{"when": "Oct 6, 15:52", "requested": "1 extra day, the video is over 25 min", "text": "Absolutely. @Sanket and for the sake of over-communication I would love to get a extension of 1 day as this video is over 25 mins.\n\nDo we have room for that @Najma?", "reply": {"who": "Najma", "when": "Oct 6, 15:55", "text": "Just checked the schedule and we don't have an extra day for this unfortunately! We could possibly have less animations towards the end to help with t…", "outcome": "Declined"}}, {"when": "Oct 9, 19:07", "requested": "First half Oct 9, second half Oct 10 EOD", "text": "Thank you for understanding. just one thing -I will share the first half by today and then second half by tomo EOD. Or else if you say I will share the full video by tomo EOD. Will that work?", "reply": {"who": "Sanket", "when": "Oct 9, 19:39", "text": "Can you please share full video by today? Tomorrow EOD will get late & the team will have to work on the weekend.  We have been working on this video…", "outcome": ""}}, {"when": "Oct 9, 20:09", "requested": "Full video by Oct 10 EOD", "text": "I’m a bit behind my usual pace because, but I’m unable to share the full video by today.\n\nI will definitely have it ready by tomorrow EOD so we can review it. I’ll make sure there are minimal changes in that version. really sorry that I am eating up your weeknd. But I will try my best so that you have to waste a very minimal time.", "reply": {"who": "Najma", "when": "Oct 9, 20:45", "text": "EOD tomorrow is fine, but please let's make this the last time we do this. @Sanket I'm sorry to ask you to check it too but I'll be online as well - l…", "outcome": ""}}], "res": {"ini": ["Fri Oct 9", "Najma Oct 2 17:35"], "force": ["Sat Oct 10 EOD", "Najma Oct 9 20:45"], "fd": ["Oct 11", "01:07"], "fin": ["Oct 11", "17:47, after Najma’s 2 PM cutoff"]}}, "L5": {"asks": [{"when": "Oct 20, 14:38", "requested": "2 extra days, final Wed Oct 28", "text": "Hey @Najma,\nI have a rough idea for the video, and it is going to run over 30 minutes. I would like to request a 2-day extension on the deadline.\n\nHere is the plan:\n• *Tuesday:* Hook plus an additional 1-2 minutes of video.\n• *Wednesday:* Complete 9-10 mins.\n• *Thursday:* Complete 17-18 mins.\n• *Friday:* Complete 26-28 mins.\n• *Monday:* Complete the full video and share the fir…", "reply": {"who": "Najma", "when": "Oct 22, 15:22", "text": "Hi Lokesh, yes this works - thanks for being super clear with the timings:)", "outcome": "Granted"}}, {"when": "Oct 26, 12:25", "requested": "Day the first draft was due, 10 min left", "text": "Editing wise we are all good, last 10-11 mins are remaining. the only catch here is the export here. I tried exporting it on Saturday and as it is a 4K clip it took a lot to export .\n\nBut I think there will still be a version for you to review tomo morning - I mean by this same time."}, {"when": "Oct 28, 10:44", "requested": "Power cut, short delay", "text": "Hey guys, I have just woken up and found out that electricity has been cut off in my area since 6:00 in the morning. There will be a short delay in sharing the V2. Will keep you guys updated.", "reply": {"who": "Najma", "when": "Oct 28, 19:45", "text": "That's fine - when will the video be delivered? we need you to start on Daniel's next video please!", "outcome": "Najma"}}], "res": {"ini": ["Mon Oct 26", "Najma Oct 19 16:10"], "force": ["Wed Oct 28 for the final", "Najma Oct 22 15:22"], "fd": ["Oct 27", "13:36"], "fin": ["Oct 30", "V4 17:20, Sanket GTG 18:11"]}}, "L6": {"asks": [{"when": "Nov 2, 15:27", "requested": "More time, the video is 28 min", "text": "I also wanted to share one more thing. this video is as well 28 mins long. I will be needed extra time for this to complete. Is that psbl?? @Najma @Sanket?", "reply": {"who": "Najma", "when": "Nov 2, 15:29", "text": "Hi Lokesh, there's no extra time for this one as the publish date is 7th Nov - 25 mins is a short as we can go, maybe we could go slightly less graphi…", "outcome": "Declined"}}, {"when": "Nov 3, 16:24", "requested": "At risk, first draft ETA Nov 5 3 PM", "text": "Hey @Najma and @Sanket - heads up, this video is at risk of missing the deadline.\n\n*Reason:* Doing 10 mins everyday is a challenge in itself. And this is the first 10 mins of the video so that's another issue.\n\n*Revised ETA:* Thursday, 5 Nov. I’m aiming to send it by 3 PM IST on the same day.\n\nToday’s target was 8-10 mins, but I’ll likely only get through 7-8 only. I’ll post pr…", "reply": {"who": "Sanket", "when": "Nov 5, 11:36", "text": "Hey @Lokesh, looking forward to seeing the V1 today at 3PM", "outcome": ""}}, {"when": "Nov 5, 11:57", "requested": "Will take longer than 3 PM", "text": "Hey bro, I think it will take more than this. I am on track to share it today but by 3 PM, not sure :/", "reply": {"who": "Sanket", "when": "Nov 5, 11:58", "text": "Okay, we need to get one round of review done by today, so you can work on changes tomorrow.", "outcome": "Sanket"}}], "res": {"ini": ["Fri Nov 6", "Najma Oct 28 20:02, Sanket asked for Thu Nov 5 EOD"], "force": ["Unchanged, extension declined", "Najma Nov 2 15:29"], "fd": ["Nov 5", "23:48, his ETA was 3 PM"], "fin": ["Nov 7", "last upload 17:44, no approval message"]}}, "L7": {"asks": [{"when": "Nov 17, 12:35", "requested": "Will try to finish by tomorrow", "text": "I will try my best to complete it by tomo. I have done a bit of the video on my leave as well. trying to complete till 10 mins today.", "reply": {"who": "Sanket", "when": "Nov 17, 12:37", "text": "Can you please be certain about the deadline? We know you’re trying your best, but we need to know whether you’ll get us the video by tomorrow or not.…", "outcome": ""}}, {"when": "Nov 17, 12:53", "requested": "First draft may be late, asks for a buffer", "text": "Two things I wanted to flag in advance so there are no surprises:\n1. There is a chance I will share the video late, either by late EOD tomo (3-4 AM) or on Thursday afternoon (1-2 PM). Some sections take extra time to get right. If that happens, I will let you know beforehand.\n2. As I understand it, the review happens on Thursday and the final draft is due the same day. I'm a li…", "reply": {"who": "Sanket", "when": "Nov 17, 13:02", "text": "1. Please aim for late EOD tomorrow. Try to render half of the video overnight today, when you go to sleep, so only half is left to render tomorrow on…", "outcome": ""}}, {"when": "Nov 18, 03:53", "requested": "Plans to send the first draft", "text": "Also, I might start a bit late tomo but tomo’s daily update will be finish the V1 and send it to review. @Sanket"}], "res": {"ini": ["Thu Nov 19 final, Wed Nov 18 first draft", "Najma Nov 11 15:40, Sanket Nov 17"], "force": ["Unchanged", "Sanket Nov 17 13:02: aim for late EOD Nov 18"], "fd": ["Not yet", "as of Nov 18 03:53, done to 10 minutes"], "fin": ["Open", ""]}}};
 const fmtD = s => { if (!s) return ''; const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s); return m ? fd(m[0]) : s; };
@@ -1662,7 +1713,7 @@ renderLKT();
   const cl = ['Daniel Priestley', 'Vishen', 'James Conole', 'Ari', 'Nigel', 'Ryan Deiss'];
   const ch = `<div class="row th" style="grid-template-columns:minmax(0,1.1fr) minmax(0,1.5fr) minmax(0,1.9fr)"><div>Client</div><div>Lokesh</div><div>Other editors, 17 Aug on</div></div>`;
   const lk = c => { const l = fin2(LV.filter(v => v.c === c)); return l.length ? `${f1(avg(l.map(v => v.df)))} days to final<small>${l.length === 1 ? '1 video' : l.length + ' videos'}: ${l.map(v => v.df).join(', ')}</small>` : '<span class="nodata">No finished video</span>'; };
-  const ot = c => { const l = fin2(V.filter(v => v.c === c && v.e !== 'Lokesh')); if (!l.length) return '<span class="nodata">No other editor in this window</span>'; const eds = EDITORS.map(ed => { const q = l.filter(v => v.e === ed.id); return q.length ? `${ed.id} ${f1(avg(q.map(v => v.df)))} (${q.length})` : null; }).filter(Boolean).join(', '); return `${f1(avg(l.map(v => v.df)))} days to final<small>${eds}</small>`; };
+  const ot = c => { const l = fin2(V.filter(v => v.c === c && v.e !== 'Lokesh')); if (!l.length) return c === 'Daniel Priestley' ? `No other editor since 17 Aug<small>Earlier, Aaron took ${f1(avg(AA.map(v => v.df)))} days to final on ${vid(AA.length)}, Mar to Jul</small>` : '<span class="nodata">No other editor in this window</span>'; const eds = EDITORS.map(ed => { const q = l.filter(v => v.e === ed.id); return q.length ? `${ed.id} ${f1(avg(q.map(v => v.df)))} (${q.length})` : null; }).filter(Boolean).join(', '); return `${f1(avg(l.map(v => v.df)))} days to final<small>${eds}</small>`; };
   document.getElementById('lk-client').innerHTML = ch + cl.map(c => `<div class="row" style="grid-template-columns:minmax(0,1.1fr) minmax(0,1.5fr) minmax(0,1.9fr)"><div class="who"><b>${c}</b></div><div class="cell">${lk(c)}</div><div class="cell">${ot(c)}</div></div>`).join('') + `<div class="legend" style="margin:8px 0 12px"><span>Numbers in brackets are how many videos. Lokesh’s column includes his trial period, the other column does not.</span></div>`;
 })();
 
@@ -1708,7 +1759,7 @@ const SL = (function () {
 /* lengths: every finished video with a stated length (trial period included) */
 (function () {
   const S = SL;
-  const L = V.concat(LE).filter(v => cnt2(v) && v.len && v.df != null && !v.lenTarget).sort((a, b) => a.len - b.len || a.df - b.df);
+  const L = V.concat(LE, AA).filter(v => cnt2(v) && v.len && v.df != null && !v.lenTarget).sort((a, b) => a.len - b.len || a.df - b.df);
   L.forEach((v, i) => v._g = i + 1);
   S.L = L;
   S.met = L.filter(v => v.df <= S.ruleDays(S.effLen(v))).length;
@@ -1749,8 +1800,9 @@ const SL = (function () {
   for (let c = 0; c <= ymax; c += 2) s += `<line class="grid" x1="${L}" x2="${W - R}" y1="${sy(c)}" y2="${sy(c)}"/><text class="tick" x="${L - 10}" y="${sy(c) + 4}" text-anchor="end">${c}</text>`;
   for (let x = 1; x <= xmax; x++) { if (counts[x]) s += `<rect x="${sx(x) + 5}" y="${sy(counts[x])}" width="${bw - 10}" height="${sy(0) - sy(counts[x])}" rx="6" style="fill:${x <= 6 ? 'var(--ok)' : 'var(--accent)'};opacity:${x <= 6 ? 1 : .8}"/><text class="dnum" x="${sx(x) + bw / 2}" y="${sy(counts[x]) - 6}" text-anchor="middle" style="font-size:12px">${counts[x]}</text>`; s += `<text class="tick" x="${sx(x) + bw / 2}" y="${H - B + 20}" text-anchor="middle">${x}</text>`; }
   s += `<line class="axis" x1="${L}" x2="${W - R}" y1="${sy(0)}" y2="${sy(0)}"/>`;
-  const mk = (day, lbl) => { const xx = L + day * bw - bw / 2; return `<line class="ref" x1="${xx}" x2="${xx}" y1="${T - 14}" y2="${sy(0)}"/><text class="reflbl" x="${xx + 6}" y="${T - 20}" style="font-weight:700">${lbl}</text>`; };
-  s += mk(6, 'Plan: day 6') + mk(Math.round(S.give), `Average date set: day ${f1(S.give)}`);
+  const mk = (day, lbl, right) => { const xx = L + day * bw - bw / 2; return `<line class="ref" x1="${xx}" x2="${xx}" y1="${T - 14}" y2="${sy(0)}"/><text class="reflbl" x="${right ? xx + 8 : xx - 8}" y="${T - 20}" text-anchor="${right ? 'start' : 'end'}" style="font-weight:700">${lbl}</text>`; };
+  const gd = Math.round(S.give), pd = 6;
+  s += mk(pd, 'Plan: day 6', gd >= pd ? false : true) + mk(gd, `Average date set: day ${f1(S.give)}`, gd >= pd);
   s += `<text class="axl" x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle">Working days from assignment to final</text>`;
   document.getElementById('sl-h2-sub').textContent = `${S.fin.length} finished videos. Only ${S.n4} of ${S.v1l.length} first drafts reached day 4, the Monday mark. Dates set gave ${f1(S.give)} working days on average.`;
   document.getElementById('sl-h2').innerHTML = `<svg class="chart sc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Number of finished videos by working days to final">${s}</svg>`;
@@ -1764,18 +1816,21 @@ const SL = (function () {
   const one = c => { const l = S.fin.filter(v => v.c === c), g = sg(l); return {c, n: l.length, g, tot: g.a + g.b + g.c, fin: avg(l.map(v => v.df)), v1: avg(S.v1l.filter(v => v.c === c).map(v => v.d1))}; };
   const grp = f => { const l = S.fin.filter(v => f(v.c)), g = sg(l); return {n: l.length, g, fin: avg(l.map(v => v.df)), v1: avg(S.v1l.filter(v => f(v.c)).map(v => v.d1)), list: l}; };
   const tp = grp(c => S.TEMPLATE(c)), nw = grp(c => !S.TEMPLATE(c));
-  const rows = S.clients.map(one), mx = Math.max(...rows.map(r => r.tot));
+  const aaG = sg(AA), aaRow = {c: 'Daniel Priestley', sub: '5 videos, Aaron, Mar to Jul', n: AA.length, g: aaG, tot: aaG.a + aaG.b + aaG.c, fin: avg(AA.map(v => v.df)), v1: avg(AA.map(v => v.d1))};
+  const rows = S.clients.map(one), mx = Math.max(...rows.map(r => r.tot), aaRow.tot);
+  rows.forEach(r => { if (r.c === 'Daniel Priestley') r.sub = '2 videos, Lokesh, Oct to Nov'; });
+  S.aaron = aaRow;
   const lr = (arr, total) => { const fl = arr.map(Math.floor); let left = total - fl.reduce((x, y) => x + y, 0); arr.map((x, i) => [x - fl[i], i]).sort((p, q) => q[0] - p[0]).forEach(p => { if (left > 0) { fl[p[1]]++; left--; } }); return fl; };
-  const bar = r => { const lab = lr([r.g.a, r.g.b, r.g.c], Math.round(r.g.a + r.g.b + r.g.c)); return `<div class="pb"><div class="pbn"><b>${r.c}</b><small>${vid(r.n)}</small></div><div class="pbbar">${[['a1', r.g.a], ['a2', r.g.b], ['a3', r.g.c]].map((x, i) => `<i class="${x[0]}" style="width:${x[1] / mx * 100}%">${x[1] / mx > .05 ? lab[i] : ''}</i>`).join('')}</div><div class="pbt">${f1(r.fin)} days<small>to final</small></div></div>`; };
+  const bar = r => { const lab = lr([r.g.a, r.g.b, r.g.c], Math.round(r.g.a + r.g.b + r.g.c)); return `<div class="pb"><div class="pbn"><b>${r.c}</b><small>${r.sub || vid(r.n)}</small></div><div class="pbbar">${[['a1', r.g.a], ['a2', r.g.b], ['a3', r.g.c]].map((x, i) => `<i class="${x[0]}" style="width:${x[1] / mx * 100}%">${x[1] / mx > .05 ? lab[i] : ''}</i>`).join('')}</div><div class="pbt">${f1(r.fin)} days<small>to final</small></div></div>`; };
   const gh = (t, sub, g) => `<div class="pbg"><div>${t}</div><span>${sub}: ${f1(g.v1)} days to first draft, ${f1(g.fin)} to final</span></div>`;
-  document.getElementById('sl-phase').innerHTML = gh('Template style', 'James Conole and Ari', tp) + rows.filter(r => S.TEMPLATE(r.c)).map(bar).join('') + gh('New content each time', 'Vishen, Daniel Priestley and Nigel', nw) + rows.filter(r => !S.TEMPLATE(r.c)).map(bar).join('') +
+  document.getElementById('sl-phase').innerHTML = gh('Template style', 'James Conole and Ari', tp) + rows.filter(r => S.TEMPLATE(r.c)).map(bar).join('') + gh('New content each time', 'Vishen, Daniel Priestley and Nigel', nw) + rows.filter(r => !S.TEMPLATE(r.c)).map(bar).join('') + `<div class="pbg"><div>Earlier sample, before 17 Aug</div><span>Daniel Priestley videos edited by Aaron: ${f1(aaRow.v1)} days to first draft, ${f1(aaRow.fin)} to final</span></div>` + bar(aaRow) +
     `<div class="legend" style="margin:12px 0 8px"><span><i class="sw" style="background:var(--border-strong)"></i>Assigned to A-cut</span><span><i class="sw" style="background:var(--accent)"></i>A-cut to first draft</span><span><i class="sw" style="background:var(--gold)"></i>First draft to final</span><span>Working days. Segment labels are rounded to add up to the total.</span></div>`;
   S.tp = tp; S.nw = nw;
   const heat = l => { if (!l.length) return '<div class="heat h0">—</div>'; const m = avg(l.map(v => v.df)); return `<div class="heat ${m <= 7.5 ? 'h1' : m <= 10.5 ? 'h2' : 'h3'}">${f1(m)}<small>${vid(l.length)}</small></div>`; };
-  const cols = `grid-template-columns:130px repeat(${EDITORS.length}, minmax(0, 1fr))`;
-  document.getElementById('sl-mx').innerHTML = `<div class="mxwrap"><div class="mx th" style="${cols}"><div></div>${EDITORS.map(ed => `<div>${ed.id}</div>`).join('')}</div>` +
-    S.clients.map(c => `<div class="mx" style="${cols}"><div class="rh">${c}</div>${EDITORS.map(ed => heat(S.fin.filter(v => v.e === ed.id && v.c === c))).join('')}</div>`).join('') + '</div>' +
-    `<div class="legend" style="margin-top:10px"><span><i style="background:var(--ok)"></i>7 days or fewer</span><span><i style="background:var(--warn)"></i>8 to 10</span><span><i style="background:var(--bad)"></i>11 or more</span><span>Working days to final since 17 Aug.</span></div>`;
+  const cols = `grid-template-columns:130px repeat(${EDITORS.length + 1}, minmax(0, 1fr))`;
+  document.getElementById('sl-mx').innerHTML = `<div class="mxwrap"><div class="mx th" style="${cols}"><div></div>${EDITORS.map(ed => `<div>${ed.id}</div>`).join('')}<div>Aaron, earlier</div></div>` +
+    S.clients.map(c => `<div class="mx" style="${cols}"><div class="rh">${c}</div>${EDITORS.map(ed => heat(S.fin.filter(v => v.e === ed.id && v.c === c))).join('')}${heat(AA.filter(v => v.c === c))}</div>`).join('') + '</div>' +
+    `<div class="legend" style="margin-top:10px"><span><i style="background:var(--ok)"></i>7 days or fewer</span><span><i style="background:var(--warn)"></i>8 to 10</span><span><i style="background:var(--bad)"></i>11 or more</span><span>Working days to final since 17 Aug. Aaron’s column is Daniel videos from Mar to Jul.</span></div>`;
 })();
 
 /* length chart: workflow, rule, actual */
@@ -1794,39 +1849,65 @@ const SL = (function () {
   s += `<text class="reflbl" x="${sx(63)}" y="${sy(S.planDays(63)) + 20}" text-anchor="end" style="font-weight:700;fill:var(--ok)">6 day workflow</text>`;
   L.forEach(v => { TIPS['g' + v._g] = tipOf(v, `<b style="font-weight:700">${v.df} working days to final</b>. The workflow allows ${S.planDays(S.effLen(v))}, your rule ${S.ruleDays(S.effLen(v))}.`); s += `<g class="pt" data-tip="g${v._g}"><circle cx="${sx(v.len)}" cy="${sy(v.df)}" r="14" style="fill:${col(v.e)};stroke:var(--surface);stroke-width:2.5"/><text x="${sx(v.len)}" y="${sy(v.df) + 4.6}">${v._g}</text></g>`; });
   document.getElementById('sl-len').innerHTML = `<svg class="chart sc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Length against working days, with the workflow, the rule and the pace so far">${s}</svg>`;
-  document.getElementById('sl-len-list').innerHTML = L.map(v => `<div><span class="dn" style="background:${col(v.e)}">${v._g}</span><span>${link(v.k, v.sh)}, ${v.e}${v.trial ? ' (trial)' : ''}, ${lenTxt(v)}, <b style="color:var(--text)">${v.df} days</b></span></div>`).join('');
+  document.getElementById('sl-len-list').innerHTML = L.map(v => `<div><span class="dn" style="background:${col(v.e)}">${v._g}</span><span>${link(v.k, v.sh)}, ${v.e}${v.trial ? ' (trial)' : v.early ? ' (earlier)' : ''}, ${lenTxt(v)}, <b style="color:var(--text)">${v.df} days</b></span></div>`).join('');
 })();
 
 /* month calendar */
 const CAL = {days: 8, eds: 6};
 const CAL_DAYS = [6, 7, 8, 9, 10];
+const CAL_NEED = 5;
+const CL5 = ['James Conole', 'Ari', 'Vishen', 'Daniel Priestley', 'Nigel'];
+const CAL_OWN = {Anirba: 'Nigel', Saiyam: 'James Conole', Sharan: 'Ari', Lokesh: 'Daniel Priestley', Mohit: 'Vishen'};
 function calModel(N, E) {
   const dates = []; for (let d = 1; d <= 31; d++) { const w = new Date(Date.UTC(2026, 11, d)).getUTCDay(); if (w !== 0 && w !== 6) dates.push(d); }
+  const n = dates.length;
   const people = EDITORS.slice(0, Math.min(E, 6)).map(e => ({name: e.id, color: col(e.id)})); if (E > 6) people.push({name: 'Shared', color: 'var(--gold)'});
-  const byDay = {}; let total = 0;
-  people.forEach((p, i) => { const ph = Math.floor(i * N / people.length); for (let d = ph; d < dates.length; d += N) { (byDay[dates[d]] = byDay[dates[d]] || []).push(p); total++; } });
-  return {dates, byDay, total, n: dates.length};
+  const pos = dates.map(d => { const dt = new Date(Date.UTC(2026, 11, d)), off = Math.round((dt - Date.UTC(2026, 10, 30)) / MS); return {w: Math.floor(off / 7), c: dt.getUTCDay() - 1, d}; });
+  const events = []; let total = 0, rot = 0;
+  people.forEach((p, i) => {
+    const ph = Math.floor(i * N / people.length);
+    for (let d = ph; d < n; d += N) {
+      const client = CAL_OWN[p.name] || CL5[rot++ % 5];
+      events.push({pi: i, s: Math.max(0, d - N + 1), e: d, realStart: d - N + 1, client, done: true}); total++;
+      if (d + N >= n && d + 1 < n) events.push({pi: i, s: d + 1, e: n - 1, realStart: d + 1, client: CAL_OWN[p.name] || CL5[rot % 5], done: false});
+    }
+  });
+  const weekDone = [0, 0, 0, 0, 0], cov = {}; CL5.forEach(c => cov[c] = [0, 0, 0, 0, 0]);
+  events.filter(e => e.done).forEach(e => { const w = pos[e.e].w; weekDone[w]++; cov[e.client][w] = 1; });
+  return {dates, pos, people, events, total, n, weekDone, cov};
 }
 function renderCal() {
-  const N = CAL.days, E = CAL.eds, M = calModel(N, E), wk = M.n / 5;
+  const N = CAL.days, E = CAL.eds, M = calModel(N, E), P = M.people.length, wk = M.n / 5;
+  const needTotal = Math.round(CAL_NEED * wk), covered = CL5.reduce((a, c) => a + M.cov[c].reduce((x, y) => x + y, 0), 0);
   document.getElementById('cal-tiles').innerHTML = `
-    <div class="tile"><div class="n">${M.total}</div><div class="t">Videos finished in December</div><div class="d">${E} editors, one video each at a time, ${N} working days per video.</div></div>
-    <div class="tile"><div class="n">${(M.total / wk).toFixed(1)}</div><div class="t">Videos a week</div><div class="d">${M.n} working days is ${wk.toFixed(1)} weeks. At 6 days the same editors would finish ${calModel(6, E).total}.</div></div>
-    <div class="tile"><div class="n">${N}</div><div class="t">Editors for 5 videos a week</div><div class="d">One video per client a week (James, Ari, Vishen, Daniel, Nigel) is about 5, inferred from publish schedules. At ${N} working days each, that takes ${N} editors on long-form.</div></div>`;
-  const wkStart = new Date(Date.UTC(2026, 10, 30));
-  let html = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map(d => `<div class="calh">${d}</div>`).join('') + '<div class="calh">Videos</div>';
+    <div class="tile"><div class="n">${M.total} <span style="font-size:20px;color:var(--text-faint);font-weight:700">of ${needTotal}</span></div><div class="t">Videos finished in December</div><div class="d">${E} editors, one video each at a time, ${N} working days per video. One video per client per week, 5 clients, is about ${needTotal}.</div></div>
+    <div class="tile"><div class="n">${covered} <span style="font-size:20px;color:var(--text-faint);font-weight:700">of 25</span></div><div class="t">Client weeks covered</div><div class="d">Each of the 5 clients needs a video every week, 5 weeks in December. Short by ${25 - covered}.</div></div>
+    <div class="tile"><div class="n">${N}</div><div class="t">Editors for 5 videos a week</div><div class="d">At ${N} working days per video, 5 a week takes ${N} editors on long-form. Today there are 6.</div></div>`;
+  const rows = P + 1;
+  let html = '<div class="cwh"><div>Mon</div><div>Tue</div><div>Wed</div><div>Thu</div><div>Fri</div><div>This week</div></div>';
   for (let w = 0; w < 5; w++) {
-    let wt = 0;
-    for (let i = 0; i < 5; i++) {
-      const dt = new Date(wkStart.getTime() + (w * 7 + i) * MS), inM = dt.getUTCMonth() === 11, d = dt.getUTCDate(), ch = inM ? (M.byDay[d] || []) : [];
-      wt += ch.length;
-      html += `<div class="calc ${inM ? '' : 'out'} ${ch.length ? 'has' : ''}"><div class="dt">${inM ? d : ''}</div>${ch.map(p => `<span class="chip" style="--ec:${p.color}">${p.name}</span>`).join('')}</div>`;
+    let b = `<div class="cwk" style="grid-template-rows:auto repeat(${P}, 26px)">`;
+    for (let c = 0; c < 5; c++) {
+      const dt = new Date(Date.UTC(2026, 10, 30) + (w * 7 + c) * MS), inM = dt.getUTCMonth() === 11;
+      b += `<div class="cwcol ${inM ? '' : 'out'}" style="grid-column:${c + 1};grid-row:1 / span ${rows}"></div><div class="cwd ${inM ? '' : 'out'}" style="grid-column:${c + 1};grid-row:1">${inM ? dt.getUTCDate() : ''}</div>`;
     }
-    html += `<div class="calw"><div>${wt}<small>${wt === 1 ? 'video' : 'videos'}</small></div></div>`;
+    M.events.forEach(ev => {
+      const idxs = []; for (let i = ev.s; i <= ev.e; i++) if (M.pos[i].w === w) idxs.push(i);
+      if (!idxs.length) return;
+      const c0 = M.pos[idxs[0]].c, c1 = M.pos[idxs[idxs.length - 1]].c, p = M.people[ev.pi];
+      const isStart = idxs[0] === ev.realStart, isEnd = idxs[idxs.length - 1] === ev.e && ev.done, first = idxs[0] === ev.s;
+      b += `<div class="ev ${isStart ? 'st' : ''} ${isEnd ? 'en' : ''} ${ev.done ? '' : 'open'}" style="--ec:${p.color};grid-column:${c0 + 1} / ${c1 + 2};grid-row:${ev.pi + 2}"><span>${first || c0 === 0 ? esc(p.name) + ' &middot; ' + esc(ev.client.split(' ')[0]) : ''}</span>${isEnd ? '<b>done</b>' : ''}</div>`;
+    });
+    const dn = M.weekDone[w], ok = dn >= CAL_NEED;
+    b += `<div class="cwt ${ok ? 'ok' : 'short'}" style="grid-column:6;grid-row:1 / span ${rows}"><div>${dn}<small>of ${CAL_NEED} needed</small></div></div></div>`;
+    html += b;
   }
   document.getElementById('cal-grid').innerHTML = html;
-  const rows = CAL_DAYS.map(d => ({d, t: calModel(d, E).total})), mx = Math.max(...rows.map(r => r.t));
-  document.getElementById('cal-cmp').innerHTML = rows.map(r => `<button type="button" class="cmp" data-d="${r.d}" aria-pressed="${r.d === N}"><b>${r.d} days</b><span class="tr"><i style="width:${r.t / mx * 100}%"></i></span><span class="v">${r.t}</span></button>`).join('');
+  document.getElementById('cal-legend').innerHTML = M.people.map(p => `<span><i class="sw" style="background:${p.color}"></i>${p.name}</span>`).join('') + '<span>Each bar is one video from start to the day it is finished. The client is shown after the name. Manish and the shared editor rotate between clients.</span>';
+  document.getElementById('cal-cov').innerHTML = `<div class="sec-title" style="padding:6px 0 8px">Which clients get a video each week</div><div class="row th" style="grid-template-columns:minmax(0,1.4fr) repeat(5, 1fr)"><div>Client</div>${[1, 2, 3, 4, 5].map(i => `<div style="text-align:center">Week ${i}</div>`).join('')}</div>` +
+    CL5.map(c => `<div class="row" style="grid-template-columns:minmax(0,1.4fr) repeat(5, 1fr);padding:10px 0"><div class="who"><b>${c}</b></div>${M.cov[c].map(x => `<div style="text-align:center"><span class="pill ${x ? 'ok' : 'late'} sm">${x ? 'Video' : 'None'}</span></div>`).join('')}</div>`).join('');
+  const rws = CAL_DAYS.map(d => ({d, t: calModel(d, E).total})), mx = Math.max(...rws.map(r => r.t));
+  document.getElementById('cal-cmp').innerHTML = rws.map(r => `<button type="button" class="cmp" data-d="${r.d}" aria-pressed="${r.d === N}"><b>${r.d} days</b><span class="tr"><i style="width:${r.t / mx * 100}%"></i></span><span class="v">${r.t}</span></button>`).join('');
   document.querySelectorAll('#cal-days button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.d === N)));
   document.querySelectorAll('#cal-eds button').forEach(b => b.setAttribute('aria-pressed', String(+b.dataset.e === E)));
 }
@@ -1879,6 +1960,7 @@ renderCal();
     ['Few videos hit the 6 day plan', `${S.n5} of ${S.fin.length} videos did. The best pair averages ${f1(S.best.fin)}. That points at the timeline before the editor. Sanket’s rule, as written, is tighter than what happened, so it needs calibrating first.`],
     ['Dates gave less time than videos took', `${S.fr.length} videos with a final date were given ${f1(S.give)} working days and took ${f1(S.take)}. ${S.onDate} landed on the date. Template-style videos were given ${f1(avg(S.fr.filter(r => S.TEMPLATE(r.v.c)).map(r => r.give)))} days and took ${f1(avg(S.fr.filter(r => S.TEMPLATE(r.v.c)).map(r => r.take)))}, new-content videos ${f1(avg(S.fr.filter(r => !S.TEMPLATE(r.v.c)).map(r => r.give)))} and ${f1(avg(S.fr.filter(r => !S.TEMPLATE(r.v.c)).map(r => r.take)))}. Editors on the template clients miss dates too: Sharan was on time on ${LKS.byEd.find(x => x.ed.id === 'Sharan').ok} of ${LKS.byEd.find(x => x.ed.id === 'Sharan').n}, Saiyam on ${LKS.byEd.find(x => x.ed.id === 'Saiyam').ok} of ${LKS.byEd.find(x => x.ed.id === 'Saiyam').n}.`],
     ['New content costs time up front', `Vishen, Daniel and Nigel videos take about 2 days longer to reach the first draft. It is not shown that every editor is slower on them: Saiyam took 10 on Nigel against 7 on James, Anirba 8 on Nigel against 9 on Vishen.`],
+    ['Aaron’s earlier Daniel videos took as long', `Aaron’s five earlier Daniel videos (Mar to Jul) took ${f1(S.aaron.fin)} working days to final and ${f1(S.aaron.v1)} to first draft. Lokesh’s two took ${f1(avg(S.fin.filter(v => v.c === 'Daniel Priestley').map(v => v.df)))}. Aaron’s numbers include waits on Daniel’s photos and footage, review gaps and his own interruptions, so they are not a pure editing time, but the length of Daniel videos is not only a Lokesh pattern.`],
     ['Editors still matter', `On Vishen videos Lokesh took 6 days, Anirba 9 and Mohit 13 (all three of Mohit’s had client waits). Sanket’s 50 minute masterclass took ${bd('2026-08-18', '2026-09-04')} days. There is no data that swapping an editor would be faster.`]
   ];
   document.getElementById('sl-read').innerHTML = items.map(x => `<div class="vd-item"><span class="vd-t">${esc(x[0])}</span><span class="vd-d">${x[1]}</span></div>`).join('');
