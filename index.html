@@ -327,9 +327,88 @@ section { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
   .page { gap: 44px; }
   .cal-wrap { padding: 18px 16px; }
 }
+
+/* ---------- tabs and pages ---------- */
+.tabs { position: sticky; top: 0; z-index: 30; display: flex; flex-wrap: wrap; gap: 6px; padding: 10px 0; margin: -10px 0 -20px; background: color-mix(in srgb, var(--bg) 90%, transparent); -webkit-backdrop-filter: blur(10px); backdrop-filter: blur(10px); }
+.tabs a { display: inline-flex; align-items: center; gap: 10px; text-decoration: none; font: 700 14px 'Inter Tight', sans-serif; letter-spacing: -.005em; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 999px; padding: 9px 18px 9px 10px; }
+.tabs a b { width: 24px; height: 24px; border-radius: 50%; display: grid; place-items: center; font-size: 12.5px; background: var(--surface-2); color: var(--text-muted); }
+.tabs a[aria-current="page"] { color: var(--text); border-color: var(--text); box-shadow: var(--shadow); }
+.tabs a[aria-current="page"] b { background: var(--text); color: var(--bg); }
+.pg { display: none; flex-direction: column; gap: 56px; min-width: 0; }
+.pg.on { display: flex; }
+@media (max-width: 680px) { .tabs a { padding: 8px 14px 8px 8px; font-size: 13px; } .tabs { margin-bottom: -28px; } }
+
+/* shared extras */
+.cols2 { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 22px 24px; box-shadow: var(--shadow); min-width: 0; }
+.card h3 { font-size: 18px; font-weight: 700; letter-spacing: -.015em; line-height: 1.25; }
+.card p { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-top: 8px; }
+.card .tag { display: inline-block; font: 700 11px 'Inter Tight', sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); margin-bottom: 8px; }
+.card ul { margin: 10px 0 0; padding-left: 18px; color: var(--text-muted); font-size: 13.5px; line-height: 1.6; }
+.card ul li { margin-top: 4px; }
+.callout { border: 1.5px solid var(--gold); background: var(--gold-soft); color: var(--text); border-radius: 18px; padding: 16px 20px; font-size: 14px; line-height: 1.6; }
+.callout b { font-family: 'Inter Tight', sans-serif; }
+.heat { font-variant-numeric: tabular-nums; font-weight: 700; font-size: 14px; border-radius: 10px; padding: 8px 6px; text-align: center; line-height: 1.25; }
+.heat small { display: block; font-weight: 500; font-size: 11.5px; color: var(--text-faint); }
+.heat.h1 { background: color-mix(in srgb, var(--ok) 16%, var(--surface)); }
+.heat.h2 { background: color-mix(in srgb, var(--warn) 22%, var(--surface)); }
+.heat.h3 { background: color-mix(in srgb, var(--bad) 17%, var(--surface)); }
+.heat.h0 { background: var(--surface-2); color: var(--text-faint); font-weight: 500; }
+.mx { display: grid; gap: 6px; align-items: stretch; padding: 4px 0; }
+.mx .rh { font: 700 14px 'Inter Tight', sans-serif; align-self: center; }
+.mx .rh small { display: block; font: 500 12px 'Inter', sans-serif; color: var(--text-faint); }
+.mx.th > div { font: 600 11.5px 'Inter Tight', sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--text-faint); text-align: center; align-self: end; padding-bottom: 4px; }
+.mxwrap { overflow-x: auto; }
+.mxwrap .mx { min-width: 640px; }
+.wk { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.wd { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 16px 16px 18px; box-shadow: var(--shadow); min-width: 0; }
+.wd .dn2 { font: 700 11.5px 'Inter Tight', sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
+.wd b { display: block; font: 800 17px 'Inter Tight', sans-serif; letter-spacing: -.015em; margin-top: 6px; line-height: 1.2; }
+.wd p { font-size: 13px; color: var(--text-muted); line-height: 1.5; margin-top: 8px; }
+.wd .mins { font: 800 26px 'Inter Tight', sans-serif; letter-spacing: -.03em; color: var(--accent); margin-top: 10px; font-variant-numeric: tabular-nums; }
+.wd .mins small { font: 500 12px 'Inter', sans-serif; color: var(--text-faint); letter-spacing: 0; }
+.wd.fin { border-color: var(--ok); }
+.pace { display: flex; height: 12px; border-radius: 999px; overflow: hidden; background: var(--surface-2); margin-top: 14px; }
+.pace i { display: block; height: 100%; }
+.opt { display: grid; grid-template-columns: 44px minmax(0, 1fr); gap: 4px 18px; padding: 22px 0; border-top: 1px solid var(--border); }
+.opt:first-child { border-top: 0; }
+.opt .on { width: 36px; height: 36px; border-radius: 50%; display: grid; place-items: center; background: var(--accent-soft); color: var(--accent); font: 800 16px 'Inter Tight', sans-serif; }
+.opt h3 { font-size: 19px; font-weight: 700; letter-spacing: -.015em; line-height: 1.25; padding-top: 4px; }
+.opt .says { font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-top: 6px; }
+.opt .dat { margin-top: 12px; display: grid; gap: 8px; }
+.opt .dat > div { font-size: 13.5px; line-height: 1.55; padding: 10px 14px; border-radius: 12px; background: var(--surface-2); }
+.opt .dat > div b { font-family: 'Inter Tight', sans-serif; font-weight: 700; }
+.opt .dat .for { border-left: 3px solid var(--ok); }
+.opt .dat .against { border-left: 3px solid var(--bad); }
+.opt .dat .unk { border-left: 3px solid var(--border-strong); }
+.opt > div:last-child { min-width: 0; }
+.qs { margin: 10px 0 0; padding-left: 20px; font-size: 14px; line-height: 1.6; color: var(--text-muted); }
+.qs li { margin-top: 5px; }
+.ltab { display: grid; grid-template-columns: minmax(0, 1.6fr) 70px 70px 90px 90px 110px; gap: 4px 16px; align-items: center; padding: 12px 0; border-top: 1px solid var(--border); font-size: 14px; }
+.ltab.th { font: 600 11.5px 'Inter Tight', sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); border-top: 0; padding-bottom: 8px; }
+.ltab .cell i { display: none; }
+.lk-late { grid-template-columns: minmax(0, 1.5fr) 84px 84px 70px 70px 124px 90px; }
+.hl-row { background: color-mix(in srgb, var(--c-lokesh) 10%, transparent); border-radius: 10px; }
+@media (max-width: 860px) {
+  .cols2 { grid-template-columns: 1fr; }
+  .wk { grid-template-columns: 1fr; }
+  .ltab, .lk-late { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px 14px; }
+  .ltab.th { display: none; }
+  .ltab > :first-child, .lk-late > :first-child { grid-column: 1 / -1; }
+  .ltab .cell i { display: block; }
+  .opt { grid-template-columns: 1fr; }
+}
 </style>
 
 <div class="page">
+
+  <nav class="tabs" id="tabs" aria-label="Pages">
+    <a href="#turnaround" data-p="turnaround"><b>1</b>How long editors take</a>
+    <a href="#lokesh" data-p="lokesh"><b>2</b>Lokesh</a>
+    <a href="#solution" data-p="solution"><b>3</b>Solution</a>
+  </nav>
+
+  <div class="pg on" id="pg-turnaround">
 
   <header>
     <p class="eyebrow">Editor workflow &middot; 17 Aug to 17 Nov 2026</p>
@@ -455,8 +534,186 @@ section { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
     </div>
   </section>
 
+  </div>
+
+  <div class="pg" id="pg-lokesh">
+
+  <header>
+    <p class="eyebrow">Lokesh Singh &middot; 15 Jun to 17 Nov 2026</p>
+    <h1>Has Lokesh been <mark>on time?</mark></h1>
+    <div class="tiles" id="lk-tiles"></div>
+    <p class="sub" style="margin-top:14px">Every video he has worked on since his first day, counted the same way as the first page. A day is a working day, Monday to Friday, and the day a video is assigned is day 1.</p>
+  </header>
+
+  <section>
+    <div class="sec-title">On time or not</div>
+    <p class="sub">Every video with a due date written in Slack. Each row says how many working days he was given, how many it took, and whether he asked for more time before the date passed.</p>
+    <div class="strip" id="lk-late"></div>
+    <div class="cal-wrap">
+      <div class="chart-box"><div id="lk-allot"></div></div>
+      <div class="legend" id="lk-allot-legend"></div>
+      <div class="key">Hover or tap a row for every step of that video.</div>
+    </div>
+    <div class="sec-title" style="margin-top:14px">And the other editors</div>
+    <div class="strip" id="lk-ed"></div>
+  </section>
+
+  <section>
+    <div class="sec-head">
+      <div class="sec-title">Every video on a timeline</div>
+      <div class="seg" role="group" aria-label="Zoom" id="lk-zoom">
+        <button type="button" data-z="0" aria-pressed="true">Fit</button>
+        <button type="button" data-z="1" aria-pressed="false">Zoom in</button>
+        <button type="button" data-z="2" aria-pressed="false">Zoom more</button>
+      </div>
+    </div>
+    <p class="sub">One row per video, oldest at the top. Hover or tap a bar for the drafts and days. The first five were in his trial period.</p>
+    <div class="cal-wrap">
+      <div class="chart-box" id="lk-tlbox"></div>
+      <div class="legend">
+        <span><i class="bx work"></i>Assigned to first draft</span>
+        <span><i class="bx rev"></i>First draft to final</span>
+        <span><i class="bx live"></i>Still open</span>
+        <span><i style="background:var(--accent)"></i>A-cut</span>
+        <span><i class="ring"></i>First draft</span>
+        <span><i style="background:var(--ok)"></i>Final</span>
+        <span><i style="width:3px;height:11px;border-radius:1px;background:var(--text)"></i>Later drafts</span>
+        <span><i class="dia"></i>Stated due date</span>
+        <span><i class="bx we"></i>Weekend</span>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="sec-title">Length against working days to final</div>
+    <p class="sub">Purple dots are Lokesh’s videos with a length written in Slack. Grey dots are every other editor’s.</p>
+    <div class="cal-wrap"><div class="chart-box"><div id="lk-scbox"></div></div></div>
+    <div class="strip" id="lk-lens"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">Averages</div>
+    <p class="sub">His numbers in three periods, next to the other five editors.</p>
+    <div class="strip" id="lk-avg"></div>
+    <div class="legend" id="lk-avg-key" style="margin-top:-4px"></div>
+    <div class="sec-title" style="margin-top:14px">The same client, different editors</div>
+    <div class="strip" id="lk-client"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">All his videos</div>
+    <div class="strip" id="lk-all"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">Other work, not in the averages</div>
+    <div class="strip" id="lk-oth"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">My read, not data</div>
+    <p class="sub">This part is Claude’s read of the numbers above. The rest of the page stays data only.</p>
+    <div class="vd" id="lk-read"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">How this was counted</div>
+    <div class="strip how">
+      <div class="row"><b>Window</b><span>15 Jun to 17 Nov 2026. The first four videos are from his trial period, before the team window on the first page starts on 17 Aug, so they are shown here but are not in the team averages. Short-form work and disclosure passes are under other work.</span></div>
+      <div class="row"><b>Due dates</b><span>Only dates written in Slack. Where an extension was agreed, the agreed date is used and the original is shown. A red result counts working days after the date up to delivery. Briefs rarely say whether a date is for the first draft or the final, so the stage is shown beside each one.</span></div>
+      <div class="row"><b>Trial notes</b><span>The Daniel Priestley assignment text says “Friday, Jul 26”, which cannot be right for 2026. The date used is Tuesday Jun 23, the one he agreed for the first draft. The go-live of Jul 4 is in the note. His V2 on that video was never posted in Slack, so seven versions is by label and six are visible.</span></div>
+      <div class="row"><b>Not found</b><span>The Ryan Deiss thread ends with V2 and no approval message, so the last draft date is used as final. The two James VSL drafts V4 and V5 are unlabelled in the thread and were counted from the later V6 label. The hard drive failure on Jul 16 does not name the project, the Ari VSL is the most likely.</span></div>
+      <div class="row"><b>Open</b><span>Sales Systems is still open as of the evening of 17 Nov. Its first draft is due 18 Nov and the final 19 Nov.</span></div>
+      <div class="row"><b>Sources</b><span>#trial-editor-lokesh and the client threads in #internal-*, read in full. Dates are IST.</span></div>
+    </div>
+  </section>
+
+  </div>
+
+  <div class="pg" id="pg-solution">
+
+  <header>
+    <p class="eyebrow">Solution &middot; for the editor timeline discussion</p>
+    <h1>What would <mark>fix the timelines</mark></h1>
+    <div class="tiles" id="sl-tiles"></div>
+    <p class="sub" style="margin-top:14px">Same counting as the first page, working days Monday to Friday. Sections that state Sanket’s view are marked, the numbers beside them are from Slack.</p>
+  </header>
+
+  <section>
+    <div class="sec-title">The plan: a five day week</div>
+    <p class="sub">Sanket’s workflow for a 25 minute video.</p>
+    <div class="wk" id="sl-week"></div>
+    <div id="sl-pace"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">Is the plan being met?</div>
+    <p class="sub">When first drafts and finals actually landed. Green bars are inside the plan.</p>
+    <div class="cols2">
+      <div class="cal-wrap"><div class="sec-title" style="padding:0 0 10px">First draft, videos by working day</div><div class="chart-box"><div id="sl-h1"></div></div></div>
+      <div class="cal-wrap"><div class="sec-title" style="padding:0 0 10px">Final, videos by working day</div><div class="chart-box"><div id="sl-h2"></div></div></div>
+    </div>
+    <div class="sec-title" style="margin-top:14px">Days given against days taken</div>
+    <p class="sub">Every video with a due date written in Slack, all editors. The grey bar is the days the date gave, the coloured bar is the days it took.</p>
+    <div class="cal-wrap"><div class="chart-box"><div id="sl-allot"></div></div>
+      <div class="legend"><span><i class="bx rev"></i>Days given</span><span><i style="width:16px;height:8px;border-radius:4px;background:var(--ok)"></i>On time</span><span><i style="width:16px;height:8px;border-radius:4px;background:var(--warn)"></i>Weekend after</span><span><i style="width:16px;height:8px;border-radius:4px;background:var(--bad)"></i>Later</span><span><i style="width:16px;height:8px;border-radius:4px;background:var(--gold);opacity:.6"></i>Open</span></div></div>
+    <div id="sl-allot-sum"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">Does the client change the time?</div>
+    <p class="sub">Sanket’s view: James and Ari videos are close to templates, and Vishen, Daniel Priestley and Nigel bring new stories, concepts and animations each time. Here is how long each editor took on each client.</p>
+    <div class="strip" style="padding-top:14px" id="sl-mx"></div>
+    <div class="strip" id="sl-client"></div>
+    <div class="callout"><b>What this can and cannot show.</b> Only a few editors have worked both kinds of client in this window, so most cells have one editor and a handful of videos. Daniel Priestley was edited only by Lokesh in these three months. Ari is a new client and both of Ari’s videos were early ones.</div>
+    <div class="sec-title" style="margin-top:14px">Saiyam and Anirba on Nigel</div>
+    <div class="strip" id="sl-nigel"></div>
+    <div class="sec-title" style="margin-top:14px">Where the days go</div>
+    <div class="strip" id="sl-seg"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">How long should a video get?</div>
+    <p class="sub">For each finished video with a length written in Slack: what the five day workflow allows, what Sanket’s rule gives (25 minutes is 5 days, 1 more above 25, 2 more above 30, and about a day for every further 10 minutes), and what it took.</p>
+    <div class="strip" id="sl-len"></div>
+    <div id="sl-len-sum"></div>
+    <div class="sec-title" style="margin-top:14px">What longer dates cost</div>
+    <div class="strip" id="sl-cap"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">Options</div>
+    <p class="sub">Four ideas from Sanket, each with the evidence for it, against it, and what is not known yet. Green is for, red is against, grey is not measured.</p>
+    <div class="vd" style="border-color:var(--border-strong)" id="sl-opts"></div>
+    <div id="sl-survey"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">Other things worth adding</div>
+    <div class="strip" id="sl-more"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">My read, not data</div>
+    <p class="sub">This part is Claude’s read of the numbers above. The rest of the page stays data and Sanket’s stated views.</p>
+    <div class="vd" id="sl-read"></div>
+  </section>
+
+  <section>
+    <div class="sec-title">How this was counted</div>
+    <div class="strip how">
+      <div class="row"><b>Same as page one</b><span>Same videos, same working day rule and the same list of what is left out. Lokesh’s trial-period videos are added only in the length table and the first-video comparison.</span></div>
+      <div class="row"><b>Plan days</b><span>The 5 day plan is Sanket’s workflow: A-cut Monday, then 5 minutes on Tuesday, 10 on Wednesday and 10 on Thursday, review and V2 on Friday. For other lengths each further 10 minutes adds a day. That is the arithmetic of the workflow, not a measured result.</span></div>
+      <div class="row"><b>Your rule</b><span>Above 25 minutes add 1 day, above 30 add 2, and every further full 10 minutes add 1. A length written as “25+” is read as just over 25. This is how the rule was read here, it can be changed.</span></div>
+      <div class="row"><b>Client groups</b><span>James Conole and Ari are grouped as template style videos, Vishen, Daniel Priestley and Nigel as new content. That grouping is Sanket’s, it is not measured here.</span></div>
+      <div class="row"><b>Handovers</b><span>Counted from the thread notes. Mohit and Lokesh telling Sanket the timelines are short is from their feedback calls and is not in Slack.</span></div>
+    </div>
+  </section>
+
+  </div>
+
   <div id="tip" role="tooltip"></div>
-  <p class="foot">Pulled from Slack on 17 Nov 2026. Dates in IST. Working days are Monday to Friday.</p>
+  <p class="foot">Pulled from Slack on 17 Nov 2026, Lokesh’s trial period and open items checked on 18 Nov. Dates in IST. Working days are Monday to Friday.</p>
 </div>
 
 <script>
@@ -508,7 +765,7 @@ const V = [
 
  {e:'Lokesh',t:'10 Things You Need To Know Before Retiring Early',sh:'10 Things, Retiring Early',c:'James Conole',k:'L3',len:null,s:'2026-09-14',a:'2026-09-14',v1:'2026-09-19',fin:'2026-09-25',dr:3,due:'2026-09-24',dk:'final',dt:'Sign-off wanted Sep 24',st:'done',n:'First assigned to Saiyam Sep 7. Saiyam’s A-cut was handed over Sep 14. Video had 9 points, client confirmed 9 on Sep 24.'},
  {e:'Lokesh',t:'5 Stages of Becoming the Go-to Expert In Your Niche',sh:'5 Stages',c:'Vishen',k:'L4',len:25,lenMin:true,lenNote:'Lokesh, Oct 6: "over 25 mins"',s:'2026-10-02',a:'2026-10-05',v1:'2026-10-11',fin:'2026-10-11',dr:2,due:'2026-10-09',dk:'final',dt:'Fri Oct 9',st:'done',n:'Asked for an extra day on Oct 6, none available. First draft posted Oct 11, 01:07 IST, final the same afternoon.'},
- {e:'Lokesh',t:'If You Don’t Understand Money (Microeconomics), You Don’t Understand Business',sh:'Understand Money',c:'Daniel Priestley',k:'L5',len:30,lenMin:true,lenNote:'Lokesh, Oct 20: "over 30 minutes"',s:'2026-10-19',a:'2026-10-20',v1:'2026-10-27',fin:'2026-10-30',dr:4,st:'done',n:'Two-day extension asked Oct 20 and agreed Oct 22. New date is not in the thread. 4K export was slow. Power cut Oct 28.'},
+ {e:'Lokesh',t:'If You Don’t Understand Money (Microeconomics), You Don’t Understand Business',sh:'Understand Money',c:'Daniel Priestley',k:'L5',len:30,lenMin:true,lenNote:'Lokesh, Oct 20: "over 30 minutes"',s:'2026-10-19',a:'2026-10-20',v1:'2026-10-27',fin:'2026-10-30',dr:4,due:'2026-10-28',due0:'2026-10-26',dk:'final',dt:'Mon Oct 26, moved to Wed Oct 28 (extension agreed)',st:'done',n:'Original deadline Mon Oct 26. Two-day extension asked Oct 20 with a day-by-day plan, Najma agreed, which put the final on Wed Oct 28. 4K export was slow. Power cut on the day V2 was due.'},
  {e:'Lokesh',t:'Unfortunately, Growing a $1M Business Is Really This Simple',sh:'Growing a $1M Business',c:'Daniel Priestley',k:'L6',len:28,lenNote:'Lokesh, Nov 2',s:'2026-10-28',a:'2026-11-02',v1:'2026-11-05',fin:'2026-11-07',dr:4,due:'2026-11-06',dk:'final',st:'done',n:'Extension asked Nov 2, declined (publish Nov 7). On approved leave Nov 6 to 7. Two spelling fixes after Najma’s review on Nov 7.'},
  {e:'Lokesh',t:'If You Only Watch One Video About Sales Systems, Make It This One',sh:'Sales Systems',c:'Nigel',k:'L7',len:28,lenNote:'target 25 to 30 min, set by Saf',lenTarget:true,s:'2026-11-11',a:'2026-11-12',v1:null,fin:null,dr:0,due:'2026-11-18',dk:'v1',dt:'V1 Nov 18, final Nov 19',st:'prog',n:'Hook posted Nov 14. First Nigel video for Lokesh. Sanket asked for a firm V1 time on Nov 17.'},
 
@@ -1009,5 +1266,515 @@ function med(a) { if (!a.length) return null; const s = [...a].sort((x, y) => x 
     ['Editor commitments from #daily-update', '"Ready for Sanket’s review by" is posted every morning. It can be compared with the real draft time.']
   ];
   document.getElementById('gaps').innerHTML = `<div class="row th" style="grid-template-columns:1fr">Worth capturing from here</div>` + gaps.map(g => `<div class="row why"><b>${esc(g[0])}</b><span class="f">${esc(g[1])}</span></div>`).join('');
+})();
+
+/* ================= pages 2 and 3: data ================= */
+Object.assign(LINKS, {
+  E1: 'https://bettervideos.slack.com/archives/C0BANBXFLRF/p1781634128772089',
+  E2: 'https://bettervideos.slack.com/archives/C0BANBXFLRF/p1782764737817839',
+  E3: 'https://bettervideos.slack.com/archives/C0BANBXFLRF/p1783624637672129',
+  E4: 'https://bettervideos.slack.com/archives/C0BANBXFLRF/p1784652855677759',
+  E5: 'https://bettervideos.slack.com/archives/C0BANBXFLRF/p1785856758231149',
+  ES: 'https://bettervideos.slack.com/archives/C0BANBXFLRF/p1785129996223019',
+  ED: 'https://bettervideos.slack.com/archives/C0BANBXFLRF/p1784560149415559'
+});
+/* Lokesh, trial period 15 Jun to 16 Aug 2026. Same fields as V. hand = first cut only, handed to another editor. flag = when the editor raised a timing problem: before, after or none. */
+const LE = [
+ {e:'Lokesh',t:'What It Takes To Exit A Business',sh:'What It Takes To Exit',c:'Daniel Priestley',k:'E1',len:23,lenNote:'Lokesh, Jun 19, at the A-cut stage: "the video is 23-min long"',s:'2026-06-17',a:'2026-06-18',v1:'2026-06-24',fin:'2026-07-07',dr:7,due:'2026-06-23',dk:'v1',dt:'Mon Jun 22 (Surabhi), Tue Jun 23 agreed. Go-live Jul 4',st:'done',trial:true,flag:'before',
+  ext:'Asked for more time on Jun 19 because of the length. Tuesday Jun 23 was agreed, missed, first draft posted Jun 24 at 15:38.',
+  n:'First task of his trial. Assigned Jun 16 late evening, work could start Wed Jun 17 once Notion, Frame and font files arrived from Aaron and Saf. Seven versions by label, six visible as uploads in Slack (V2 was never posted). Mac crash on Jul 2 left the after-20-minute comments undone. Final approved Jul 7, three days after the Jul 4 go-live date. The assignment text says "Friday, Jul 26", which cannot be right for 2026.'},
+ {e:'Lokesh',t:'Sequoia System VSL, James Conole',sh:'Sequoia System VSL',c:'James Conole',k:'E2',len:17,lenTarget:true,lenNote:'Gio’s brief: about 16 to 18 min after edits',s:'2026-06-30',a:'2026-07-03',v1:'2026-07-08',fin:'2026-07-17',dr:5,due:'2026-07-08',dk:'final',dt:'Wed Jul 8, the date the client asked for',st:'done',trial:true,flag:'none',
+  ext:'No extension asked. Gio had asked the client for a few extra days.',
+  n:'A VSL, not a YouTube video. First of three VSLs for James. Waited Jul 3 to 6 for a decision on which part of the fee section to cut. First draft Jul 8 at 22:12. On Jul 10 the client renamed "Kickoff Meeting" to "Proposal Meeting", which led to about four days of voice and lip-sync tests before a full-screen animation was chosen on Jul 14. Export problems Jul 15. Sanket approved V5 on Jul 17, V6 fixed one missed mention. The stage of the Jul 8 date is not stated, final is used.'},
+ {e:'Lokesh',t:'Sequoia System VSL, Ari',sh:'Sequoia VSL, Ari',c:'Ari',k:'E3',len:null,s:'2026-07-10',a:'2026-07-14',v1:'2026-07-21',fin:'2026-07-21',dr:2,due:'2026-07-15',dk:'final',st:'done',trial:true,flag:'after',
+  ext:'Asked for one extra day on Jul 16 after the date had passed (hard drive failure, the post does not name the project).',
+  n:'Script nearly identical to James’s VSL. Sanket’s Jul 7 estimate for it was 3 days ideal, 4 worst case. A-cut was started before the thread opened. He was also on James V3 to V6 on Jul 14 to 17. Hard drive damaged Jul 16 and back Jul 17. Gio asked for a status on Jul 20, first draft Jul 21 at 01:48. Sanket approved V2 that evening, client approved Jul 22. The stage of the Jul 15 date is not stated, final is used.'},
+ {e:'Lokesh',t:'Story-telling Part 2, The 5 Storytelling Techniques',sh:'Story-telling Part 2',c:'Vishen',k:'E4',len:24,lenNote:'Aaron, Jul 27: "a 24 minute video" (first-cut length)',s:'2026-07-22',a:'2026-07-24',v1:null,fin:null,dr:0,due:'2026-07-30',dk:'final',st:'hand',hand:true,trial:true,flag:'before',
+  ext:'Asked for one more day on Jul 24. Najma said Jul 31 afternoon was the latest, then moved the edit to Aaron the same afternoon because the publish date was fixed.',
+  n:'First Vishen video for Lokesh. Delivered a first cut on Jul 24 and handed the Premiere project to Aaron the same day. Aaron posted V1 on Jul 29 and V2 on Jul 30, approved Jul 30. Not counted in averages. Lokesh was also finishing disclosure changes on four VSLs on Jul 22 to 24.'},
+ {e:'Lokesh',t:'When Your Employee Asks for Equity, Do This',sh:'Employee Asks for Equity',c:'Ryan Deiss',k:'E5',len:30,lenMin:true,lenNote:'Lokesh, Aug 6, at first cut: "the video is 30 mins+"',s:'2026-08-04',a:'2026-08-06',v1:'2026-08-13',fin:'2026-08-14',dr:2,due:'2026-08-14',due0:'2026-08-12',dk:'final',dt:'Wed Aug 12, moved to Fri Aug 14 on request',st:'done',trial:true,flag:'before',
+  ext:'Asked for one day on Aug 6 at first cut. Gio offered Fri Aug 14, which was two days later, and he agreed.',
+  n:'Given to Lokesh on Aug 4 because Anirba was held up by the length of this video. First draft Aug 13, the day after the original date. A client tool asset was never received, workaround agreed Aug 14. The thread ends with V2 on Aug 14 at 23:03, no approval message was found, so the last draft date is used.'}
+];
+Object.assign(VS, {
+  E1: [['A-cut','2026-06-18'],['V1','2026-06-24'],['V3','2026-06-29'],['V4','2026-07-02'],['V5','2026-07-02'],['V6','2026-07-03'],['V7','2026-07-06']],
+  E2: [['A-cut','2026-07-03'],['V1','2026-07-08'],['V2','2026-07-10'],['V3','2026-07-14'],['V4','2026-07-15'],['V5','2026-07-16'],['V6','2026-07-17']],
+  E3: [['A-cut','2026-07-14'],['V1','2026-07-21'],['V2','2026-07-21']],
+  E4: [['A-cut','2026-07-24']],
+  E5: [['A-cut','2026-08-06'],['V1','2026-08-13'],['V2','2026-08-14']]
+});
+LE.forEach(v => { v.d1 = v.v1 ? bd(v.s, v.v1) : null; v.df = v.fin ? bd(v.s, v.fin) : null; v.steps = stepsOf(v); });
+/* extension and timing notes for Lokesh's videos from 17 Aug on */
+const LX = {
+  L3: {flag: 'none', ext: 'No extension asked. First cut posted Sep 19, three days before the first-cut date, with one point flagged for the client to confirm.'},
+  L4: {flag: 'before', ext: 'Asked for one extra day on Oct 6, none was available. First draft posted Sun Oct 11 at 01:07, final that afternoon.'},
+  L5: {flag: 'before', ext: 'Asked for two days on Oct 20 with a day-by-day plan, Najma agreed. First draft came a day after his own plan, final two days after the agreed date.'},
+  L6: {flag: 'before', ext: 'Asked on Nov 2, declined, the video had to publish Nov 7. On approved leave Nov 6 to 7, finished on Saturday Nov 7.'},
+  L7: {flag: 'before', ext: 'On Nov 17 he told Sanket the first draft might land late Nov 18 (3 to 4 AM) or Thursday afternoon, and asked about a buffer for revisions.'}
+};
+V.filter(v => v.e === 'Lokesh').forEach(v => Object.assign(v, LX[v.k] || {}));
+const LV = LE.concat(V.filter(v => v.e === 'Lokesh')).sort((a, b) => U(a.s) - U(b.s));
+const LO = [
+  {t:'Saf’s Instagram reel and podcast shorts', k:'ES', d:'Jul 27 to Aug 18', n:'Short-form, assigned Jul 27. Sanket approved a pair on Aug 4, last post Aug 18.'},
+  {t:'Disclosure pass on four VSLs', k:'ED', d:'Jul 22 to 24', n:'On-screen disclosures and end screens on VSLs that were already approved, two of them edited by someone else.'}
+].concat(O.filter(o => o.e === 'Lokesh').map(o => ({t: o.t, k: o.k, d: fd(o.s) + ' to ' + fd(o.end || o.fin), n: o.n})));
+
+/* ================= shared helpers for pages 2 and 3 ================= */
+const cnt2 = v => !v.split && !v.hand;
+const fin2 = list => list.filter(v => cnt2(v) && v.df != null);
+const v1s2 = list => list.filter(v => cnt2(v) && v.d1 != null);
+const stat2 = list => { const f = fin2(list), a = v1s2(list); return {n: f.length, nv1: a.length, v1: avg(a.map(v => v.d1)), fin: avg(f.map(v => v.df)), dr: avg(f.map(v => v.dr)), list: f}; };
+const dueRes = v => {
+  if (!v.due) return null;
+  if (v.hand) return {k: 'hand', t: 'Handed over', late: true};
+  if (v.dk === 'unclear') return {k: 'na', t: 'Unclear'};
+  const cmp = v.dk === 'final' ? v.fin : v.dk === 'v1' ? v.v1 : null;
+  if (!cmp) return {k: 'open', t: 'Open'};
+  const cal = Math.round((U(cmp) - U(v.due)) / MS), b = lateBd(v.due, cmp);
+  if (cal <= 0) return {k: 'ok', t: 'On time', cal, bd: 0};
+  return {k: b > 0 ? 'late' : 'wknd', t: b > 0 ? '+' + b + (b === 1 ? ' day' : ' days') : 'Late, weekend', cal, bd: b, late: true};
+};
+const duePill = r => !r ? '<span class="nodata">—</span>' : r.k === 'ok' ? '<span class="pill ok sm">On time</span>' : r.k === 'late' ? `<span class="pill late sm">${r.t}</span>` : r.k === 'wknd' ? '<span class="pill late sm">Late, weekend</span>' : r.k === 'hand' ? '<span class="pill na sm">Handed over</span>' : `<span class="pill na sm">${r.t}</span>`;
+const given = v => v.due ? bd(v.s, v.due) : null;
+const takenOf = v => v.dk === 'v1' ? v.d1 : v.df;
+const dueKindTxt = v => v.dk === 'v1' ? 'first draft' : v.dk === 'final' ? 'final' : 'unclear';
+const todayN = v => bd(v.s, TODAY);
+const dd = x => { const r = Math.round(x); return r + (r === 1 ? ' day' : ' days'); };
+const vid = n => n + (n === 1 ? ' video' : ' videos');
+const pillBand = x => x <= 2.5 ? ['ok', 'Near the rule'] : x <= 4 ? ['gold', 'Above the rule'] : ['late', 'Well above'];
+
+/* one row of the all-videos list, same layout as page 1 */
+function vdRow(v) {
+  const len = lenTxt(v) || '<span class="nodata">No data</span>';
+  const r = dueRes(v);
+  let dueLine = '';
+  if (v.due) dueLine = `<p class="dl">Due date: ${esc(v.dt || ((v.dk === 'v1' ? 'First draft ' : 'Final ') + fd(v.due)))}.${v.due0 ? ' Original date ' + fd(v.due0) + '.' : ''}</p>`;
+  const fcell = v.hand ? '<span class="pill na sm">Handed over</span>' : v.fin ? `${fd(v.fin)}<small>${v.df} days</small>` : (v.st === 'review' ? '<span class="pill accent sm">In review</span>' : '<span class="pill gold sm">Open</span>');
+  const chips = v.steps.map(s => `<span class="stp"><b>${esc(s.l)}</b>${fd(s.d)}<em>day ${s.day}</em></span>`).join('');
+  return `<details class="vd2"><summary>
+    <div class="nm"><b>${esc(v.t)}</b><span>${esc(v.c)}${v.trial ? ' &middot; trial period' : ''}</span></div>
+    <div class="cell"><i>Length</i>${len}</div>
+    <div class="cell"><i>First draft</i>${v.v1 ? fd(v.v1) + '<small>' + v.d1 + ' days</small>' : '—'}</div>
+    <div class="cell"><i>Final</i>${fcell}</div>
+    <div class="cell"><i>Drafts</i>${v.dr || '—'}</div>
+    <div class="cell"><i>Due date</i>${duePill(r)}</div>
+    <span class="chev" aria-hidden="true"></span></summary>
+    <div class="more"><div class="steps">${chips}</div>
+      ${v.n ? `<p>${esc(v.n)}</p>` : ''}${v.ext ? `<p>${esc(v.ext)}</p>` : ''}${v.len ? `<p class="dl">Length: ${esc(v.lenNote)}.</p>` : ''}${dueLine}
+      ${v.k && LINKS[v.k] ? `<p class="dl"><a href="${LINKS[v.k]}" target="_blank" rel="noopener">Open the Slack thread</a></p>` : ''}</div></details>`;
+}
+
+/* days given against days taken, one row per video */
+function allotChart(rows, prefix, label) {
+  const W = 1000, L = 270, R = 150, RH = 46, T = 34;
+  const xmax = Math.max(10, Math.ceil(Math.max(...rows.map(r => Math.max(r.give, r.take || 0))) / 5) * 5);
+  const sx = d => L + d / xmax * (W - L - R), H = T + rows.length * RH + 34;
+  let s = '';
+  for (let d = 0; d <= xmax; d += 5) s += `<line class="grid" x1="${sx(d)}" x2="${sx(d)}" y1="${T - 8}" y2="${H - 34}"/><text class="tick" x="${sx(d)}" y="${H - 16}" text-anchor="middle">${d}</text>`;
+  s += `<text class="axl" x="${(L + W - R) / 2}" y="${H}" text-anchor="middle">${label || 'Working days from assignment'}</text>`;
+  rows.forEach((r, i) => {
+    const y0 = T + i * RH, cy = y0 + RH / 2, key = prefix + i;
+    TIPS[key] = tipOf(r.v, `${r.kind === 'v1' ? 'First draft' : 'Final'} due after <b style="font-weight:700">${r.give} working days</b>${r.v.due0 ? ' (moved from ' + fd(r.v.due0) + ')' : ''}. ${r.open ? 'Day ' + r.take + ' so far, still open.' : 'Delivered on day ' + r.take + '. ' + r.res.t + '.'}`);
+    const c = r.open ? 'var(--gold)' : r.res.k === 'ok' ? 'var(--ok)' : r.res.k === 'wknd' ? 'var(--warn)' : 'var(--bad)';
+    s += `<g data-tip="${key}" class="pt"><rect x="0" y="${y0}" width="${W}" height="${RH}" fill="transparent"/>
+      <text class="lbl" x="16" y="${cy - 3}" style="font-size:13px;font-family:'Inter Tight',sans-serif;font-weight:700">${esc(r.v.sh.length > 30 ? r.v.sh.slice(0, 29) + '…' : r.v.sh)}</text>
+      <text class="lanesub" x="16" y="${cy + 12}">${esc(r.v.e)} &middot; ${esc(r.v.c)} &middot; ${r.kind === 'v1' ? 'first draft' : 'final'}</text>
+      <rect x="${L}" y="${cy - 11}" width="${sx(r.give) - L}" height="8" rx="4" style="fill:var(--surface-2);stroke:var(--border-strong);stroke-width:1.5"/>
+      <rect x="${L}" y="${cy + 0}" width="${Math.max(4, sx(r.take) - L)}" height="10" rx="5" style="fill:${c}${r.open ? ';opacity:.55' : ''}"/>
+      <text class="tick" x="${Math.max(sx(r.give), sx(r.take)) + 10}" y="${cy + 8}" style="font-weight:600">${r.take} of ${r.give}${r.open ? ' so far' : ''}</text></g>`;
+  });
+  return `<svg class="chart sc" viewBox="0 0 ${W} ${H + 4}" role="img" aria-label="Working days given against working days taken">${s}</svg>`;
+}
+const allotRows = list => list.filter(v => v.due && v.dk !== 'unclear' && !v.hand).map(v => {
+  const kind = v.dk, res = dueRes(v) || {k: 'open', t: 'Open'};
+  const done = kind === 'v1' ? v.v1 : v.fin;
+  return {v, kind, give: given(v), take: done ? takenOf(v) : todayN(v), open: !done, res};
+});
+
+/* ================= page 2: Lokesh ================= */
+const LKS = (function () {
+  const all = stat2(LV), trial = stat2(LV.filter(v => v.trial)), post = stat2(LV.filter(v => !v.trial));
+  const others = V.filter(v => v.e !== 'Lokesh'), oth = stat2(others), team = stat2(V);
+  const res = LV.map(v => ({v, r: dueRes(v)})).filter(x => x.r && x.r.k !== 'na' && x.r.k !== 'open');
+  const ontime = res.filter(x => x.r.k === 'ok'), late = res.filter(x => x.r.k !== 'ok');
+  const weekend = late.filter(x => x.r.k === 'wknd'), one = late.filter(x => x.r.k === 'late' && x.r.bd === 1), mid = late.filter(x => x.r.k === 'late' && x.r.bd >= 2 && x.r.bd <= 4), big = late.filter(x => x.r.k === 'late' && x.r.bd >= 5), hand = late.filter(x => x.r.k === 'hand');
+  const byEd = EDITORS.map(ed => { const l = V.filter(v => v.e === ed.id).map(v => ({v, r: dueRes(v)})).filter(x => x.r && x.r.k !== 'na' && x.r.k !== 'open'); return {ed, n: l.length, ok: l.filter(x => x.r.k === 'ok').length, late: l.filter(x => x.r.k !== 'ok'), l}; });
+  const before = LV.filter(v => v.flag === 'before').length;
+  return {all, trial, post, oth, team, res, ontime, late, weekend, one, mid, big, hand, byEd, before};
+})();
+
+(function () {
+  const S = LKS;
+  document.getElementById('lk-tiles').innerHTML = `
+    <div class="tile"><div class="n">${LV.length}</div><div class="t">Videos worked on</div><div class="d">${S.all.n} finished, ${LV.filter(v => v.st === 'prog').length} open and ${LV.filter(v => v.hand).length} handed to another editor. 15 Jun to 17 Nov. The first ${LV.filter(v => v.trial).length} were in his trial period, before 17 Aug.</div></div>
+    <div class="tile"><div class="n">${f1(S.all.fin)} days</div><div class="t">To get final approval</div><div class="d">Average over ${S.all.n} finished videos, ${f1(S.all.v1)} days to the first draft. Trial period ${f1(S.trial.fin)} days, since Sep ${f1(S.post.fin)} days. The team is at ${f1(S.team.fin)}.</div></div>
+    <div class="tile"><div class="n">${S.ontime.length} of ${S.res.length}</div><div class="t">Delivered by the due date</div><div class="d">${S.weekend.length} landed on the weekend after the date, ${S.one.length} by one working day, ${S.mid.length} by 2 to 4 days, ${S.big.length} by 5 days or more and ${S.hand.length} was handed to another editor.</div></div>`;
+
+  // on time table
+  const head = `<div class="ltab th lk-late"><div>Video</div><div>Due</div><div>Delivered</div><div>Given</div><div>Took</div><div>Result</div><div>Asked for time</div></div>`;
+  const rows = LV.filter(v => v.due && v.dk !== 'unclear').map(v => {
+    const r = dueRes(v), done = v.hand ? null : (v.dk === 'v1' ? v.v1 : v.fin);
+    const fl = v.flag === 'before' ? '<span class="pill ok sm">Before</span>' : v.flag === 'after' ? '<span class="pill gold sm">After</span>' : '<span class="pill na sm">No</span>';
+    return `<div class="ltab lk-late">
+      <div class="nm"><b style="font-family:'Inter Tight',sans-serif;font-size:15px;letter-spacing:-.01em">${link(v.k, v.sh)}</b><span style="display:block;font-size:12.5px;color:var(--text-faint)">${esc(v.c)} &middot; ${dueKindTxt(v)} date${v.trial ? ' &middot; trial' : ''}</span></div>
+      <div class="cell"><i>Due</i>${fd(v.due)}${v.due0 ? '<small>was ' + fd(v.due0) + '</small>' : ''}</div>
+      <div class="cell"><i>Delivered</i>${done ? fd(done) : '—'}</div>
+      <div class="cell"><i>Given</i>${given(v)} days</div>
+      <div class="cell"><i>Took</i>${done ? takenOf(v) + ' days' : '—'}</div>
+      <div class="cell"><i>Result</i>${duePill(r)}</div>
+      <div class="cell"><i>Asked for time</i>${fl}</div></div>`;
+  }).join('');
+  document.getElementById('lk-late').innerHTML = head + rows + `<div class="legend" style="margin:8px 0 14px"><span><i style="background:var(--ok)"></i>On time</span><span><i style="background:var(--bad)"></i>Late, counted in working days after the due date</span><span>“Asked for time” says whether he raised a timing problem before the due date passed.</span></div>`;
+  document.getElementById('lk-allot').innerHTML = allotChart(allotRows(LV.filter(v => v.due && v.dk !== 'unclear')), 'k', 'Working days, assignment day is day 1');
+  document.getElementById('lk-allot-legend').innerHTML = `<span><i class="bx rev"></i>Days given until the due date</span><span><i style="width:16px;height:8px;border-radius:4px;background:var(--ok)"></i>Delivered on time</span><span><i style="width:16px;height:8px;border-radius:4px;background:var(--warn)"></i>Delivered on the weekend after</span><span><i style="width:16px;height:8px;border-radius:4px;background:var(--bad)"></i>Delivered later</span><span><i style="width:16px;height:8px;border-radius:4px;background:var(--gold);opacity:.6"></i>Still open</span>`;
+
+  // by editor: how many were late
+  const mx = Math.max(...S.byEd.map(x => x.n), 1);
+  const eh = `<div class="row th" style="grid-template-columns:minmax(0,1.2fr) 110px minmax(0,2fr) 160px"><div>Editor</div><div>With a clear date</div><div>Result</div><div>Late by</div></div>`;
+  document.getElementById('lk-ed').innerHTML = eh + S.byEd.map(x => {
+    const ok = x.ok, l = x.late.length;
+    const late = x.late.map(y => y.r.k === 'wknd' ? 'wknd' : '+' + y.r.bd).join(', ') || '—';
+    return `<div class="row${x.ed.id === 'Lokesh' ? ' hl-row' : ''}" style="grid-template-columns:minmax(0,1.2fr) 110px minmax(0,2fr) 160px;padding-inline:${x.ed.id === 'Lokesh' ? '10px' : '0'}">
+      <div class="who"><span class="av" style="background:${col(x.ed.id)}">${x.ed.id[0]}</span><div><b>${x.ed.id}</b></div></div>
+      <div class="cell">${vid(x.n)}</div>
+      <div><div class="stack" title="${ok} on time, ${l} late"><i style="width:${x.n ? ok / x.n * 100 : 0}%;background:var(--ok)"></i><i style="width:${x.n ? l / x.n * 100 : 0}%;background:var(--bad)"></i></div><div style="font-size:12.5px;color:var(--text-muted);margin-top:6px">${ok} on time &middot; ${l} late</div></div>
+      <div class="cell" style="font-weight:500;color:var(--text-muted)">${late.replace(/wknd/g, 'weekend')}</div></div>`;
+  }).join('') + `<div class="legend" style="margin:8px 0 12px"><span>Only videos with a due date written in Slack are counted, so these are small numbers. “+2” is two working days after the date, “weekend” is delivered on the Saturday or Sunday after a Friday date. Lokesh’s row includes his trial period, the other rows start on 17 Aug.</span></div>`;
+})();
+
+/* timeline for Lokesh */
+const LKT = {z: 0};
+function renderLKT() {
+  const items = LV.slice(), START = items[0].s, DAYS = Math.round((U(TODAY) - U(START)) / MS) + 1;
+  const X0 = 150, FIT_W = 1000, ZP = [null, 10, 18], RPAD = 250, ROW = 46, HEAD = 44;
+  const px = ZP[LKT.z] || (FIT_W - X0 - RPAD) / DAYS, W = ZP[LKT.z] ? X0 + DAYS * px + RPAD : FIT_W;
+  const dayIdx = d => (U(d) - U(START)) / MS, X = d => X0 + dayIdx(d) * px, XM = d => X(d) + px / 2;
+  let we = '', grid = '', mlab = '', rowsS = '', defs = '';
+  for (let i = 0; i < DAYS; i++) {
+    const d = new Date(U(START) + i * MS), x = X0 + i * px;
+    if (d.getUTCDay() === 6) we += `<rect class="we" x="${x}" y="${HEAD - 6}" width="${Math.min(2, DAYS - i) * px}" height="__H__"/>`;
+    if (d.getUTCDay() === 1 && (ZP[LKT.z] || Math.round(i / 7) % 2 === 0)) grid += `<line class="grid" x1="${x}" x2="${x}" y1="${HEAD - 6}" y2="__H__"/><text class="dnum" x="${x + 2}" y="${HEAD - 12}">${d.getUTCDate()}</text>`;
+    if (d.getUTCDate() === 1 || i === 0) { mlab += `<text class="mlabel" x="${x}" y="16">${MON[d.getUTCMonth()].toUpperCase()}</text>`; if (i) grid += `<line class="mgrid" x1="${x}" x2="${x}" y1="22" y2="__H__"/>`; }
+  }
+  Object.keys(TIPS).forEach(k => { if (k[0] === 'q') delete TIPS[k]; });
+  items.forEach((v, i) => {
+    const y = HEAD + i * ROW, cy = y + ROW / 2 - 4, bh = 14, end = v.fin || (v.hand ? v.a : null) || TODAY;
+    const x0 = X(v.s), x1 = Math.max(XM(end), x0 + 8), open = !v.fin && !v.hand, xv = v.v1 ? XM(v.v1) : null, key = 'q' + i;
+    TIPS[key] = tipOf(v, v.hand ? 'Handed to another editor after the first cut' : v.fin ? `${v.df} working days to final` : (v.v1 ? `${v.d1} working days to first draft` : 'No first draft yet'));
+    rowsS += `<rect class="band ${i % 2 ? 'alt' : ''}" x="0" y="${y}" width="${W}" height="${ROW}"/>`;
+    let g = `<g data-tip="${key}"><rect x="${x0 - 2}" y="${y}" width="${x1 - x0 + 4}" height="${ROW}" fill="transparent"/>`;
+    if (open) { g += `<rect class="b-live" x="${x0}" y="${cy}" width="${x1 - x0}" height="${bh}" rx="5"/>`; if (xv) g += `<rect class="b-work" x="${x0}" y="${cy}" width="${Math.max(xv - x0, 8)}" height="${bh}" rx="5"/>`; }
+    else if (xv && xv < x1) g += `<rect class="b-rev" x="${x0}" y="${cy}" width="${x1 - x0}" height="${bh}" rx="5"/><rect class="b-work" x="${x0}" y="${cy}" width="${xv - x0}" height="${bh}" rx="5"/>`;
+    else g += `<rect class="b-work" x="${x0}" y="${cy}" width="${x1 - x0}" height="${bh}" rx="5"/>`;
+    (VS[v.k] || []).forEach(s => {
+      if (/^A-cut/.test(s[0])) g += `<circle class="m-a" cx="${XM(s[1])}" cy="${cy + bh / 2}" r="2.6"/>`;
+      else if (s[0].startsWith('V1')) g += `<circle class="m-v1" cx="${XM(s[1])}" cy="${cy + bh / 2}" r="4.4"/>`;
+      else g += `<rect class="m-v" x="${XM(s[1]) - 1.5}" y="${cy + 2}" width="3" height="${bh - 4}" rx="1"/>`;
+    });
+    if (v.fin) g += `<circle class="m-ok" cx="${XM(v.fin)}" cy="${cy + bh / 2}" r="5"/>`;
+    if (v.due && v.dk !== 'unclear') { const cx = XM(v.due), cyy = cy + bh + 4; g += `<rect class="m-due" x="${cx - 3.5}" y="${cyy - 3.5}" width="7" height="7" transform="rotate(45 ${cx} ${cyy})"/>`; }
+    const right = x1 < W - 270, lx = right ? x1 + 12 : x0 - 10;
+    g += `<text class="lbl" x="${lx}" y="${cy + 11}" text-anchor="${right ? 'start' : 'end'}">${esc(v.sh)}</text>`;
+    g += '</g>';
+    rowsS += `<text class="lane" x="16" y="${cy + 6}" style="font-size:13px">${esc(v.c)}</text>` + g;
+  });
+  const H = HEAD + items.length * ROW + 10, tx = XM(TODAY);
+  const today = `<line class="today" x1="${tx}" x2="${tx}" y1="${HEAD - 6}" y2="${H - 4}"/><text class="todaylbl" x="${tx - 4}" y="${H + 8}" text-anchor="end">TODAY</text>`;
+  const box = document.getElementById('lk-tlbox');
+  box.innerHTML = `<svg class="chart${ZP[LKT.z] ? ' zoomed' : ''}" ${ZP[LKT.z] ? `style="width:${W}px"` : ''} viewBox="0 0 ${W} ${H + 14}" role="img" aria-label="Timeline of every video Lokesh worked on"><defs>${defs}</defs>${we.replace(/__H__/g, H - HEAD - 4)}${mlab}${rowsS}${grid.replace(/__H__/g, H - 4)}${today}</svg>`;
+  box.scrollLeft = 0;
+}
+document.getElementById('lk-zoom').addEventListener('click', e => {
+  const b = e.target.closest('button'); if (!b) return;
+  LKT.z = +b.dataset.z; document.querySelectorAll('#lk-zoom button').forEach(x => x.setAttribute('aria-pressed', String(x === b))); renderLKT();
+});
+renderLKT();
+
+/* length against days, Lokesh highlighted, everyone else in grey */
+(function () {
+  const mine = LV.filter(v => cnt2(v) && v.len && v.df != null && !v.lenTarget).sort((a, b) => a.len - b.len || a.df - b.df);
+  mine.forEach((v, i) => v._m = i + 1);
+  const ctx = V.filter(v => v.e !== 'Lokesh' && counted(v) && v.len && v.df != null && !v.lenTarget);
+  const W = 1000, Hh = 580, L = 70, R = 40, T = 30, B = 70, xmax = 70, ymax = 25;
+  const sx = m => L + m / xmax * (W - L - R), sy = d => Hh - B - d / ymax * (Hh - T - B);
+  let s = '';
+  for (let d = 0; d <= ymax; d += 5) s += `<line class="grid" x1="${L}" x2="${W - R}" y1="${sy(d)}" y2="${sy(d)}"/><text class="tick" x="${L - 12}" y="${sy(d) + 4}" text-anchor="end">${d}</text>`;
+  for (let m = 0; m <= xmax; m += 10) s += `<text class="tick" x="${sx(m)}" y="${Hh - B + 24}" text-anchor="middle">${m}</text>`;
+  s += `<line class="axis" x1="${L}" x2="${W - R}" y1="${sy(0)}" y2="${sy(0)}"/><line class="axis" x1="${L}" x2="${L}" y1="${T}" y2="${sy(0)}"/>`;
+  s += `<text class="axl" x="${(L + W - R) / 2}" y="${Hh - 14}" text-anchor="middle">Video length, minutes</text><text class="axl" transform="translate(18 ${(T + Hh - B) / 2}) rotate(-90)" text-anchor="middle">Working days to final</text>`;
+  s += `<line class="ref" x1="${sx(0)}" y1="${sy(0)}" x2="${sx(70)}" y2="${sy(14)}"/><text class="reflbl" x="${sx(70) - 4}" y="${sy(14) - 12}" text-anchor="end">Sanket’s rule: 2 working days per 10 min</text>`;
+  ctx.forEach((v, i) => { TIPS['x' + i] = tipOf(v, `<b style="font-weight:700">${v.df} working days to final</b> &middot; ${f1(v.df / v.len * 10)} days per 10 min`); s += `<g class="pt" data-tip="x${i}"><circle cx="${sx(v.len)}" cy="${sy(v.df)}" r="9" style="fill:var(--border-strong);stroke:var(--surface);stroke-width:2"/></g>`; });
+  mine.forEach(v => { TIPS['m' + v._m] = tipOf(v, `<b style="font-weight:700">${v.df} working days to final</b> &middot; ${f1(v.df / v.len * 10)} days per 10 min`); s += `<g class="pt" data-tip="m${v._m}"><circle cx="${sx(v.len)}" cy="${sy(v.df)}" r="14" style="fill:${col('Lokesh')};stroke:var(--surface);stroke-width:2.5"/><text x="${sx(v.len)}" y="${sy(v.df) + 4.6}">${v._m}</text></g>`; });
+  document.getElementById('lk-scbox').innerHTML = `<svg class="chart sc" viewBox="0 0 ${W} ${Hh}" role="img" aria-label="Video length against working days to final, Lokesh highlighted">${s}</svg>`;
+  const head = `<div class="row th lt"><div>#</div><div>Video</div><div>Length</div><div>First draft</div><div>Final</div><div>Days per 10 min</div><div>Period</div></div>`;
+  const maxF = Math.max(...mine.map(v => v.df));
+  document.getElementById('lk-lens').innerHTML = head + mine.map(v => { const p10 = v.df / v.len * 10, b = pillBand(p10); return `<div class="row lt"><div class="cell"><span class="dn" style="background:${col('Lokesh')}">${v._m}</span></div>
+    <div class="nm"><b><span class="mn">${v._m}. </span>${link(v.k, v.sh)}</b><span>${esc(v.lenNote)}</span></div>
+    <div class="cell"><i>Length</i>${v.lenMin ? v.len + '+' : v.len} min</div><div class="cell"><i>First draft</i>${v.d1} days</div>
+    <div class="cell"><i>Final</i>${v.df} days<span class="mb"><u style="width:${v.df / maxF * 100}%;background:${col('Lokesh')}"></u></span></div>
+    <div class="cell"><i>Per 10 min</i><span class="pill ${b[0]} sm">${f1(p10)} days</span></div>
+    <div class="cell"><i>Period</i>${v.trial ? 'Trial' : 'Since Sep'}</div></div>`; }).join('') + `<div class="legend" style="margin:6px 0 14px"><span><i style="background:var(--ok)"></i>2.5 days or less per 10 min</span><span><i style="background:var(--warn)"></i>Over 2.5 up to 4</span><span><i style="background:var(--bad)"></i>Over 4</span><span>Grey dots are every other editor’s finished videos with a stated length. Lengths that are only planned, such as the VSL brief, are left out.</span></div>`;
+})();
+
+/* averages: Lokesh against the team, trial against since */
+(function () {
+  const S = LKS;
+  const aD = v => { const a = v.steps.find(s => /^A-cut/.test(s.l)); return a ? a.day : null; };
+  const seg = list => { const l = fin2(list).filter(v => aD(v) != null && v.d1 != null); return {a: avg(l.map(aD)), b: avg(l.map(v => v.d1 - aD(v))), c: avg(l.map(v => v.df - v.d1)), tot: avg(l.map(v => v.df)), n: l.length}; };
+  const sets = [
+    ['Lokesh, trial period', 'Jun to Aug, supervised', LV.filter(v => v.trial)],
+    ['Lokesh, since Sep', 'Sep to Nov', LV.filter(v => !v.trial)],
+    ['Lokesh, all videos', '15 Jun to 17 Nov', LV],
+    ['The other five editors', '17 Aug to 17 Nov', V.filter(v => v.e !== 'Lokesh')]
+  ].map(x => ({name: x[0], sub: x[1], list: x[2], st: stat2(x[2]), sg: seg(x[2])}));
+  const mx = Math.max(...sets.map(x => x.sg.tot || 0));
+  const bar = s => s.n ? `<div class="stack"><i class="s1" style="width:${s.a / mx * 100}%"></i><i class="s2" style="width:${s.b / mx * 100}%"></i><i class="s3" style="width:${s.c / mx * 100}%"></i></div>` : '';
+  const head = `<div class="row th ae"><div>Group</div><div>Finished</div><div>Where the days go</div><div>To first draft</div><div>To final</div><div>Drafts</div></div>`;
+  document.getElementById('lk-avg').innerHTML = head + sets.map((x, i) => `<div class="row ae ${i === 3 ? 'total' : ''}">
+    <div class="who">${i < 3 ? `<span class="av" style="background:${col('Lokesh')}">L</span>` : `<span class="av" style="background:var(--text);color:var(--bg);font-size:11px">All</span>`}<div><b>${x.name}</b><small>${x.sub}</small></div></div>
+    <div class="cell"><i>Finished</i>${x.st.n}</div><div class="cellbar">${bar(x.sg)}</div>
+    <div class="cell"><i>To first draft</i>${f1(x.st.v1)} days</div><div class="cell"><i>To final</i>${f1(x.st.fin)} days</div><div class="cell"><i>Drafts</i>${fdr(x.st.dr)}</div></div>`).join('');
+  document.getElementById('lk-avg-key').innerHTML = `<span><i class="sw s1"></i>Assigned to A-cut</span><span><i class="sw s2"></i>A-cut to first draft</span><span><i class="sw s3"></i>First draft to final</span>`;
+
+  // same client, other editors
+  const cl = ['Daniel Priestley', 'Vishen', 'James Conole', 'Ari', 'Nigel', 'Ryan Deiss'];
+  const ch = `<div class="row th" style="grid-template-columns:minmax(0,1.1fr) minmax(0,1.5fr) minmax(0,1.9fr)"><div>Client</div><div>Lokesh</div><div>Other editors, 17 Aug on</div></div>`;
+  const lk = c => { const l = fin2(LV.filter(v => v.c === c)); return l.length ? `${f1(avg(l.map(v => v.df)))} days to final<small>${l.length === 1 ? '1 video' : l.length + ' videos'}: ${l.map(v => v.df).join(', ')}</small>` : '<span class="nodata">No finished video</span>'; };
+  const ot = c => { const l = fin2(V.filter(v => v.c === c && v.e !== 'Lokesh')); if (!l.length) return '<span class="nodata">No other editor in this window</span>'; const eds = EDITORS.map(ed => { const q = l.filter(v => v.e === ed.id); return q.length ? `${ed.id} ${f1(avg(q.map(v => v.df)))} (${q.length})` : null; }).filter(Boolean).join(', '); return `${f1(avg(l.map(v => v.df)))} days to final<small>${eds}</small>`; };
+  document.getElementById('lk-client').innerHTML = ch + cl.map(c => `<div class="row" style="grid-template-columns:minmax(0,1.1fr) minmax(0,1.5fr) minmax(0,1.9fr)"><div class="who"><b>${c}</b></div><div class="cell">${lk(c)}</div><div class="cell">${ot(c)}</div></div>`).join('') + `<div class="legend" style="margin:8px 0 12px"><span>Numbers in brackets are how many videos. Lokesh’s column includes his trial period, the other column does not.</span></div>`;
+})();
+
+/* all videos and other work */
+document.getElementById('lk-all').innerHTML = `<div class="vh"><div>Video</div><div>Length</div><div>First draft</div><div>Final</div><div>Drafts</div><div>Due date</div><div></div></div>` + LV.slice().reverse().map(vdRow).join('');
+document.getElementById('lk-oth').innerHTML = `<div class="row th ot"><div>Dates</div><div>Work</div><div></div><div></div><div></div></div>` + LO.map(o => `<div class="row ot"><div class="cell"><i>Dates</i>${esc(o.d)}</div><div class="nm" style="grid-column:2 / -1"><b>${link(o.k, o.t)}</b><span>${esc(o.n)}</span></div></div>`).join('');
+
+/* my read, page 2 */
+(function () {
+  const S = LKS, lk = S.all, tm = S.team;
+  const sales = V.find(v => v.k === 'L7');
+  const win = stat2(V.filter(v => v.e === 'Lokesh'));
+  const trL = S.res.filter(x => x.v.trial && x.r.k !== 'ok' && x.r.k !== 'hand'), trN = S.res.filter(x => x.v.trial && x.r.k !== 'hand').length;
+  const lateTeam = S.byEd.filter(x => x.ed.id !== 'Lokesh');
+  const tn = lateTeam.reduce((a, x) => a + x.n, 0), tok = lateTeam.reduce((a, x) => a + x.ok, 0);
+  const items = [
+    ['He has not delivered on the stated date', `Of ${S.res.length} videos with a clear due date, ${S.ontime.length} was on time (Ryan Deiss, against a date that had already been moved by two days). Since 17 Aug the four finished videos were late by a weekend, a weekend, one working day and two working days against the extended date. In his trial period ${trL.length} of ${trN} dated videos were late, the largest by ${Math.max(...trL.map(x => x.r.bd || 0))} working days, and one was handed to another editor.`],
+    ['Lateness is common across the team', `The other five editors had ${tn} videos with a clear date and ${tok} were on time. Since 17 Aug Lokesh was on time on 0 of 4, against ${tok} of ${tn} for the others, so his rate is lower. The size of the misses is smaller: ${f1(avg(LV.filter(v => !v.trial && dueRes(v) && dueRes(v).late).map(v => dueRes(v).bd)))} working days on average for his four, against ${f1(avg(lateTeam.flatMap(x => x.late).map(y => y.r.bd)))} for the others’ late videos. He raised a timing problem before the date on ${S.before} of ${LV.filter(v => v.due).length} videos with a date, after it on ${LV.filter(v => v.flag === 'after').length} and not at all on ${LV.filter(v => v.due && v.flag === 'none').length}. The dates he was given were ${f1(avg(LV.filter(v => v.due).map(given)))} working days from assignment on average, the other editors’ were ${f1(avg(V.filter(v => v.due && v.e !== 'Lokesh').map(given)))}.`],
+    ['His days are close to the team’s, and falling', `${f1(win.fin)} working days to final since 17 Aug against ${f1(S.oth.fin)} for the other editors, and ${f1(S.trial.fin)} in his trial period. First drafts took ${f1(win.v1)} days against ${f1(S.oth.v1)}. Draft counts are ${fdr(win.dr)} against ${fdr(S.oth.dr)}.`],
+    ['On the same client he is not the slowest', 'On Vishen videos he finished one in 6 days, against 9 for Anirba and 13 for Mohit. On James Conole videos his one finished video took 10, against 7 for Saiyam and 8 for Sharan. These are one or two videos each, so they show a range, not a ranking.'],
+    ['The open Nigel video is the one to watch', `${sales ? `Sales Systems was assigned Nov 11 with the first draft due Nov 18 and the final on Nov 19, and Saf wrote that it could not be late. On Nov 17, day ${bd(sales.s, TODAY)}, about 10 of its 25 to 30 minutes were edited and he told the team the first draft could land late on Nov 18 or on Thursday afternoon.` : ''} Whatever happens there will be the most recent evidence either way.`],
+    ['What this page cannot decide', 'It measures dates and days only. It does not measure the quality of the edits, how well he communicates, or what else he has on. Those are part of any decision about him, and they are not on this page.']
+  ];
+  document.getElementById('lk-read').innerHTML = items.map(x => `<div class="vd-item"><span class="vd-t">${esc(x[0])}</span><span class="vd-d">${x[1]}</span></div>`).join('');
+})();
+
+/* ================= page 3: solution ================= */
+const SL = (function () {
+  const fin = fin2(V), v1l = v1s2(V);
+  const planDays = L => 2 + Math.ceil(Math.max(0, L - 5) / 10) + 1;
+  const ruleDays = L => L <= 25 ? 5 : 5 + 1 + (L > 30 ? 1 : 0) + Math.floor(Math.max(0, L - 31) / 10);
+  const twoPer10 = L => Math.ceil(L / 10 * 2);
+  const effLen = v => v.len + (v.lenMin ? 0.5 : 0);
+  const TEMPLATE = c => c === 'James Conole' || c === 'Ari';
+  const clients = ['James Conole', 'Ari', 'Nigel', 'Vishen', 'Daniel Priestley'];
+  const pairs = [];
+  EDITORS.forEach(ed => clients.forEach(c => { const l = fin.filter(v => v.e === ed.id && v.c === c); if (l.length) pairs.push({ed: ed.id, c, n: l.length, fin: avg(l.map(v => v.df)), v1: avg(v1l.filter(v => v.e === ed.id && v.c === c).map(v => v.d1))}); }));
+  const best = pairs.filter(p => p.n >= 3).sort((a, b) => a.fin - b.fin)[0];
+  return {fin, v1l, planDays, ruleDays, twoPer10, effLen, TEMPLATE, clients, pairs, best,
+    n5: fin.filter(v => v.df <= 5).length, n6: fin.filter(v => v.df <= 6).length, n4: v1l.filter(v => v.d1 <= 4).length};
+})();
+
+(function () {
+  const S = SL;
+  document.getElementById('sl-tiles').innerHTML = `
+    <div class="tile"><div class="n">5 days</div><div class="t">The planned week for a 25 minute video</div><div class="d">A-cut Monday, first draft exported Thursday, reviewed and finished Friday. Today only ${S.n5} of ${S.fin.length} finished videos reached final within 5 working days, and ${S.n6} within 6.</div></div>
+    <div class="tile"><div class="n">${S.n4} of ${S.v1l.length}</div><div class="t">First drafts out by day 4</div><div class="d">The plan has the first draft on Thursday, day 4. The average first draft lands on day ${f1(avg(S.v1l.map(v => v.d1)))}.</div></div>
+    <div class="tile"><div class="n">${f1(S.best.fin)} days</div><div class="t">Best editor and client pair</div><div class="d">${S.best.ed} on ${S.best.c} videos, ${S.best.n} finished, is the quickest pair with three or more videos. It is still ${Math.round(S.best.fin) - 5} days over the plan.</div></div>`;
+
+  // the week
+  const day = (n, nm, mins, tot, txt, cls) => `<div class="wd ${cls || ''}"><div class="dn2">Day ${n}</div><b>${nm}</b><div class="mins">${mins}<small> ${tot}</small></div><p>${txt}</p></div>`;
+  document.getElementById('sl-week').innerHTML =
+    day(1, 'Monday', '0', 'min edited', 'Video is assigned. A-cut posted and reviewed. The editor actions the A-cut comments.') +
+    day(2, 'Tuesday', '5', 'min complete', 'The hook, plus the first 3 minutes of the video. The first 5 minutes are done.') +
+    day(3, 'Wednesday', '15', 'min complete', 'Another 10 minutes.') +
+    day(4, 'Thursday', '25', 'min complete', 'Another 10 minutes. The 25 minutes are done, V1 is exported and sent for review.') +
+    day(5, 'Friday', 'V2', 'sent', 'V1 is reviewed. The editor actions the comments and sends V2 the same day.', 'fin');
+  document.getElementById('sl-pace').innerHTML = `<div class="pace"><i style="width:20%;background:var(--border-strong)"></i><i style="width:20%;background:var(--accent);opacity:.55"></i><i style="width:20%;background:var(--accent);opacity:.8"></i><i style="width:20%;background:var(--accent)"></i><i style="width:20%;background:var(--ok)"></i></div><div class="key">Planned pace for a 25 minute video: 5, then 10, then 10 minutes a day, then a review day.</div>`;
+
+  // histograms
+  const hist = (id, vals, mark, markLbl, xmax) => {
+    const W = 1000, H = 300, L = 54, R = 20, T = 34, B = 52, counts = {};
+    vals.forEach(v => counts[v] = (counts[v] || 0) + 1);
+    const ymax = Math.max(...Object.values(counts)) + 1, bw = (W - L - R) / xmax;
+    const sx = x => L + (x - 1) * bw, sy = c => H - B - c / ymax * (H - T - B);
+    let s = '';
+    for (let c = 0; c <= ymax; c += 2) s += `<line class="grid" x1="${L}" x2="${W - R}" y1="${sy(c)}" y2="${sy(c)}"/><text class="tick" x="${L - 10}" y="${sy(c) + 4}" text-anchor="end">${c}</text>`;
+    for (let x = 1; x <= xmax; x++) { if (counts[x]) s += `<rect x="${sx(x) + 6}" y="${sy(counts[x])}" width="${bw - 12}" height="${sy(0) - sy(counts[x])}" rx="6" style="fill:${x <= mark ? 'var(--ok)' : 'var(--accent)'};opacity:${x <= mark ? 1 : .8}"/><text class="dnum" x="${sx(x) + bw / 2}" y="${sy(counts[x]) - 6}" text-anchor="middle" style="font-size:12px">${counts[x]}</text>`; s += `<text class="tick" x="${sx(x) + bw / 2}" y="${H - B + 20}" text-anchor="middle">${x}</text>`; }
+    s += `<line class="axis" x1="${L}" x2="${W - R}" y1="${sy(0)}" y2="${sy(0)}"/>`;
+    const mx = sx(mark) + bw;
+    s += `<line class="ref" x1="${mx}" x2="${mx}" y1="${T - 12}" y2="${sy(0)}"/><text class="reflbl" x="${mx + 8}" y="${T - 2}" style="font-weight:700">${markLbl}</text>`;
+    s += `<text class="axl" x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle">Working day it landed</text>`;
+    document.getElementById(id).innerHTML = `<svg class="chart sc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Count of videos by working day">${s}</svg>`;
+  };
+  hist('sl-h1', S.v1l.map(v => v.d1), 4, 'Plan: first draft by day 4', Math.max(...S.v1l.map(v => v.d1)));
+  hist('sl-h2', S.fin.map(v => v.df), 5, 'Plan: final by day 5', Math.max(...S.fin.map(v => v.df)));
+
+  // days given against days taken, every editor
+  const rows = allotRows(V.filter(v => counted(v))).sort((a, b) => EDITORS.findIndex(x => x.id === a.v.e) - EDITORS.findIndex(x => x.id === b.v.e) || U(a.v.s) - U(b.v.s));
+  document.getElementById('sl-allot').innerHTML = allotChart(rows, 'y', 'Working days, assignment day is day 1');
+  const fr = rows.filter(r => r.kind === 'final' && !r.open), okc = fr.filter(r => r.res.k === 'ok').length;
+  document.getElementById('sl-allot-sum').innerHTML = `<div class="callout"><b>What the dates gave.</b> ${fr.length} finished videos had a final date written in Slack. They were given ${f1(avg(fr.map(r => r.give)))} working days on average and took ${f1(avg(fr.map(r => r.take)))}. ${okc} of ${fr.length} landed on the date. The shortest date gave ${Math.min(...fr.map(r => r.give))} working days, so every date was already at least the 5 days the plan assumes.</div>`;
+
+  // editor by client
+  const ph = EDITORS.map(ed => `<div>${ed.id}</div>`).join('');
+  const heat = (l, field) => { if (!l.length) return '<div class="heat h0">—</div>'; const m = avg(l.map(v => v[field])); return `<div class="heat ${m <= 7.5 ? 'h1' : m <= 10.5 ? 'h2' : 'h3'}">${f1(m)}<small>${vid(l.length)}</small></div>`; };
+  const mxCols = `grid-template-columns:150px repeat(${EDITORS.length}, minmax(0, 1fr))`;
+  document.getElementById('sl-mx').innerHTML = `<div class="mxwrap"><div class="mx th" style="${mxCols}"><div></div>${ph}</div>` +
+    S.clients.map(c => `<div class="mx" style="${mxCols}"><div class="rh">${c}<small>${S.TEMPLATE(c) ? 'template style, per Sanket' : 'new content each time, per Sanket'}</small></div>${EDITORS.map(ed => heat(S.fin.filter(v => v.e === ed.id && v.c === c), 'df')).join('')}</div>`).join('') + '</div>' +
+    `<div class="legend" style="margin-top:12px"><span><i style="background:var(--ok)"></i>7 days or fewer</span><span><i style="background:var(--warn)"></i>8 to 10</span><span><i style="background:var(--bad)"></i>11 or more</span><span>Working days from assignment to final, finished videos only, 17 Aug on.</span></div>`;
+
+  // client table
+  const cl = c => { const l = S.fin.filter(v => v.c === c), a = S.v1l.filter(v => v.c === c); return {c, n: l.length, v1: avg(a.map(v => v.d1)), fin: avg(l.map(v => v.df)), dr: avg(l.map(v => v.dr))}; };
+  const grp = (name, f) => { const l = S.fin.filter(v => f(v.c)), a = S.v1l.filter(v => f(v.c)); return {name, n: l.length, v1: avg(a.map(v => v.d1)), fin: avg(l.map(v => v.df)), dr: avg(l.map(v => v.dr)), list: l}; };
+  const tp = grp('James Conole and Ari', c => S.TEMPLATE(c)), nw = grp('Vishen, Daniel Priestley and Nigel', c => !S.TEMPLATE(c));
+  const head = `<div class="row th ae" style="grid-template-columns:minmax(0,1.6fr) 90px 110px 110px 90px"><div>Client</div><div>Finished</div><div>To first draft</div><div>To final</div><div>Drafts</div></div>`;
+  const line = (x, cls) => `<div class="row ae ${cls || ''}" style="grid-template-columns:minmax(0,1.6fr) 90px 110px 110px 90px"><div class="who"><b>${x.c || x.name}</b></div><div class="cell"><i>Finished</i>${x.n}</div><div class="cell"><i>To first draft</i>${f1(x.v1)} days</div><div class="cell"><i>To final</i>${f1(x.fin)} days</div><div class="cell"><i>Drafts</i>${fdr(x.dr)}</div></div>`;
+  document.getElementById('sl-client').innerHTML = head + S.clients.map(c => line(cl(c))).join('') + line(tp, 'total') + line(nw);
+  SL.tp = tp; SL.nw = nw;
+
+  // Saiyam and Anirba on Nigel
+  const nig = ed => { const n = S.fin.filter(v => v.e === ed && v.c === 'Nigel'); const u = S.fin.filter(v => v.e === ed && v.c !== 'Nigel'); return {ed, n, u}; };
+  document.getElementById('sl-nigel').innerHTML = [nig('Saiyam'), nig('Anirba')].map(x => {
+    const uc = [...new Set(x.u.map(v => v.c))].join(' and ');
+    return `<div class="row" style="grid-template-columns:130px minmax(0,1fr) minmax(0,1fr)"><div class="who"><span class="av" style="background:${col(x.ed)}">${x.ed[0]}</span><b>${x.ed}</b></div>
+      <div class="cell"><i>Usual clients</i>${f1(avg(x.u.map(v => v.df)))} days to final<small>${uc}, ${vid(x.u.length)}</small></div>
+      <div class="cell"><i>Nigel</i>${f1(avg(x.n.map(v => v.df)))} days to final<small>${vid(x.n.length)}: ${x.n.map(v => v.df).join(' and ')}</small></div></div>`;
+  }).join('');
+
+  // where the days go by group
+  const aD = v => { const a = v.steps.find(s => /^A-cut/.test(s.l)); return a ? a.day : null; };
+  const sg = l => { const q = l.filter(v => aD(v) != null && v.d1 != null); return {a: avg(q.map(aD)), b: avg(q.map(v => v.d1 - aD(v))), c: avg(q.map(v => v.df - v.d1)), n: q.length}; };
+  const a1 = sg(tp.list), a2 = sg(nw.list);
+  const sRow = (nm, x) => `<div class="row" style="grid-template-columns:minmax(0,1.5fr) 80px 120px 130px 120px"><div class="who"><b>${nm}</b></div><div class="cell"><i>Videos</i>${x.n}</div><div class="cell"><i>To A-cut</i>${dd(x.a)}</div><div class="cell"><i>A-cut to first draft</i>${dd(x.b)}</div><div class="cell"><i>First draft to final</i>${dd(x.c)}</div></div>`;
+  document.getElementById('sl-seg').innerHTML = `<div class="row th" style="grid-template-columns:minmax(0,1.5fr) 80px 120px 130px 120px"><div>Group</div><div>Videos</div><div>To A-cut</div><div>A-cut to first draft</div><div>First draft to final</div></div>` + sRow(tp.name, a1) + sRow(nw.name, a2);
+  SL.seg1 = a1; SL.seg2 = a2;
+
+  // length rule table
+  const L = V.concat(LE).filter(v => cnt2(v) && v.len && v.df != null && !v.lenTarget).sort((a, b) => a.len - b.len || a.df - b.df);
+  const LG = 'grid-template-columns:minmax(0,1.6fr) 70px 80px 80px 90px 80px 70px 90px';
+  const lh = `<div class="ltab th" style="${LG}"><div>Video</div><div>Length</div><div>5 day plan</div><div>Your rule</div><div>2 days per 10 min</div><div>Date gave</div><div>Took</div><div>Over your rule</div></div>`;
+  let met = 0, metPlan = 0, dateLonger = 0, dateN = 0; const over = [], per10 = [];
+  const lrows = L.map(v => {
+    const e = S.effLen(v), pd = S.planDays(e), rd = S.ruleDays(e), t2 = S.twoPer10(e), ok = v.df <= rd, g = v.due && v.dk === 'final' ? given(v) : null; if (ok) met++; if (v.df <= pd) metPlan++; over.push(v.df - rd); per10.push(v.df / v.len * 10); if (g != null) { dateN++; if (g >= rd) dateLonger++; }
+    return `<div class="ltab" style="${LG}"><div class="nm"><b style="font-family:'Inter Tight',sans-serif;font-size:14.5px">${link(v.k, v.sh)}</b><span style="display:block;font-size:12.5px;color:var(--text-faint)">${v.e}, ${v.c}${v.trial ? ', trial' : ''}</span></div>
+      <div class="cell"><i>Length</i>${lenTxt(v)}</div><div class="cell"><i>Plan</i>${pd} days</div><div class="cell"><i>Rule</i>${rd} days</div><div class="cell"><i>2 per 10</i>${t2} days</div>
+      <div class="cell"><i>Date gave</i>${g != null ? g + ' days' : '<span class="nodata">—</span>'}</div><div class="cell"><i>Took</i>${v.df} days</div><div class="cell">${ok ? '<span class="pill ok sm">Within</span>' : '<span class="pill late sm">+' + (v.df - rd) + (v.df - rd === 1 ? ' day' : ' days') + '</span>'}</div></div>`;
+  }).join('');
+  document.getElementById('sl-len').innerHTML = lh + lrows;
+  SL.lenN = L.length; SL.met = met; SL.metPlan = metPlan; SL.dateLonger = dateLonger; SL.dateN = dateN; SL.overMed = med(over); SL.per10 = med(per10);
+  document.getElementById('sl-len-sum').innerHTML = `<div class="callout"><b>Against the stated lengths.</b> ${L.length} finished videos have a length written in Slack. ${metPlan} took no more days than the 5 day plan allows for their length and ${met} took no more than your rule gives. The middle video took ${dd(med(over))} more than the rule, and ${(med(per10)).toFixed(1)} working days for every 10 minutes, against 2 in Sanket’s rule. The 2 days per 10 minutes rule gives the same days as yours up to 35 minutes and more above that. Where a final date was set, it was as long as your rule or longer ${dateLonger} of ${dateN} times. Lengths include Lokesh’s trial-period videos, lengths that were only planned are left out.</div>`;
+
+  // capacity
+  document.getElementById('sl-cap').innerHTML = `<div class="row th" style="grid-template-columns:minmax(0,1.4fr) 140px 140px"><div>Working days a video is given</div><div>Videos per editor per month</div><div>Against 5 days</div></div>` +
+    [5, 6, 7, 8, 9, 10].map(d => `<div class="row" style="grid-template-columns:minmax(0,1.4fr) 140px 140px"><div class="who"><b>${d} days</b>${d === 5 ? '<small style="color:var(--text-faint)">the plan</small>' : d === 9 ? '<small style="color:var(--text-faint)">today’s average</small>' : ''}</div><div class="cell">${(21 / d).toFixed(1)}</div><div class="cell">${d === 5 ? '—' : Math.round((21 / d / (21 / 5) - 1) * 100) + '%'}</div></div>`).join('') +
+    `<div class="legend" style="margin:8px 0 12px"><span>A month is taken as 21 working days and one video at a time per editor. Editors also do shorts, fixes and review work, so real numbers are lower.</span></div>`;
+
+  // queue and handovers
+  const hand = [
+    ['E5', 'Ryan Deiss video: Anirba was held up by its length, given to Lokesh on Aug 4'],
+    ['E4', 'Vishen storytelling video: Lokesh’s first cut, moved to Aaron on Jul 24'],
+    ['L3', '10 Things video: handed from Saiyam to Lokesh on Sep 14'],
+    ['L4', '5 Stages video: offered to Saiyam, then moved to Lokesh on Oct 2'],
+    ['L6', 'Growing a $1M Business: put on hold for Nigel on Oct 22, given to Lokesh Oct 28'],
+    ['A2', 'The $0 MBA: split between Anirba and Lokesh'],
+    ['MP', 'Nigel promo: seven versions by Mohit, re-edit given to Sharan on Nov 10']
+  ];
+  const queue = [
+    ['N2', 'Retirees With $2M: assigned Nov 5 behind another video, started Nov 9'],
+    ['H1', 'Waiting Until 65: assigned Fri Sep 11, window opened Mon Sep 14'],
+    ['S6', 'Retire NOW: posted in the Oct 2 batch, started Oct 9'],
+    ['H3', 'Stop Working Past 55: posted in the Oct 2 batch, started Oct 5']
+  ];
+  const li = a => a.map(x => `<li>${link(x[0], x[1].split(':')[0])}${x[1].includes(':') ? ':' + esc(x[1].slice(x[1].indexOf(':') + 1)) : ''}</li>`).join('');
+  SL.hand = hand; SL.queue = queue; SL.li = li;
+  const firsts = [['M1', 'Mohit'], ['H1', 'Sharan'], ['N1', 'Manish'], ['E1', 'Lokesh']].map(x => { const v = V.concat(LE).find(q => q.k === x[0]); return {v, who: x[1]}; });
+  SL.firsts = firsts;
+})();
+
+/* options and read */
+(function () {
+  const S = SL, tp = S.tp, nw = S.nw;
+  const rows = allotRows(V.filter(v => counted(v))), fr = rows.filter(r => r.kind === 'final' && !r.open);
+  const mn = avg(S.fin.filter(v => v.e === 'Mohit').map(v => v.df));
+  const lkAsk = LV.filter(v => v.flag === 'before' || v.flag === 'after').length;
+  const two = avg(S.fin.filter(v => v.dr <= 2).map(v => v.df)), more = avg(S.fin.filter(v => v.dr >= 3).map(v => v.df));
+  const wait = STATS.waitKeys.length, renders = ['M1', 'A5', 'A6', 'S7', 'L5'];
+  const chips = a => a.map(k => { const v = V.find(q => q.k === k); return `<a href="${LINKS[k]}" target="_blank" rel="noopener" style="text-decoration:underline;text-underline-offset:3px">${esc(v.sh)}</a>`; }).join(', ');
+  const o = (n, h, says, dat) => `<div class="opt"><div class="on">${n}</div><div><h3>${h}</h3><p class="says">${says}</p><div class="dat">${dat.map(d => `<div class="${d[0]}"><b>${d[1]}</b> ${d[2]}</div>`).join('')}</div></div></div>`;
+  document.getElementById('sl-opts').innerHTML =
+    o(1, 'Give long videos more days', 'Sanket’s first idea. Above 25 minutes add 1 day, above 30 add 2, and then roughly a day for every further 10 minutes. This is close to the earlier rule of 2 working days per 10 minutes. Fewer videos fit in a month, so output drops and an extra editor may be needed.', [
+      ['for', 'The 5 day plan and the rule are not being reached.', `${S.n5} of ${S.fin.length} finished videos reached final in 5 working days. At a stated length, ${S.metPlan} of ${S.lenN} met the plan and ${S.met} met your rule.`],
+      ['against', 'The rule is tighter than what happened.', `The middle video with a stated length took ${dd(SL.overMed)} more than the rule gives, and ${SL.per10.toFixed(1)} working days for every 10 minutes. At that pace a 25 minute video takes ${dd(SL.per10 * 2.5)}, a 30 minute one ${dd(SL.per10 * 3)} and a 40 minute one ${dd(SL.per10 * 4)}.`],
+      ['against', 'Dates were already about as long.', `${fr.length} finished videos with a final date were given ${f1(avg(fr.map(r => r.give)))} working days on average and took ${f1(avg(fr.map(r => r.take)))}. Where a length is stated and a final date was set, the date was as long as your rule or longer ${SL.dateLonger} of ${SL.dateN} times. Applying the rule alone would have shortened those dates.`],
+      ['against', 'Output falls.', `One editor can finish about ${(21 / 5).toFixed(1)} videos a month at 5 days, ${(21 / 6).toFixed(1)} at 6, ${(21 / 8).toFixed(1)} at 8 and ${(21 / 9).toFixed(1)} at 9, which is about what is being taken today.`],
+      ['unk', 'It fixes the date, not the pace.', `Average time to final is ${f1(avg(S.fin.map(v => v.df)))} days. A longer date only helps if editors then finish inside it, so the first numbers after a change are worth watching.`]
+    ]) +
+    o(2, 'Add one shared editor who moves between editors and clients', 'Sanket’s second idea. A new editor on a fixed video does not shorten it, but one shared editor who takes parts of any video keeps the team ahead when one video runs long.', [
+      ['for', 'Videos already change hands often.', `${S.hand.length} videos changed editor since June and ${S.queue.length} waited for an editor to start. Those are the moments a shared editor would absorb. <ul>${S.li(S.hand)}${S.li(S.queue)}</ul>`],
+      ['against', 'New editors start slow.', `The first finished video for Mohit (60 minutes) took ${S.firsts[0].v.df} working days, Sharan ${S.firsts[1].v.df}, Manish ${S.firsts[2].v.df} and Lokesh ${S.firsts[3].v.df}. A shared editor would need to learn several clients’ styles at once.`],
+      ['unk', 'Not measured.', 'This data does not say how many days of work a shared editor would take off the others. Splitting a video between two editors is also uncommon here, only the $0 MBA was done that way.']
+    ]) +
+    o(3, 'Template more, using quiet weeks', 'Sanket’s third idea. Build reusable animation, graphics and lower-third kits in the weeks when there is less to edit, so new videos start further along.', [
+      ['for', 'Editors already see it.', 'Lokesh said on Jul 7 that 60 to 70 percent of one VSL was like the one he was finishing. In the Nov 11 review he agreed to book a call with Saiyam about time-boxing and templates, and in the Sales Systems thread Sanket told him to use more templates in the second half. Saiyam has an updated Nigel kit.'],
+      ['against', 'A template alone is not a guarantee.', `The Ari VSL, a near copy of James’s, took Lokesh 8 working days against Sanket’s estimate of 3 to 4. Ari’s two YouTube videos took ${S.fin.filter(v => v.c === 'Ari').map(v => v.df).join(' and ')}.`],
+      ['unk', 'Quiet weeks are not recorded.', 'There is nothing in this data that shows how many weeks an editor had spare time, so the idea cannot be sized yet.']
+    ]) +
+    o(4, 'Ask the editors where the days go', 'Sanket’s fourth idea. Talk to each editor about which part of a video costs the most time: animations, AI B-roll, concepts and research, or actioning feedback. Mohit and Lokesh both told Sanket in their feedback calls that the timelines are short.', [
+      ['for', 'The thread notes agree with them.', `Lokesh raised a timing problem or asked for more time on ${lkAsk} videos. No other editor’s extension request shows up in these notes. ${wait} of ${S.fin.length} finished videos waited on client assets or footage, and ${renders.length} mention an export or render that ran for hours or overnight: ${chips(renders)}.`],
+      ['for', 'Video type shows in the time.', `New-content clients took ${dd(S.seg2.a)} to reach the A-cut against ${dd(S.seg1.a)} for James and Ari, and ${dd(S.seg2.b)} from A-cut to first draft against ${dd(S.seg1.b)}. The review half is shorter for them: ${dd(S.seg2.c)} against ${dd(S.seg1.c)}.`],
+      ['unk', 'The segments are not in the data.', 'Nothing here splits a week into animations, B-roll, concepts and revisions. The questions below would give it.']
+    ]);
+  document.getElementById('sl-survey').innerHTML = `<div class="card"><span class="tag">For each editor, ten minutes, last two videos</span><h3>Where did the days go?</h3><ol class="qs">
+    <li>Split the days across: concepts and research, animations, AI B-roll, actioning the A-cut comments, actioning the V1 comments, exports and renders, waiting on assets or review.</li>
+    <li>Which one part would you cut first if the video had to be 20 percent quicker?</li>
+    <li>For a 25 minute video, how many minutes a day is realistic when the content is new, and when it is a template?</li>
+    <li>How many days would you ask for on this client’s next video, and why?</li>
+    <li>What would you build in a quiet week to save time later?</li></ol></div>`;
+
+  // other things to add
+  const more_ = [
+    ['Put the length and two dates in every assignment message', 'Length is known for only some videos, and briefs often do not say whether a date is for the first draft or the final. With both written down, this page could be filled for every video.'],
+    ['Start the clock when the video is ready to edit', `${wait} of ${S.fin.length} finished videos waited on client assets, footage or reshoots. Counting days from the day assets arrive, or adding the wait to the date, keeps those days off the editor.`],
+    ['A minutes-complete check in the daily update', 'The plan gives clear marks: 5, 15 and 25 minutes by Tuesday, Wednesday and Thursday. Posting the number each morning gives a warning on Wednesday, not on the day the draft is due. On Nov 17 the Sales Systems video was at 10 minutes of 25 to 30 on day 5.'],
+    ['Plan the export', `${renders.length} videos mention an export or render that ran for hours or overnight. Sanket’s own advice to Lokesh, a low-res V1 and 4K in parts, belongs in the workflow so the Thursday export does not eat Friday.`],
+    ['Limit review rounds', `Videos finished in 2 drafts took ${f1(two)} working days and those with 3 or more took ${f1(more)}. One consolidated set of comments per draft, and a same-day review for V1, would help.`],
+    ['A short complexity tag at assignment', 'Template, partly new or fully new, with a day allowance for each. That is how the differences between James, Ari, Nigel, Vishen and Daniel would turn into dates.'],
+    ['Hand the research off for new-content clients', 'For Vishen and Daniel, reference videos, source clips and the list of new concepts could be prepared before the A-cut review, so the editor’s week goes to editing.']
+  ];
+  document.getElementById('sl-more').innerHTML = more_.map((x, i) => `<div class="row why"><b>${i + 1}. ${esc(x[0])}</b><span class="f">${x[1]}</span></div>`).join('');
+
+  // read
+  const hasCl = S.pairs.filter(p => p.ed === 'Lokesh');
+  const items = [
+    ['The 5 day plan is not being met by anyone', `${S.n5} of ${S.fin.length} finished videos reached final in 5 working days, and the best editor and client pair averages ${f1(S.best.fin)}. That supports looking at the timeline before the editor. It does not say whether the plan is too tight or the process is off.`],
+    ['The dates set were already close to what editors took', `Finished videos with a final date were given ${f1(avg(fr.map(r => r.give)))} working days on average and took ${f1(avg(fr.map(r => r.take)))}. The miss is about a day, not four. So the 5 day plan and the dates that were actually set are different things, and the dates were already longer than the plan.`],
+    ['Client type shows up in the first half of the work', `James and Ari videos took ${f1(tp.v1)} days to first draft and ${f1(tp.fin)} to final. Vishen, Daniel and Nigel videos took ${f1(nw.v1)} and ${f1(nw.fin)}. The extra time is early: ${dd(S.seg2.a)} to reach the A-cut against ${dd(S.seg1.a)}, then ${dd(S.seg2.b)} against ${dd(S.seg1.b)} to the first draft. After the first draft the order flips. That fits the view that new stories and concepts cost time up front. Ari’s two videos took ${f1(avg(S.fin.filter(v => v.c === 'Ari').map(v => v.df)))} days, longer than any other client, though both were early videos for a new client.`],
+    ['Same editor, different client', 'Few editors have worked both kinds of client in this window. Saiyam took 10 days on one Nigel video against 7 on James. Anirba took about 8 on Nigel against 9 on Vishen. Since 17 Aug Lokesh took 6 on Vishen, 8 to 10 on Daniel and 10 on James. So the claim that every editor is slower on the new-content clients is not shown here, and the data is too thin to rule it out.'],
+    ['Editors matter on the same client', `On Vishen videos Lokesh took 6 days, Anirba 9 and Mohit 13, and all three of Mohit’s finished videos had a client asset wait. This does not show Saiyam or Sanket would do better on Vishen or Daniel. Saiyam has not edited either in this window, and Sanket’s 50 minute masterclass took ${bd('2026-08-18', '2026-09-04')} working days from Aug 18 to Sep 4, including the client’s approval. It does mean the choice of editor is not irrelevant, just smaller than the date.`],
+    ['The rule needs calibrating before it is used', `Where a length is stated, ${S.met} of ${S.lenN} videos finished within the rule you described, and the middle video took ${SL.per10.toFixed(1)} working days for every 10 minutes against 2. Longer dates will not remove lateness unless they match that pace or the pace improves. A longer date, a clearer start point and an early warning are the cheapest first steps. Hiring and templating take longer to show results.`]
+  ];
+  document.getElementById('sl-read').innerHTML = items.map(x => `<div class="vd-item"><span class="vd-t">${esc(x[0])}</span><span class="vd-d">${x[1]}</span></div>`).join('');
+})();
+
+/* ---------- tabs ---------- */
+(function () {
+  const names = ['turnaround', 'lokesh', 'solution'];
+  function show() {
+    let hh = (location.hash || '').replace('#', ''); if (names.indexOf(hh) < 0) hh = 'turnaround';
+    names.forEach(n => document.getElementById('pg-' + n).classList.toggle('on', n === hh));
+    document.querySelectorAll('#tabs a').forEach(a => { if (a.dataset.p === hh) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+    tip.style.display = 'none';
+    const t = document.getElementById('tabs'); if (t) window.scrollTo(0, 0);
+  }
+  window.addEventListener('hashchange', show); show();
 })();
 </script>
