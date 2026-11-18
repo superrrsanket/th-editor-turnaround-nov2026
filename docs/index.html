@@ -367,7 +367,7 @@ section { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
 .mx.th > div { font: 600 11.5px 'Inter Tight', sans-serif; letter-spacing: .06em; text-transform: uppercase; color: var(--text-faint); text-align: center; align-self: end; padding-bottom: 4px; }
 .mxwrap { overflow-x: auto; }
 .mxwrap .mx { min-width: 640px; }
-.wk { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; }
+.wk { display: grid; grid-template-columns: repeat(6, minmax(0, 1fr)); gap: 10px; }
 .wd { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 16px 16px 18px; box-shadow: var(--shadow); min-width: 0; }
 .wd .dn2 { font: 700 11.5px 'Inter Tight', sans-serif; letter-spacing: .08em; text-transform: uppercase; color: var(--text-faint); }
 .wd b { display: block; font: 800 17px 'Inter Tight', sans-serif; letter-spacing: -.015em; margin-top: 6px; line-height: 1.2; }
@@ -461,6 +461,16 @@ section { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
   .pb .pbbar { grid-column: 1 / -1; grid-row: 2; }
   .rd { grid-template-columns: 1fr; }
 }
+
+.tipp { cursor: help; display: inline-block; }
+a.tipp { cursor: pointer; }
+.tipp .pill { box-shadow: 0 0 0 1px color-mix(in srgb, currentColor 30%, transparent); }
+#tip .q { margin-top: 6px; padding: 8px 10px; border-radius: 10px; background: color-mix(in srgb, var(--bg) 16%, transparent); font-size: 12.5px; line-height: 1.5; white-space: pre-wrap; }
+#tip { max-width: min(430px, calc(100vw - 24px)); }
+#tip td { vertical-align: top; }
+
+.tiles.two { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 860px) { .tiles.two { grid-template-columns: 1fr; } }
 </style>
 
 <div class="page">
@@ -696,13 +706,13 @@ section { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
   <header>
     <p class="eyebrow">Solution &middot; for the editor timeline discussion</p>
     <h1>What would <mark>fix the timelines</mark></h1>
-    <div class="tiles" id="sl-tiles"></div>
+    <div class="tiles two" id="sl-tiles"></div>
     <p class="sub" style="margin-top:14px">Working days, Monday to Friday, the same counting as page 1. Views from Sanket are marked as his.</p>
   </header>
 
   <section>
     <div class="sec-title">The plan against what happened</div>
-    <p class="sub">Sanket’s workflow for a 25 minute video. His Oct 20 note to Lokesh put the pace at about 6 to 8 minutes of finished video a day.</p>
+    <p class="sub">Sanket’s workflow for a 25 minute video, Wednesday to Wednesday. His Oct 20 note to Lokesh put the pace at about 6 to 8 minutes of finished video a day.</p>
     <div class="wk" id="sl-week"></div>
     <div class="cal-wrap"><div class="sec-title" style="padding:0 0 10px">Finished videos by working day to final</div><div class="chart-box"><div id="sl-h2"></div></div><p class="key" id="sl-h2-sub"></p></div>
   </section>
@@ -712,7 +722,7 @@ section { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
     <p class="sub">Sanket’s view: James and Ari are close to templates, Vishen, Daniel Priestley and Nigel are new each time.</p>
     <div class="strip" id="sl-phase"></div>
     <div class="strip" style="padding-top:14px"><div class="sec-title" style="padding:0 0 8px">Days to final, editor by client</div><div id="sl-mx"></div></div>
-    <div class="callout">Few editors have worked both kinds of client, and Daniel Priestley was edited only by Lokesh in these three months. Read the colours as a range, not a ranking.</div>
+    <div class="callout">Small samples: Ari has 2 videos, Daniel Priestley 2 (both Lokesh), Nigel 3. Videos with a stated length are 18 and 24 minutes for James and Ari, and 25 to 60 for the others, so length and content style are mixed together here.</div>
   </section>
 
   <section>
@@ -755,7 +765,7 @@ section { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
   <section>
     <div class="sec-title">How this was counted</div>
     <div class="strip how">
-      <div class="row"><b>Plan days</b><span>Sanket’s workflow: A-cut Monday, then 5, 10 and 10 minutes on Tue to Thu, review and V2 on Friday. Each further 10 minutes adds a day. This is arithmetic, not a measurement.</span></div>
+      <div class="row"><b>Plan days</b><span>Sanket’s workflow is Wednesday to Wednesday, 6 working days for a 25 minute video: A-cut on day 1, 5, 15 and 25 minutes by days 2 to 4, review on day 5, V2 on day 6. Each further 10 minutes adds a day. The split of days 5 and 6 is assumed from the 6 day total. This is arithmetic, not a measurement.</span></div>
       <div class="row"><b>Your rule</b><span>Above 25 minutes add 1 day, above 30 add 2, then 1 per further full 10 minutes. A length written “25+” is read as just over 25.</span></div>
       <div class="row"><b>Client groups</b><span>James Conole and Ari as template style, Vishen, Daniel Priestley and Nigel as new content. That grouping is Sanket’s.</span></div>
       <div class="row"><b>From Sanket</b><span>That Mohit and Lokesh find the timelines short comes from their feedback calls, not Slack.</span></div>
@@ -1406,6 +1416,35 @@ const LO = [
   {t:'Disclosure pass on four VSLs', k:'ED', d:'Jul 22 to 24', n:'On-screen disclosures and end screens on VSLs that were already approved, two of them edited by someone else.'}
 ].concat(O.filter(o => o.e === 'Lokesh').map(o => ({t: o.t, k: o.k, d: fd(o.s) + ' to ' + fd(o.end || o.fin), n: o.n})));
 
+/* ================= Lokesh: messages shown on hover ================= */
+const LKM = {"E1": {"asks": [{"when": "Jun 19, 13:15", "requested": "More time, the video is 23 min", "text": "Also, the video is 23-min long. I will be needed a bit more time than usual to complete this @Gio Vescovi @Surabhi.", "reply": {"who": "Surabhi", "when": "Jun 19, 13:20", "text": "Hi @Lokesh Singh (personal) the video is due on Monday, that should be doable correct?", "outcome": ""}}, {"when": "Jun 19, 13:21", "requested": "Tuesday Jun 23 instead of Monday", "text": "mm, I think no! I will try to complete this by tuesday.", "reply": {"who": "Surabhi", "when": "Jun 19, 17:43", "text": "Sounds good, I'll reflect that on Asana", "outcome": "Granted"}}, {"when": "Jun 24, 00:27", "requested": "Missed Tuesday, new ETA 3 PM", "text": "Hey everyone, apologies for the late update. I wasn't able to get the video done today despite pushing hard on it. I'll have it delivered tomorrow by 3:00 PM IST. Sorry for the delay!", "reply": {"who": "Saf", "when": "Jun 24, 16:47", "text": "Thanks for communicating this properly @Lokesh Singh (personal)", "outcome": ""}}], "res": {"ini": ["Fri Jul 26 (impossible), Mon Jun 22", "Gio Jun 17 00:25, Surabhi Jun 19 13:20"], "force": ["Tue Jun 23, then his own ETA Jun 24 3 PM", "Surabhi Jun 19 17:43"], "fd": ["Jun 24", "15:38"], "fin": ["Jul 7", "V7 Jul 6, Sanket GTG Jul 7 16:16"]}}, "E2": {"asks": [{"when": "Jul 8, 05:56", "requested": "", "text": "Hi @Gio Vescovi - I've completed this video and put it on export, but it's going to take a good amount of time, so I'll send it to you as soon as I wake up!"}], "res": {"ini": ["Wed Jul 8", "Gio Jun 30 02:09, the date the client asked for"], "force": ["Unchanged", ""], "fd": ["Jul 8", "22:12"], "fin": ["Jul 17", "Sanket GTG Jul 17 13:27, last upload V6 Jul 17 22:41"]}, "noAsk": "No message asking for more time was found. Gio had asked the client for a few extra days."}, "E3": {"asks": [{"when": "Jul 16, 21:56", "requested": "1 extra day, done by Sat Jul 18", "text": "Hi everyone, wanted to give a quick update - my hard drive where all my project data was stored (including the current one) got damaged. The repair shop has said it should be fixed by tomorrow afternoon.\n\nI'd really appreciate a one day extension to get everything sorted. I'll make sure to have it wrapped up by this Saturday even if it takes the full day. Sorry for the inconven…", "reply": {"who": "Lokesh", "when": "Jul 17, 17:51", "text": "hey guys, got my drive back. I will try to send the video asap. thank you all for the patience.", "outcome": ""}}, {"when": "Jul 20, 20:21", "requested": "Export running, delay", "text": "hey quick update - put the video on export. It is taking a bit of time - will share it as soon as psbl..", "reply": {"who": "Gio", "when": "Jul 20, 20:30", "text": "No rush, thanks for the update!", "outcome": ""}}, {"when": "Jul 21, 01:48", "requested": "Delivers and apologises", "text": "f.io/vPr_bp6s - sorry for the delay - completely forgot about the \"Kickoff\" -> \"Proposal\" thing"}], "res": {"ini": ["Wed Jul 15", "Gio Jul 10 00:52"], "force": ["Sat Jul 18, his own date", "no new date from Gio"], "fd": ["Jul 21", "01:48"], "fin": ["Jul 21", "Sanket GTG Jul 21 23:35, client approved Jul 22 08:21"]}}, "E4": {"asks": [{"when": "Jul 21, 23:12", "requested": "Will discuss the date after the first cut", "text": "Thank you for this new project @Najma\nFor the deadline - I will let you know after the firsr cut. Will that work?"}, {"when": "Jul 24, 02:48", "requested": "Doubts he can finish by Jul 30", "text": "f.io/… - Here is the first cut (Still uploading). Seeing the video length I doubt about finishing it till 30"}, {"when": "Jul 24, 16:22", "requested": "1 more day", "text": "for this …\n\nI think yes. But I am not very sure \nIf you guys don't mind I would love to take 1 day more for this. But I would try to complete it as soon as psbl.", "reply": {"who": "Najma", "when": "Jul 24, 16:24", "text": "Okay 31st July in the afternoon would be the latest as the video goes out 1st August:)", "outcome": ""}}], "res": {"ini": ["Thu Jul 30", "Najma Jul 21 22:28"], "force": ["Fri Jul 31 afternoon at the latest", "Najma Jul 24 16:24"], "fd": ["No full draft", "first cut Jul 24 13:15"], "fin": ["Handed to Aaron Jul 24", "Aaron approved Jul 30 18:24"]}}, "E5": {"asks": [{"when": "Aug 6, 16:14", "requested": "1 extra day, the video is 30+ min", "text": "Hey @Gio Vescovi - the video is 30 mins+. I request a day extension to complete this video. Is that possible?", "reply": {"who": "Gio", "when": "Aug 6, 16:50", "text": "Hey @Lokesh Singh (personal) absolutely - I’d like to schedule it on Friday, Aug 14. Do you think we can make that work?", "outcome": ""}}, {"when": "Aug 14, 16:41", "requested": "Client tool still missing", "text": "hey @Gio Vescovi - I still have no update on the tool thing in the video.", "reply": {"who": "Gio", "when": "Aug 14, 16:40", "text": "Hey guys! Just checking on the status of this video as I'm planning to schedule it today to go live tomorrow", "outcome": ""}}, {"when": "Aug 14, 19:35", "requested": "Work left, placeholder offered", "text": "yes, it is still remaining but If you want it without that then I will leave a placeholder there and export the V2. Overall 10-20 mins of work is remaining only in the video except the tool."}], "res": {"ini": ["Wed Aug 12", "Gio Aug 4 21:00"], "force": ["Fri Aug 14", "Gio Aug 6 16:50"], "fd": ["Aug 13", "16:32"], "fin": ["Aug 14", "last upload 23:03, no approval message"]}}, "L3": {"asks": [{"when": "Sep 24, 17:37", "requested": "", "text": "Yo! Sorry was in a nap :)\nEverything is done. Just one change in the video was so time taking so getting that done. \n\nBut additionally, do I have to generate AI voice for that 9 things?? Because James is saying 10 things in 1 or 2 part in the video? \n\nOther than or including this I would share the video today."}, {"when": "Sep 25, 18:48", "requested": "", "text": "hey guys, there will be a slight delay in the video. Going to start the exporting in about 10 mins and export will take a bit of a time. Sorry for that."}], "res": {"ini": ["Tue Sep 22", "Gio’s schedule for Saiyam, Sep 7"], "force": ["Thu Sep 24 EOD sign-off wanted", "Najma Sep 24 17:22"], "fd": ["Sep 19", "15:02"], "fin": ["Sep 25", "last upload 20:54, no approval message"]}, "noAsk": "No message asking for an extension was found. He wrote about the delay on the day, after the date had passed."}, "L4": {"asks": [{"when": "Oct 6, 15:52", "requested": "1 extra day, the video is over 25 min", "text": "Absolutely. @Sanket and for the sake of over-communication I would love to get a extension of 1 day as this video is over 25 mins.\n\nDo we have room for that @Najma?", "reply": {"who": "Najma", "when": "Oct 6, 15:55", "text": "Just checked the schedule and we don't have an extra day for this unfortunately! We could possibly have less animations towards the end to help with t…", "outcome": "Declined"}}, {"when": "Oct 9, 19:07", "requested": "First half Oct 9, second half Oct 10 EOD", "text": "Thank you for understanding. just one thing -I will share the first half by today and then second half by tomo EOD. Or else if you say I will share the full video by tomo EOD. Will that work?", "reply": {"who": "Sanket", "when": "Oct 9, 19:39", "text": "Can you please share full video by today? Tomorrow EOD will get late & the team will have to work on the weekend.  We have been working on this video…", "outcome": ""}}, {"when": "Oct 9, 20:09", "requested": "Full video by Oct 10 EOD", "text": "I’m a bit behind my usual pace because, but I’m unable to share the full video by today.\n\nI will definitely have it ready by tomorrow EOD so we can review it. I’ll make sure there are minimal changes in that version. really sorry that I am eating up your weeknd. But I will try my best so that you have to waste a very minimal time.", "reply": {"who": "Najma", "when": "Oct 9, 20:45", "text": "EOD tomorrow is fine, but please let's make this the last time we do this. @Sanket I'm sorry to ask you to check it too but I'll be online as well - l…", "outcome": ""}}], "res": {"ini": ["Fri Oct 9", "Najma Oct 2 17:35"], "force": ["Sat Oct 10 EOD", "Najma Oct 9 20:45"], "fd": ["Oct 11", "01:07"], "fin": ["Oct 11", "17:47, after Najma’s 2 PM cutoff"]}}, "L5": {"asks": [{"when": "Oct 20, 14:38", "requested": "2 extra days, final Wed Oct 28", "text": "Hey @Najma,\nI have a rough idea for the video, and it is going to run over 30 minutes. I would like to request a 2-day extension on the deadline.\n\nHere is the plan:\n• *Tuesday:* Hook plus an additional 1-2 minutes of video.\n• *Wednesday:* Complete 9-10 mins.\n• *Thursday:* Complete 17-18 mins.\n• *Friday:* Complete 26-28 mins.\n• *Monday:* Complete the full video and share the fir…", "reply": {"who": "Najma", "when": "Oct 22, 15:22", "text": "Hi Lokesh, yes this works - thanks for being super clear with the timings:)", "outcome": "Granted"}}, {"when": "Oct 26, 12:25", "requested": "Day the first draft was due, 10 min left", "text": "Editing wise we are all good, last 10-11 mins are remaining. the only catch here is the export here. I tried exporting it on Saturday and as it is a 4K clip it took a lot to export .\n\nBut I think there will still be a version for you to review tomo morning - I mean by this same time."}, {"when": "Oct 28, 10:44", "requested": "Power cut, short delay", "text": "Hey guys, I have just woken up and found out that electricity has been cut off in my area since 6:00 in the morning. There will be a short delay in sharing the V2. Will keep you guys updated.", "reply": {"who": "Najma", "when": "Oct 28, 19:45", "text": "That's fine - when will the video be delivered? we need you to start on Daniel's next video please!", "outcome": "Najma"}}], "res": {"ini": ["Mon Oct 26", "Najma Oct 19 16:10"], "force": ["Wed Oct 28 for the final", "Najma Oct 22 15:22"], "fd": ["Oct 27", "13:36"], "fin": ["Oct 30", "V4 17:20, Sanket GTG 18:11"]}}, "L6": {"asks": [{"when": "Nov 2, 15:27", "requested": "More time, the video is 28 min", "text": "I also wanted to share one more thing. this video is as well 28 mins long. I will be needed extra time for this to complete. Is that psbl?? @Najma @Sanket?", "reply": {"who": "Najma", "when": "Nov 2, 15:29", "text": "Hi Lokesh, there's no extra time for this one as the publish date is 7th Nov - 25 mins is a short as we can go, maybe we could go slightly less graphi…", "outcome": "Declined"}}, {"when": "Nov 3, 16:24", "requested": "At risk, first draft ETA Nov 5 3 PM", "text": "Hey @Najma and @Sanket - heads up, this video is at risk of missing the deadline.\n\n*Reason:* Doing 10 mins everyday is a challenge in itself. And this is the first 10 mins of the video so that's another issue.\n\n*Revised ETA:* Thursday, 5 Nov. I’m aiming to send it by 3 PM IST on the same day.\n\nToday’s target was 8-10 mins, but I’ll likely only get through 7-8 only. I’ll post pr…", "reply": {"who": "Sanket", "when": "Nov 5, 11:36", "text": "Hey @Lokesh, looking forward to seeing the V1 today at 3PM", "outcome": ""}}, {"when": "Nov 5, 11:57", "requested": "Will take longer than 3 PM", "text": "Hey bro, I think it will take more than this. I am on track to share it today but by 3 PM, not sure :/", "reply": {"who": "Sanket", "when": "Nov 5, 11:58", "text": "Okay, we need to get one round of review done by today, so you can work on changes tomorrow.", "outcome": "Sanket"}}], "res": {"ini": ["Fri Nov 6", "Najma Oct 28 20:02, Sanket asked for Thu Nov 5 EOD"], "force": ["Unchanged, extension declined", "Najma Nov 2 15:29"], "fd": ["Nov 5", "23:48, his ETA was 3 PM"], "fin": ["Nov 7", "last upload 17:44, no approval message"]}}, "L7": {"asks": [{"when": "Nov 17, 12:35", "requested": "Will try to finish by tomorrow", "text": "I will try my best to complete it by tomo. I have done a bit of the video on my leave as well. trying to complete till 10 mins today.", "reply": {"who": "Sanket", "when": "Nov 17, 12:37", "text": "Can you please be certain about the deadline? We know you’re trying your best, but we need to know whether you’ll get us the video by tomorrow or not.…", "outcome": ""}}, {"when": "Nov 17, 12:53", "requested": "First draft may be late, asks for a buffer", "text": "Two things I wanted to flag in advance so there are no surprises:\n1. There is a chance I will share the video late, either by late EOD tomo (3-4 AM) or on Thursday afternoon (1-2 PM). Some sections take extra time to get right. If that happens, I will let you know beforehand.\n2. As I understand it, the review happens on Thursday and the final draft is due the same day. I'm a li…", "reply": {"who": "Sanket", "when": "Nov 17, 13:02", "text": "1. Please aim for late EOD tomorrow. Try to render half of the video overnight today, when you go to sleep, so only half is left to render tomorrow on…", "outcome": ""}}, {"when": "Nov 18, 03:53", "requested": "Plans to send the first draft", "text": "Also, I might start a bit late tomo but tomo’s daily update will be finish the V1 and send it to review. @Sanket"}], "res": {"ini": ["Thu Nov 19 final, Wed Nov 18 first draft", "Najma Nov 11 15:40, Sanket Nov 17"], "force": ["Unchanged", "Sanket Nov 17 13:02: aim for late EOD Nov 18"], "fd": ["Not yet", "as of Nov 18 03:53, done to 10 minutes"], "fin": ["Open", ""]}}};
+const fmtD = s => { if (!s) return ''; const m = /^(\d{4})-(\d{2})-(\d{2})/.exec(s); return m ? fd(m[0]) : s; };
+const qt = t => `<div class="q">“${esc(t)}”</div>`;
+function tipAsk(v) {
+  const m = LKM[v.k] || {}, asks = m.asks || [];
+  const flagTxt = v.flag === 'before' ? 'Asked before the date' : v.flag === 'after' ? 'Raised after the date passed' : 'No request found';
+  let h = `<div class="h"><i style="background:${col('Lokesh')}"></i>Lokesh<span>${flagTxt}</span></div><b>${esc(v.sh)}</b>`;
+  if (m.noAsk) h += `<div class="m">${esc(m.noAsk)} Closest messages:</div>`;
+  if (!asks.length && !m.noAsk) h += `<div class="m">${esc(v.ext || 'No message asking for time was found in the thread.')}</div>`;
+  asks.forEach(a => {
+    h += `<div class="m" style="margin-top:10px"><b style="font-weight:700">${esc(a.when)}</b>${a.requested ? ' &middot; ' + esc(a.requested) : ''}</div>${qt(a.text)}`;
+    if (a.reply) h += `<div class="m">Reply, ${esc(a.reply.who)}${a.reply.when ? ' (' + esc(a.reply.when) + ')' : ''}: <i style="font-style:normal">“${esc(a.reply.text)}”</i>${a.reply.outcome ? ' <b style="font-weight:700">→ ' + esc(a.reply.outcome) + '</b>' : ''}</div>`;
+  });
+  return h + `<div class="f">Click to open the Slack thread.</div>`;
+}
+function tipRes(v) {
+  const m = LKM[v.k] || {}, r = dueRes(v) || {t: ''}, R = m.res || {};
+  const row = (a, b, c) => `<tr><td>${a}</td><td>${b}</td><td>${c || ''}</td></tr>`;
+  let rows = R.ini ? row('Deadline at assignment', esc(R.ini[0]), esc(R.ini[1])) : '';
+  const asks = (m.asks || []).filter(a => a.requested);
+  if (m.noAsk) rows += row('He asked', 'Nothing found', '');
+  asks.slice(0, 2).forEach(a => { rows += row('He asked', esc(a.requested), esc(a.when) + (a.reply && a.reply.outcome ? ', ' + esc(a.reply.outcome) : '')); });
+  if (R.force) rows += row('Deadline in force', esc(R.force[0]), esc(R.force[1]));
+  if (R.fd) rows += row('First draft', esc(R.fd[0]), esc(R.fd[1]));
+  if (R.fin) rows += row(v.hand ? 'Handed over' : 'Final', esc(R.fin[0]), esc(R.fin[1]));
+  return `<div class="h"><i style="background:${col('Lokesh')}"></i>Lokesh<span>${esc(r.t)}</span></div><b>${esc(v.sh)}</b><table><tr><th>Step</th><th>Date</th><th>Detail</th></tr>${rows}</table><div class="f">Times are IST. Days late count working days after the deadline in force.</div>`;
+}
+
 /* ================= shared helpers for pages 2 and 3 ================= */
 const cnt2 = v => !v.split && !v.hand;
 const fin2 = list => list.filter(v => cnt2(v) && v.df != null);
@@ -1499,8 +1538,9 @@ const LKS = (function () {
 
   // on time table
   const head = `<div class="ltab th lk-late"><div>Video</div><div>Due</div><div>Delivered</div><div>Given</div><div>Took</div><div>Result</div><div>Asked for time</div></div>`;
-  const rows = LV.filter(v => v.due && v.dk !== 'unclear').map(v => {
+  const rows = LV.filter(v => v.due).map(v => {
     const r = dueRes(v), done = v.hand ? null : (v.dk === 'v1' ? v.v1 : v.fin);
+    TIPS['ka' + v.k] = tipAsk(v); TIPS['kr' + v.k] = tipRes(v);
     const fl = v.flag === 'before' ? '<span class="pill ok sm">Before</span>' : v.flag === 'after' ? '<span class="pill gold sm">After</span>' : '<span class="pill na sm">No</span>';
     return `<div class="ltab lk-late">
       <div class="nm"><b style="font-family:'Inter Tight',sans-serif;font-size:15px;letter-spacing:-.01em">${link(v.k, v.sh)}</b><span style="display:block;font-size:12.5px;color:var(--text-faint)">${esc(v.c)} &middot; ${dueKindTxt(v)} date${v.trial ? ' &middot; trial' : ''}</span></div>
@@ -1508,8 +1548,8 @@ const LKS = (function () {
       <div class="cell"><i>Delivered</i>${done ? fd(done) : '—'}</div>
       <div class="cell"><i>Given</i>${given(v)} days</div>
       <div class="cell"><i>Took</i>${done ? takenOf(v) + ' days' : '—'}</div>
-      <div class="cell"><i>Result</i>${duePill(r)}</div>
-      <div class="cell"><i>Asked for time</i>${fl}</div></div>`;
+      <div class="cell"><i>Result</i><span class="tipp" data-tip="kr${v.k}" tabindex="0">${duePill(r)}</span></div>
+      <div class="cell"><i>Asked for time</i><a class="tipp" data-tip="ka${v.k}" href="${LINKS[v.k] || '#'}" target="_blank" rel="noopener" style="text-decoration:none">${fl}</a></div></div>`;
   }).join('');
   document.getElementById('lk-late').innerHTML = head + rows + `<div class="legend" style="margin:8px 0 14px"><span><i style="background:var(--ok)"></i>On time</span><span><i style="background:var(--bad)"></i>Late, counted in working days after the due date</span><span>“Asked for time” says whether he raised a timing problem before the due date passed.</span></div>`;
   document.getElementById('lk-allot').innerHTML = allotChart(allotRows(LV.filter(v => v.due && v.dk !== 'unclear')), 'k', 'Working days, assignment day is day 1');
@@ -1656,8 +1696,8 @@ document.getElementById('lk-oth').innerHTML = `<div class="row th ot"><div>Dates
 /* ================= page 3: solution ================= */
 const SL = (function () {
   const fin = fin2(V), v1l = v1s2(V);
-  const planDays = L => 2 + Math.ceil(Math.max(0, L - 5) / 10) + 1;
-  const ruleDays = L => L <= 25 ? 5 : 5 + 1 + (L > 30 ? 1 : 0) + Math.floor(Math.max(0, L - 31) / 10);
+  const planDays = L => 2 + Math.ceil(Math.max(0, L - 5) / 10) + 2;
+  const ruleDays = L => L <= 25 ? 6 : 6 + 1 + (L > 30 ? 1 : 0) + Math.floor(Math.max(0, L - 31) / 10);
   const effLen = v => v.len + (v.lenMin ? 0.5 : 0);
   const TEMPLATE = c => c === 'James Conole' || c === 'Ari';
   const clients = ['James Conole', 'Ari', 'Vishen', 'Daniel Priestley', 'Nigel'];
@@ -1666,7 +1706,7 @@ const SL = (function () {
   const best = pairs.filter(p => p.n >= 3).sort((a, b) => a.fin - b.fin)[0];
   const rows = allotRows(V.filter(v => counted(v))), fr = rows.filter(r => r.kind === 'final' && !r.open);
   return {fin, v1l, planDays, ruleDays, effLen, TEMPLATE, clients, pairs, best, rows, fr,
-    n5: fin.filter(v => v.df <= 5).length, n4: v1l.filter(v => v.d1 <= 4).length,
+    n5: fin.filter(v => v.df <= 6).length, n4: v1l.filter(v => v.d1 <= 4).length,
     give: avg(fr.map(r => r.give)), take: avg(fr.map(r => r.take)), onDate: fr.filter(r => r.res.k === 'ok').length};
 })();
 
@@ -1687,20 +1727,20 @@ const SL = (function () {
 (function () {
   const S = SL;
   document.getElementById('sl-tiles').innerHTML = `
-    <div class="tile"><div class="n">${S.n5} of ${S.fin.length}</div><div class="t">Videos finished in the planned 5 days</div><div class="d">The plan is a 25 minute video in 5 working days. The quickest editor and client pair, ${S.best.ed} on ${S.best.c}, averages ${f1(S.best.fin)}.</div></div>
-    <div class="tile"><div class="n">${f1(S.give)} to ${f1(S.take)}</div><div class="t">Days the date gave, days it took</div><div class="d">${S.fr.length} videos had a final date in Slack. They were given ${f1(S.give)} working days on average and took ${f1(S.take)}. ${S.onDate} landed on the date.</div></div>
-    <div class="tile"><div class="n">${S.per10.toFixed(1)} days</div><div class="t">Per 10 minutes of video</div><div class="d">The middle video with a stated length took ${S.per10.toFixed(1)} working days for every 10 minutes. Sanket’s rule is 2. ${S.L.length} videos have a length.</div></div>`;
+    <div class="tile"><div class="n">${S.n5} of ${S.fin.length}</div><div class="t">Videos finished in the planned 6 days</div><div class="d">The plan is a 25 minute video in 6 working days, Wednesday to Wednesday. The quickest editor and client pair, ${S.best.ed} on ${S.best.c}, averages ${f1(S.best.fin)}.</div></div>
+    <div class="tile"><div class="n">${f1(S.give)} to ${f1(S.take)}</div><div class="t">Days the date gave, days it took</div><div class="d">${S.fr.length} videos had a final date in Slack. They were given ${f1(S.give)} working days on average and took ${f1(S.take)}. ${S.onDate} landed on the date.</div></div>`;
 })();
 
 /* the week */
 (function () {
   const day = (n, nm, mins, tot, txt, cls) => `<div class="wd ${cls || ''}"><div class="dn2">Day ${n}</div><b>${nm}</b><div class="mins">${mins}<small> ${tot}</small></div><p>${txt}</p></div>`;
   document.getElementById('sl-week').innerHTML =
-    day(1, 'Mon', '0', 'min', 'Assigned. A-cut posted, reviewed and actioned.') +
-    day(2, 'Tue', '5', 'min', 'Hook and the first 3 minutes.') +
-    day(3, 'Wed', '15', 'min', 'Another 10 minutes.') +
-    day(4, 'Thu', '25', 'min', 'Another 10. V1 exported and sent.') +
-    day(5, 'Fri', 'V2', 'sent', 'V1 reviewed, comments actioned, V2 sent.', 'fin');
+    day(1, 'Wed', '0', 'min', 'Assigned. A-cut posted, reviewed and actioned.') +
+    day(2, 'Thu', '5', 'min', 'Hook and the first 3 minutes.') +
+    day(3, 'Fri', '15', 'min', 'Another 10 minutes.') +
+    day(4, 'Mon', '25', 'min', 'Another 10. V1 exported and sent.') +
+    day(5, 'Tue', 'Review', '', 'V1 reviewed, comments actioned.') +
+    day(6, 'Wed', 'V2', 'sent', 'V2 sent for approval.', 'fin');
 })();
 
 /* histogram: days to final, plan and average date */
@@ -1712,12 +1752,12 @@ const SL = (function () {
   const sx = x => L + (x - 1) * bw, sy = c => H - B - c / ymax * (H - T - B);
   let s = '';
   for (let c = 0; c <= ymax; c += 2) s += `<line class="grid" x1="${L}" x2="${W - R}" y1="${sy(c)}" y2="${sy(c)}"/><text class="tick" x="${L - 10}" y="${sy(c) + 4}" text-anchor="end">${c}</text>`;
-  for (let x = 1; x <= xmax; x++) { if (counts[x]) s += `<rect x="${sx(x) + 5}" y="${sy(counts[x])}" width="${bw - 10}" height="${sy(0) - sy(counts[x])}" rx="6" style="fill:${x <= 5 ? 'var(--ok)' : 'var(--accent)'};opacity:${x <= 5 ? 1 : .8}"/><text class="dnum" x="${sx(x) + bw / 2}" y="${sy(counts[x]) - 6}" text-anchor="middle" style="font-size:12px">${counts[x]}</text>`; s += `<text class="tick" x="${sx(x) + bw / 2}" y="${H - B + 20}" text-anchor="middle">${x}</text>`; }
+  for (let x = 1; x <= xmax; x++) { if (counts[x]) s += `<rect x="${sx(x) + 5}" y="${sy(counts[x])}" width="${bw - 10}" height="${sy(0) - sy(counts[x])}" rx="6" style="fill:${x <= 6 ? 'var(--ok)' : 'var(--accent)'};opacity:${x <= 6 ? 1 : .8}"/><text class="dnum" x="${sx(x) + bw / 2}" y="${sy(counts[x]) - 6}" text-anchor="middle" style="font-size:12px">${counts[x]}</text>`; s += `<text class="tick" x="${sx(x) + bw / 2}" y="${H - B + 20}" text-anchor="middle">${x}</text>`; }
   s += `<line class="axis" x1="${L}" x2="${W - R}" y1="${sy(0)}" y2="${sy(0)}"/>`;
   const mk = (day, lbl) => { const xx = L + day * bw - bw / 2; return `<line class="ref" x1="${xx}" x2="${xx}" y1="${T - 14}" y2="${sy(0)}"/><text class="reflbl" x="${xx + 6}" y="${T - 20}" style="font-weight:700">${lbl}</text>`; };
-  s += mk(5, 'Plan: day 5') + mk(Math.round(S.give), `Average date set: day ${f1(S.give)}`);
+  s += mk(6, 'Plan: day 6') + mk(Math.round(S.give), `Average date set: day ${f1(S.give)}`);
   s += `<text class="axl" x="${(L + W - R) / 2}" y="${H - 6}" text-anchor="middle">Working days from assignment to final</text>`;
-  document.getElementById('sl-h2-sub').textContent = `${S.fin.length} finished videos. Only ${S.n4} of ${S.v1l.length} first drafts reached the Thursday mark, day 4. Dates set gave ${f1(S.give)} working days on average.`;
+  document.getElementById('sl-h2-sub').textContent = `${S.fin.length} finished videos. Only ${S.n4} of ${S.v1l.length} first drafts reached day 4, the Monday mark. Dates set gave ${f1(S.give)} working days on average.`;
   document.getElementById('sl-h2').innerHTML = `<svg class="chart sc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Number of finished videos by working days to final">${s}</svg>`;
 })();
 
@@ -1730,10 +1770,11 @@ const SL = (function () {
   const grp = f => { const l = S.fin.filter(v => f(v.c)), g = sg(l); return {n: l.length, g, fin: avg(l.map(v => v.df)), v1: avg(S.v1l.filter(v => f(v.c)).map(v => v.d1)), list: l}; };
   const tp = grp(c => S.TEMPLATE(c)), nw = grp(c => !S.TEMPLATE(c));
   const rows = S.clients.map(one), mx = Math.max(...rows.map(r => r.tot));
-  const bar = r => `<div class="pb"><div class="pbn"><b>${r.c}</b><small>${vid(r.n)}</small></div><div class="pbbar">${[['a1', r.g.a], ['a2', r.g.b], ['a3', r.g.c]].map(x => `<i class="${x[0]}" style="width:${x[1] / mx * 100}%">${x[1] / mx > .05 ? Math.round(x[1]) : ''}</i>`).join('')}</div><div class="pbt">${f1(r.fin)} days<small>to final</small></div></div>`;
+  const lr = (arr, total) => { const fl = arr.map(Math.floor); let left = total - fl.reduce((x, y) => x + y, 0); arr.map((x, i) => [x - fl[i], i]).sort((p, q) => q[0] - p[0]).forEach(p => { if (left > 0) { fl[p[1]]++; left--; } }); return fl; };
+  const bar = r => { const lab = lr([r.g.a, r.g.b, r.g.c], Math.round(r.g.a + r.g.b + r.g.c)); return `<div class="pb"><div class="pbn"><b>${r.c}</b><small>${vid(r.n)}</small></div><div class="pbbar">${[['a1', r.g.a], ['a2', r.g.b], ['a3', r.g.c]].map((x, i) => `<i class="${x[0]}" style="width:${x[1] / mx * 100}%">${x[1] / mx > .05 ? lab[i] : ''}</i>`).join('')}</div><div class="pbt">${f1(r.fin)} days<small>to final</small></div></div>`; };
   const gh = (t, sub, g) => `<div class="pbg"><div>${t}</div><span>${sub}: ${f1(g.v1)} days to first draft, ${f1(g.fin)} to final</span></div>`;
   document.getElementById('sl-phase').innerHTML = gh('Template style', 'James Conole and Ari', tp) + rows.filter(r => S.TEMPLATE(r.c)).map(bar).join('') + gh('New content each time', 'Vishen, Daniel Priestley and Nigel', nw) + rows.filter(r => !S.TEMPLATE(r.c)).map(bar).join('') +
-    `<div class="legend" style="margin:12px 0 8px"><span><i class="sw" style="background:var(--border-strong)"></i>Assigned to A-cut</span><span><i class="sw" style="background:var(--accent)"></i>A-cut to first draft</span><span><i class="sw" style="background:var(--gold)"></i>First draft to final</span><span>Working days. Segments are rounded, so they can differ from the total by a day.</span></div>`;
+    `<div class="legend" style="margin:12px 0 8px"><span><i class="sw" style="background:var(--border-strong)"></i>Assigned to A-cut</span><span><i class="sw" style="background:var(--accent)"></i>A-cut to first draft</span><span><i class="sw" style="background:var(--gold)"></i>First draft to final</span><span>Working days. Segment labels are rounded to add up to the total.</span></div>`;
   S.tp = tp; S.nw = nw;
   const heat = l => { if (!l.length) return '<div class="heat h0">—</div>'; const m = avg(l.map(v => v.df)); return `<div class="heat ${m <= 7.5 ? 'h1' : m <= 10.5 ? 'h2' : 'h3'}">${f1(m)}<small>${vid(l.length)}</small></div>`; };
   const cols = `grid-template-columns:130px repeat(${EDITORS.length}, minmax(0, 1fr))`;
@@ -1754,10 +1795,8 @@ const SL = (function () {
   s += `<text class="axl" x="${(X0 + W - R) / 2}" y="${H - 14}" text-anchor="middle">Video length, minutes</text><text class="axl" transform="translate(18 ${(T + H - B) / 2}) rotate(-90)" text-anchor="middle">Working days to final</text>`;
   const step = fn => { let p = ''; for (let m = xmin; m < xmax; m++) { const y = fn(m + 0.5); p += (m === xmin ? 'M' : 'L') + sx(m) + ' ' + sy(y) + ' L' + sx(m + 1) + ' ' + sy(y) + ' '; } return p; };
   s += `<path d="${step(S.planDays)}" style="fill:none;stroke:var(--ok);stroke-width:2.5"/><path d="${step(S.ruleDays)}" style="fill:none;stroke:var(--gold);stroke-width:2.5"/>`;
-  s += `<line x1="${sx(xmin)}" y1="${sy(xmin * S.per10 / 10)}" x2="${sx(xmax)}" y2="${sy(xmax * S.per10 / 10)}" style="stroke:var(--accent);stroke-width:2.5;stroke-dasharray:6 5"/>`;
-  s += `<text class="reflbl" x="${sx(xmax) - 4}" y="${sy(xmax * S.per10 / 10) - 10}" text-anchor="end" style="font-weight:700;fill:var(--accent)">Pace so far: ${S.per10.toFixed(1)} days per 10 min</text>`;
   s += `<text class="reflbl" x="${sx(63)}" y="${sy(S.ruleDays(63)) - 10}" text-anchor="end" style="font-weight:700;fill:var(--gold-ink)">Your rule</text>`;
-  s += `<text class="reflbl" x="${sx(63)}" y="${sy(S.planDays(63)) + 20}" text-anchor="end" style="font-weight:700;fill:var(--ok)">5 day workflow</text>`;
+  s += `<text class="reflbl" x="${sx(63)}" y="${sy(S.planDays(63)) + 20}" text-anchor="end" style="font-weight:700;fill:var(--ok)">6 day workflow</text>`;
   L.forEach(v => { TIPS['g' + v._g] = tipOf(v, `<b style="font-weight:700">${v.df} working days to final</b>. The workflow allows ${S.planDays(S.effLen(v))}, your rule ${S.ruleDays(S.effLen(v))}.`); s += `<g class="pt" data-tip="g${v._g}"><circle cx="${sx(v.len)}" cy="${sy(v.df)}" r="14" style="fill:${col(v.e)};stroke:var(--surface);stroke-width:2.5"/><text x="${sx(v.len)}" y="${sy(v.df) + 4.6}">${v._g}</text></g>`; });
   document.getElementById('sl-len').innerHTML = `<svg class="chart sc" viewBox="0 0 ${W} ${H}" role="img" aria-label="Length against working days, with the workflow, the rule and the pace so far">${s}</svg>`;
   document.getElementById('sl-len-list').innerHTML = L.map(v => `<div><span class="dn" style="background:${col(v.e)}">${v._g}</span><span>${link(v.k, v.sh)}, ${v.e}${v.trial ? ' (trial)' : ''}, ${lenTxt(v)}, <b style="color:var(--text)">${v.df} days</b></span></div>`).join('');
@@ -1765,7 +1804,7 @@ const SL = (function () {
 
 /* month calendar */
 const CAL = {days: 8, eds: 6};
-const CAL_DAYS = [5, 6, 7, 8, 9, 10];
+const CAL_DAYS = [6, 7, 8, 9, 10];
 function calModel(N, E) {
   const dates = []; for (let d = 1; d <= 31; d++) { const w = new Date(Date.UTC(2026, 11, d)).getUTCDay(); if (w !== 0 && w !== 6) dates.push(d); }
   const people = EDITORS.slice(0, Math.min(E, 6)).map(e => ({name: e.id, color: col(e.id)})); if (E > 6) people.push({name: 'Shared', color: 'var(--gold)'});
@@ -1777,7 +1816,7 @@ function renderCal() {
   const N = CAL.days, E = CAL.eds, M = calModel(N, E), wk = M.n / 5;
   document.getElementById('cal-tiles').innerHTML = `
     <div class="tile"><div class="n">${M.total}</div><div class="t">Videos finished in December</div><div class="d">${E} editors, one video each at a time, ${N} working days per video.</div></div>
-    <div class="tile"><div class="n">${(M.total / wk).toFixed(1)}</div><div class="t">Videos a week</div><div class="d">${M.n} working days is ${wk.toFixed(1)} weeks. At 5 days the same editors would finish ${calModel(5, E).total}.</div></div>
+    <div class="tile"><div class="n">${(M.total / wk).toFixed(1)}</div><div class="t">Videos a week</div><div class="d">${M.n} working days is ${wk.toFixed(1)} weeks. At 6 days the same editors would finish ${calModel(6, E).total}.</div></div>
     <div class="tile"><div class="n">${N}</div><div class="t">Editors for 5 videos a week</div><div class="d">One video per client a week (James, Ari, Vishen, Daniel, Nigel) is about 5, inferred from publish schedules. At ${N} working days each, that takes ${N} editors on long-form.</div></div>`;
   const wkStart = new Date(Date.UTC(2026, 10, 30));
   let html = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri'].map(d => `<div class="calh">${d}</div>`).join('') + '<div class="calh">Videos</div>';
@@ -1814,9 +1853,9 @@ renderCal();
   const card = (n, h, idea, dat, extra) => `<div class="card"><span class="tag">Option ${n}</span><h3>${h}</h3><p class="idea">${idea}</p><div class="dat">${dat.map(d => `<div class="${d[0]}">${d[1]}</div>`).join('')}</div>${extra || ''}</div>`;
   document.getElementById('sl-opts').innerHTML =
     card(1, 'Give long videos more days', 'Above 25 min add 1 day, above 30 add 2, then about a day per 10 min.', [
-      ['against', `<b>Tighter than reality.</b> ${S.met} of ${S.L.length} videos finished inside the rule. Real pace is ${S.per10.toFixed(1)} days per 10 min: about ${Math.round(S.per10 * 2.5)} days for 25 min, ${Math.round(S.per10 * 3)} for 30.`],
+      ['against', `<b>Tighter than reality.</b> ${S.met} of ${S.L.length} videos with a stated length finished inside the rule.`],
       ['against', `<b>Dates were already as long.</b> ${S.dateLonger} of ${S.dateN} dates were as long as the rule or longer. Average date: ${f1(S.give)} days.`],
-      ['unk', `<b>Output falls.</b> Six editors finish ${calModel(5, 6).total} videos in December at 5 days and ${calModel(8, 6).total} at 8. See the calendar.`]
+      ['unk', `<b>Output falls.</b> Six editors finish ${calModel(6, 6).total} videos in December at 6 days and ${calModel(8, 6).total} at 8. See the calendar.`]
     ]) +
     card(2, 'Add one shared editor', 'A floating editor who takes parts of any video, so one long video does not stall a week.', [
       ['for', `<b>Videos change hands.</b> ${hand.length} changed editor since June and ${queue.length} waited to start.`],
@@ -1835,14 +1874,14 @@ renderCal();
   const moreI = [
     ['Length and two dates in every assignment message', 'Length is known for few videos, and briefs rarely say whether a date is for the first draft or the final.'],
     ['Start the clock when assets arrive', `${wait} of ${S.fin.length} finished videos waited on client assets, footage or reshoots.`],
-    ['Minutes complete in the daily update', 'The plan has marks: 5, 15 and 25 minutes by Tue, Wed and Thu. On Nov 17 Sales Systems was at 10 of 25 to 30 minutes on day 5.'],
+    ['Minutes complete in the daily update', 'The plan has marks: 5, 15 and 25 minutes on days 2, 3 and 4 (Thu, Fri, Mon). On Nov 17 Sales Systems was at 10 of 25 to 30 minutes on day 5.'],
     ['Plan the export', 'Renders of hours or overnight appear on 5 videos. Low-res V1 first, 4K in parts, is Sanket’s own advice to Lokesh.'],
     ['Fewer review rounds', `2-draft videos took ${f1(two)} days, 3 or more took ${f1(more)}.`],
     ['Tag each video: template, partly new, fully new', 'Each tag gets its own day allowance, so the client differences turn into dates.']
   ];
   document.getElementById('sl-more').innerHTML = moreI.map((x, i) => `<div class="rd"><b>${i + 1}. ${esc(x[0])}</b><span>${x[1]}</span></div>`).join('');
   const items = [
-    ['Nobody hits the 5 day plan', `${S.n5} of ${S.fin.length} videos did. The best pair averages ${f1(S.best.fin)}. That points at the timeline before the editor. Sanket’s rule, as written, is tighter than what happened, so it needs calibrating first.`],
+    ['Few videos hit the 6 day plan', `${S.n5} of ${S.fin.length} videos did. The best pair averages ${f1(S.best.fin)}. That points at the timeline before the editor. Sanket’s rule, as written, is tighter than what happened, so it needs calibrating first.`],
     ['Dates gave less time than videos took', `${S.fr.length} videos with a final date were given ${f1(S.give)} working days and took ${f1(S.take)}. ${S.onDate} landed on the date. Template-style videos were given ${f1(avg(S.fr.filter(r => S.TEMPLATE(r.v.c)).map(r => r.give)))} days and took ${f1(avg(S.fr.filter(r => S.TEMPLATE(r.v.c)).map(r => r.take)))}, new-content videos ${f1(avg(S.fr.filter(r => !S.TEMPLATE(r.v.c)).map(r => r.give)))} and ${f1(avg(S.fr.filter(r => !S.TEMPLATE(r.v.c)).map(r => r.take)))}. Editors on the template clients miss dates too: Sharan was on time on ${LKS.byEd.find(x => x.ed.id === 'Sharan').ok} of ${LKS.byEd.find(x => x.ed.id === 'Sharan').n}, Saiyam on ${LKS.byEd.find(x => x.ed.id === 'Saiyam').ok} of ${LKS.byEd.find(x => x.ed.id === 'Saiyam').n}.`],
     ['New content costs time up front', `Vishen, Daniel and Nigel videos take about 2 days longer to reach the first draft. It is not shown that every editor is slower on them: Saiyam took 10 on Nigel against 7 on James, Anirba 8 on Nigel against 9 on Vishen.`],
     ['Editors still matter', `On Vishen videos Lokesh took 6 days, Anirba 9 and Mohit 13 (all three of Mohit’s had client waits). Sanket’s 50 minute masterclass took ${bd('2026-08-18', '2026-09-04')} days. There is no data that swapping an editor would be faster.`]
